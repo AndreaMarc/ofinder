@@ -102,34 +102,48 @@
 .filter-panel {
   position: sticky;
   top: 20px;
+
+  .card {
+    background-color: $ofinder-dark-surface;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 
 .search-bar-container {
   .input-group {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     border-radius: 8px;
     overflow: hidden;
+    background-color: $ofinder-dark-surface;
 
     .input-group-text {
       border: none;
+      background-color: transparent;
 
       i {
         font-size: 20px;
+        color: $ofinder-accent;
       }
     }
 
     .form-control {
       border: none;
       font-size: 16px;
+      background-color: transparent;
 
       &:focus {
         box-shadow: none;
+        background-color: transparent;
       }
     }
   }
 
   .quick-filters {
     gap: 0.5rem;
+
+    .text-muted {
+      color: $ofinder-gray-700 !important;
+    }
   }
 }
 
@@ -137,10 +151,19 @@
 .performer-grid {
   .card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: $ofinder-dark-surface;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 24px rgba(219, 39, 119, 0.3); // Pink glow on hover
+      background-color: $ofinder-dark-surface-light;
+      border-color: rgba(219, 39, 119, 0.3);
+    }
+
+    .card-footer {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
   }
 }
