@@ -263,6 +263,31 @@ The framework includes a built-in system for managing legal documents (Privacy P
 * Only write custom SCSS when strictly necessary
 * Maintain consistency with the existing theme
 
+**6. Icons in Buttons**
+
+**ALWAYS use Font Awesome icons inside buttons, NOT pe-7s-* icons.**
+
+The pe-7s (PE-icon-7-stroke) icons are too small and difficult to read when used inside buttons. Font Awesome icons are already included in the framework and provide better visibility and consistency.
+
+**Example:**
+```handlebars
+{{!-- ❌ WRONG - Do NOT use pe-7s icons in buttons --}}
+<button class="btn btn-primary">
+  <i class="pe-7s-check mr-2"></i>
+  Conferma
+</button>
+
+{{!-- ✅ CORRECT - Use Font Awesome icons in buttons --}}
+<button class="btn btn-primary">
+  <i class="fa fa-check mr-2"></i>
+  Conferma
+</button>
+```
+
+**When to use each icon set:**
+- **Font Awesome (`fa fa-*`)**: Inside buttons, important UI elements, mobile-friendly contexts
+- **PE-icon-7-stroke (`pe-7s-*`)**: Page titles, section headers, decorative elements (where size is not critical)
+
 **Please refer to FE FWK DOCS v1.1 20240530.pdf for complete code standards and conventions.**
 
 ## Deploying
