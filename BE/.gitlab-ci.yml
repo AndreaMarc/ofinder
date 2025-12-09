@@ -1,0 +1,130 @@
+image: harbor.maestrale.it/builder/runnerfwk10:linux-x64-prod-10.0
+
+stages:
+  - test
+  - deploy
+  - dns
+  - proxy
+
+tests:
+  stage: test
+  script:
+    - cd /builds/fwk10-custom-be/maefwk10
+    - /usr/bin/dotnet test MIT.FWK.sln --logger "trx;LogFileName=/builds/fwk10-custom-be/maefwk10/test-results.trx;Verbosity=detailed" 
+  artifacts:
+    reports:
+      junit: test-results.trx
+    name : "test-results-$APP_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_TIMESTAMP.trx"
+    when: always  
+
+deploy:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "prod"
+      variables:
+        SSH_HOST: $SSH_HOST_PROD
+        SSH_USER: $SSH_USER_PROD
+        SSH_PASS: $SSH_PASS_PROD
+    - if: $CI_COMMIT_REF_NAME == "staging"
+      variables:
+        SSH_HOST: $SSH_HOST_STAGING
+        SSH_USER: $SSH_USER_STAGING
+        SSH_PASS: $SSH_PASS_STAGING
+    - if: $CI_COMMIT_REF_NAME == "test"
+      variables:
+        SSH_HOST: $SSH_HOST_TEST
+        SSH_USER: $SSH_USER_TEST
+        SSH_PASS: $SSH_PASS_TEST
+    - if: $CI_COMMIT_REF_NAME == "dev"
+      variables:
+        SSH_HOST: $SSH_HOST_DEV
+        SSH_USER: $SSH_USER_DEV
+        SSH_PASS: $SSH_PASS_DEV
+  script: 
+    - export SSHPASS=${SSH_PASS}
+    - dotnet publish ./Src/MIT.Fwk.WebApi/MIT.Fwk.WebApi.csproj -c Release -o ./ApiPublish --self-contained -r linux-x64
+    - cd ./ApiPublish
+    - REMOTE_DIR_EXISTS=$(sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "test -d /var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME} && echo 'true' || echo 'false'") 
+    - if [ "$REMOTE_DIR_EXISTS" = "true" ]; then rm -rf ./appsettings.json && rm -rf ./customsettings.json && rm -rf ./dbconnections.json && rm -rf webconfig.json && rm -rf ./queuesettings.json; fi
+    - sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "echo ${SSH_PASS} | sudo -S mkdir -p /var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME}"
+    - sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "echo ${SSH_PASS} | sudo -S chmod -R a+rwx /var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME}"
+    - sshpass -e scp -o StrictHostKeyChecking=no -r * "${SSH_USER}@${SSH_HOST}:/home/${SSH_USER}/${APP_NAME}-${CI_COMMIT_REF_NAME}/"
+    - sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "echo ${SSH_PASS} | sudo -S rsync -av --remove-source-files /home/${SSH_USER}/${APP_NAME}-${CI_COMMIT_REF_NAME}/ /var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME}/ && find /home/${SSH_USER}/${APP_NAME}-${CI_COMMIT_REF_NAME}/ -type d -empty -delete"
+    - LICENSE=$(sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "/usr/bin/dotnet /var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME}/MIT.Fwk.WebApi.dll -key Mae2019!")
+    - sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "/usr/bin/dotnet /var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME}/MIT.Fwk.WebApi.dll -lic $LICENSE -v 3000"
+    - |
+      sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "if ! systemctl list-unit-files | grep -q ${APP_NAME}-${CI_COMMIT_REF_NAME}.service; then echo ${SSH_PASS} | sudo -S bash -c 'cat > /etc/systemd/system/${APP_NAME}-${CI_COMMIT_REF_NAME}.service << EOF
+      [Unit]
+      Description=${APP_NAME} ${CI_COMMIT_REF_NAME} Service
+      After=network.target
+
+      [Service]
+      Type=notify
+      NotifyAccess=main
+      WorkingDirectory=/var/backend/${APP_NAME}-${CI_COMMIT_REF_NAME}
+      ExecStart=/usr/bin/dotnet MIT.Fwk.WebApi.dll --run-as-service
+      Restart=always
+      RestartSec=10
+      KillSignal=SIGINT
+      SyslogIdentifier=${APP_NAME}-${CI_COMMIT_REF_NAME}
+      User=${SSH_USER}
+      Environment=ASPNETCORE_ENVIRONMENT=${CI_COMMIT_REF_NAME}
+
+      [Install]
+      WantedBy=multi-user.target
+      EOF' && echo ${SSH_PASS} | sudo -S systemctl daemon-reload && echo ${SSH_PASS} | sudo -S systemctl enable ${APP_NAME}-${CI_COMMIT_REF_NAME}.service; fi"
+    - sshpass -e ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" "echo ${SSH_PASS} | sudo -S systemctl restart ${APP_NAME}-${CI_COMMIT_REF_NAME}.service"
+  artifacts:
+    paths:
+      - ApiPublish/
+    name: "publish-$APP_NAME-$CI_COMMIT_REF_NAME-$CI_COMMIT_TIMESTAMP"
+    when: on_success
+
+dns:
+  image: harbor.maestrale.it/builder/ansible-dns
+  stage: dns
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^(prod|test|dev|staging)$/
+      variables:
+        PROJECT: ${APP_NAME}
+        BUILD_ENV: $CI_COMMIT_REF_NAME
+  variables:
+    ANSIBLE_CFG: $ANSIBLE_CFG_WIN
+  script: 
+    - cat $ANSIBLE_CFG > /etc/ansible/ansible.cfg
+    - export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+    - cat $ANSIBLE_HOST_DNS > /etc/ansible/hosts
+    - echo $PROJECT > /etc/PROJECT.txt
+    - echo $BUILD_ENV > /etc/BUILD_ENV.txt
+    - cat $PLAYBOOK_DNS > /etc/playbook_dns.yml
+    - ansible-playbook /etc/playbook_dns.yml -vvv
+
+proxy:
+  image: harbor.maestrale.it/builder/ansible
+  stage: proxy
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "prod"
+      variables:
+        NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_PROD
+    - if: $CI_COMMIT_REF_NAME == "test"
+      variables:
+        NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_TEST
+    - if: $CI_COMMIT_REF_NAME == "dev"
+      variables:
+        NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_DEV
+    - if: $CI_COMMIT_REF_NAME == "staging"
+      variables:
+        NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_STAGING
+  variables:
+    ANSIBLE_CFG: $ANSIBLE_CFG_DEB
+    BUILD_ENV: $CI_COMMIT_REF_NAME
+    PROJECT: ${APP_NAME}
+  script:
+    - cat $ANSIBLE_CFG > /etc/ansible/ansible.cfg
+    - export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+    - cat $ANSIBLE_HOST_PROXY > /etc/ansible/hosts
+    - echo $PROJECT > /etc/PROJECT.txt
+    - echo $BUILD_ENV > /etc/BUILD_ENV.txt
+    - cat $NGINX_PROXY_TEMPLATE > /etc/NGINX_PROXY_TEMPLATE.txt
+    - cat $PLAYBOOK_PROXY > /etc/playbook_proxy.yml
+    - ansible-playbook /etc/playbook_proxy.yml -vvv
