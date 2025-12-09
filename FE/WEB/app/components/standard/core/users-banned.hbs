@@ -1,0 +1,137 @@
+<div class="row m-0 users-banned" {{did-update (perform this.start) @seeAllTenantsUsers @triggerRefresh}} ...attributes>
+  {{#if (eq this.available 'waiting')}}
+    {{!-- WAITING --}}
+    <div class="col-md-12">
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info mb-0" />
+    </div>
+  {{else if (eq this.available 'unavailable')}}
+    {{!-- UNAVAILABLE --}}
+    <div class="col-md-12">
+      <Standard::LoadingSpinner @icon="true" @style="3" class="alert-danger mb-0">
+        <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+        <a href="#" class="alert-link" {{on 'click' (perform this.start)}}>Riprova</a>.
+      </Standard::LoadingSpinner>
+    </div>
+  {{else}}
+    <div class="col-md-12">
+      {{!-- AVAILABLE --}}
+      {{#if (has-permissions 'User.read')}}
+        <div class="card-header text-success">
+          <i class="header-icon pe-7s-hammer"></i> UTENTI BANNATI<br />
+          <div class="btn-actions-pane-right">
+             {{#if (has-permissions 'canSeeAllTenants')}}
+              <div class="position-relative form-check">
+                <label class="form-label form-check-label {{if this.seeAllTenantsUsers 'text-danger' 'text-secondary'}}">
+                  <input type="checkbox" {{on 'change' this.updateSeeAllTenantsUsers}} checked={{this.seeAllTenantsUsers}} class="form-check-input all-tenants-users">
+                  Vedi utenti di tutte le aziende
+                </label>
+              </div>
+            {{/if}}
+            <div class="btn-actions-pane-right">
+              <div class="position-relative form-check">
+                <label class="form-label form-check-label text-secondary">
+                  <input type="checkbox" {{on 'change' this.updatehistory}} checked={{this.showHistory}} class="form-check-input history-users">
+                  Includi storico
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-1">
+          <div class="row">
+            <div class="col-md-12 text-center mb-2">
+              <Standard::PaginationButtons @currentPageNumber={{this.currentPageNumber}} @totalRecords={{this.totalRecords}} @recordsPerPage={{this.recordsPerPage}} @cb={{this.changePageNumber}}/>
+            </div>
+
+            <div class="col-md-7">
+              <select {{on 'change' this.changePageSize}} class="form-control form-control-sm col-md-3">
+                <option value="10" selected={{(eq this.recordsPerPage '10')}}>10 utenti</option>
+                <option value="20" selected={{(eq this.recordsPerPage '20')}}>20 utenti</option>
+                <option value="50" selected={{(eq this.recordsPerPage '50')}}>50 utenti</option>
+                <option value="100" selected={{(eq this.recordsPerPage '100')}}>100 utenti</option>
+                <option value="0" selected={{(eq this.recordsPerPage '0')}}>Tutti</option>
+              </select>
+            </div>
+            <div class="col-md-5 text-right mb-2">
+              <div class="input-group pr-0 float-right">
+                <input type="search" placeholder="..." class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                <div class="input-group-append">
+                  <button class="btn btn-secondary btn-sm" disabled type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <button class="btn btn-secondary btn-sm ml-1 pl-2" type="button" {{on 'click' (perform this.start)}}>
+                  <i class="fa {{if this.start.isRunning 'fa-refresh fa-spin' 'fa-refresh'}}"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {{#if (eq this.recordsLength 0)}}
+            <div class="row">
+              <div class="col-md-12">
+                <p class="m-4"><em>Non ci sono utenti bannati da mostrare</em></p>
+              </div>
+            </div>
+          {{else}}
+            {{!-- #region elenco record --}}
+            <table class="mae-table mb-3">
+              <thead>
+                <tr>
+                  <th>UTENTE</th>
+                  <th>E-MAIL</th>
+                  <th>DURATA</th>
+                  <th>PERIODO</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              {{#each this.records as |record|}}
+                <tr class="line-record {{(this.isActive record)}}">
+                  <td class="align-middle">{{record.user.userProfile.lastName}} {{record.user.userProfile.firstName}}</td>
+                  <td class="align-middle">{{record.user.email}}</td>
+                  <td class="align-middle">{{record.lockDays}} giorni</td>
+                  <td class="align-middle">
+                    <small>{{convertdate record.lockStart 'DD/MM/YY HH:mm'}}<br />{{convertdate record.lockEnd 'DD/MM/YY HH:mm'}}</small>
+                  </td>
+                  <td class="align-middle text-center">
+                    {{#if (eq record.tenantId this.curTenant)}}
+                      {{#if (has-permissions 'BannedUser.update')}}
+                        <button class="btn btn-sm btn-warning btn-hover-shine show-btn" type="button" {{on 'click' (fn this.removeBan record.id)}}>
+                          <i class="fa mr-2 {{if this.removeBanConfirmed.isRunning 'fa-spinner fa-spin' 'fa-unlock-alt'}}"></i>
+                          SBLOCCA
+                        </button>
+                      {{/if}}
+                    {{/if}}
+                  </td>
+                  <td class="align-middle text-right">
+                    {{#if (eq record.tenantId this.curTenant)}}
+                      {{#if (and (has-permissions 'User.delete') (or (has-permissions 'isOwner') (has-permissions 'isDeveloper') (has-permissions 'isSuperAdmin')))}}
+                        <button {{on 'click' (fn this.removeUser record.user.id)}} class="btn btn-danger btn-hover-shine btn-sm show-btn" type="button">
+                          <i class="fa mr-2 {{if this.removeUserConfirmed.isRunning 'fa-spinner fa-spin' 'fa-exclamation-triangle'}}"></i>
+                          ELIMINA UTENTE DAL DB
+                        </button>
+                      {{/if}}
+                    {{/if}}
+                  </td>
+                  <td class="align-middle text-right">
+                    <button class="btn btn-sm btn-alternate show-btn" disabled type="button">
+                      BAN ATTIVO
+                    </button>
+                  </td>
+                </tr>
+              {{/each}}
+              </tbody>
+            </table>
+            {{!-- #endregion --}}
+          {{/if}}
+        </div>
+      {{/if}}
+    </div>
+
+  {{/if}}
+</div>
+{{yield}}

@@ -1,0 +1,6 @@
+{{#let (get-code-snippet "prism.markup") as |snippet|}}
+  <CodeBlock @language={{snippet.language}} @code={{snippet.source}}/>
+{{/let}}
+
+<!-- dove prism.markup è il nome del file che contiene il codice e
+si trova nella cartella snippets (root principale) -->

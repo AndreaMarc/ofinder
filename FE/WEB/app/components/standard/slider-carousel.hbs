@@ -1,0 +1,18 @@
+<div class="slider-carousel" {{did-update this.getContent @content}} ...attributes>
+  {{!-- WAITING --}}
+  {{#if (eq this.available 'waiting')}}
+    <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{/if}}
+
+  {{!-- UNAVAILABLE --}}
+  {{#if (eq this.available 'unavailable')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+      {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+    </Standard::LoadingSpinner>
+  {{/if}}
+
+  {{!-- AVAILABLE --}}
+  <div id="slider-carousel-{{this.id}}" class="slick-slider {{if (eq this.available 'available') 'd-block' 'd-none'}}" {{did-insert this.start}}>
+    {{yield}}
+  </div>
+</div>

@@ -1,0 +1,540 @@
+<div ...attributes>
+  {{#if this.available}}
+  <form class="">
+    <div class="form-row">
+      {{!-- email --}}
+      {{#if this.isGoogle}}
+        <div class="col-md-6"></div>
+      {{else}}
+        <div class="col-md-6">
+          <div class="position-relative form-group">
+            <label for="registrationEmail">
+              <span class="registration-mandatory {{if (is-empty this.newValue.email) "text-danger" "text-success"}}">*</span>
+              <Standard::TR @key="component.registrationForm.email" @default="E-mail"/>
+            </label>
+            <input id="registrationEmail" type="email" {{on 'input' (fn this.storeNewValue 'email')}} autocomplete="off" placeholder="..." class="form-control">
+            <small class="form-text text-muted">
+              <Standard::TR @key="component.registrationForm.emailInfo" @default="Ti invieremo un'email per confermare l'indirizzo"/>
+            </small>
+          </div>
+        </div>
+      {{/if}}
+
+      {{!-- email di contatto --}}
+      {{#if (eq this.registrationFields.contactEmail '0')}}
+      <div class="col-md-6"></div>
+      {{else}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationContactEmail">
+            {{#if (eq this.registrationFields.contactEmail '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.contactEmail) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.contactEmail" @default="E-mail di contatto"/>
+          </label>
+          <input id="registrationContactEmail" type="email" {{on 'input' (fn this.storeNewValue 'contactEmail')}} autocomplete="off" class="form-control">
+          <small class="form-text text-muted">
+            <Standard::TR @key="component.registrationForm.emailContactInfo" @default="Per future comunicazioni puoi impostare un'e-mail diversa"/>
+          </small>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- cognome --}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationLastName">
+            <span class="registration-mandatory {{if (is-empty this.newValue.lastName) "text-danger" "text-success"}}">*</span>
+            <Standard::TR @key="component.registrationForm.lastName" @default="Cognome"/>
+          </label>
+          <input id="registrationLastName" type="text" {{on 'input' (fn this.storeNewValue 'lastName')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+
+      {{!-- nome --}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationFirstName">
+            <span class="registration-mandatory {{if (is-empty this.newValue.firstName) "text-danger" "text-success"}}">*</span>
+            <Standard::TR @key="component.registrationForm.firstName" @default="Nome"/>
+          </label>
+          <input id="registrationFirstName" type="text" {{on 'input' (fn this.storeNewValue 'firstName')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+
+      {{!-- password --}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationPassword">
+            <span class="registration-mandatory {{if (is-empty this.newValue.password) "text-danger" "text-success"}}">*</span>
+            <Standard::TR @key="component.registrationForm.password" @default="Password"/>
+          </label>
+          <div class="input-group">
+            <input id="registrationPassword" type={{this.passwordType}} {{on 'input' (fn this.storeNewValue 'password')}} placeholder="..." autocomplete="off" class="form-control">
+            <div class="input-group-append">
+              <button class="show-pwd btn btn-light btn-sm" type="button" {{on 'click' this.showPassword}} tabindex="-1">
+                <i class="fa {{if (eq this.passwordType 'password') 'fa-eye-slash' 'fa-eye'}}"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-12 p-0">
+            <small class="form-text text-danger">{{this.passwordError}}</small>
+          </div>
+        </div>
+      </div>
+
+      {{!-- conferma password --}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationConfirmPassword">
+            <span class="registration-mandatory {{if (is-empty this.newValue.confirmPassword) "text-danger" "text-success"}}">*</span>
+            <Standard::TR @key="component.registrationForm.confirmPassword" @default="Conferma Password"/>
+          </label>
+          <div class="input-group">
+            <input id="registrationConfirmPassword" type={{this.passwordType}} {{on 'input' (fn this.storeNewValue 'confirmPassword')}} placeholder="..." autocomplete="off" class="form-control">
+            <div class="input-group-append">
+              <button class="show-pwd btn btn-light btn-sm" type="button" {{on 'click' this.showPassword}} tabindex="-1">
+                <i class="fa {{if (eq this.passwordType 'password') 'fa-eye-slash' 'fa-eye'}}"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-12 p-0">
+            <small class="form-text text-danger">{{this.passwordConfirmError}}</small>
+          </div>
+        </div>
+      </div>
+
+
+      {{!-- nickName --}}
+      {{#if (not-eq this.registrationFields.nickName '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationNickName">
+            {{#if (eq this.registrationFields.nickName '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.nickName) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            Nick-name
+            <Standard::TR @key="component.registrationForm.nickName" @default="Nick-name"/>
+          </label>
+          <input id="registrationNickName" type="text" {{on 'input' (fn this.storeNewValue 'nickName')}} placeholder="..." autocomplete="off" class="form-control">
+          <small class="form-text text-muted">
+            <Standard::TR @key="component.registrationForm.nickNameInfo" @default="Inserisci il tuo soprannome"/>
+          </small>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- fixedPhone --}}
+      {{#if (not-eq this.registrationFields.fixedPhone '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationFixedPhone">
+            {{#if (eq this.registrationFields.fixedPhone '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.fixedPhone) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.fixedPhone" @default="Telefono fisso"/>
+          </label>
+          <input id="registrationFixedPhone" type="text" {{on 'input' (fn this.storeNewValue 'fixedPhone')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- mobilePhone --}}
+      {{#if (not-eq this.registrationFields.mobilePhone '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationMobilePhone">
+            {{#if (eq this.registrationFields.mobilePhone '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.mobilePhone) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.mobilePhone" @default="Telefono mobile"/>
+          </label>
+          <input id="registrationMobilePhone" type="text" {{on 'input' (fn this.storeNewValue 'mobilePhone')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- sex --}}
+      {{#if (not-eq this.registrationFields.sex '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationSex">
+            {{#if (eq this.registrationFields.sex '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.sex) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.sex" @default="Sesso"/>
+          </label>
+          <select id="registrationSex" {{on 'change' (fn this.storeNewValue 'sex')}} autocomplete="off" class="form-control">
+            <option value="" selected>--</option>
+            <option value="W"><Standard::TR @key="component.registrationForm.woman" @default="Donna"/></option>
+            <option value="M"><Standard::TR @key="component.registrationForm.man" @default="Uomo"/></option>
+          </select>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- taxId --}}
+      {{#if (not-eq this.registrationFields.taxId '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationTaxId">
+            {{#if (eq this.registrationFields.taxId '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.taxId) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.taxId" @default="Codice fiscale"/>
+          </label>
+          <input id="registrationTaxId" type="text" {{on 'input' (fn this.storeNewValue 'taxId')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+        <div class="col-md-12 p-0">
+          <small class="form-text text-danger">{{this.taxIdError}}</small>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- birthDate --}}
+      {{#if (not-eq this.registrationFields.birthDate '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationBirthDate">
+            {{#if (eq this.registrationFields.birthDate '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.birthDate) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.birthDate" @default="Data di nascita"/>
+          </label>
+          <input id="registrationBirthDate" type="date" {{on 'input' (fn this.storeNewValue 'birthDate')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- birthCity --}}
+      {{#if (not-eq this.registrationFields.birthCity '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationBirthCity">
+            {{#if (eq this.registrationFields.birthCity '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.birthCity) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.birthCity" @default="Città di nascita"/>
+          </label>
+          <input id="registrationBirthCity" type="text" {{on 'input' (fn this.storeNewValue 'birthCity')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- birthProvince --}}
+      {{#if (not-eq this.registrationFields.birthProvince '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationBirthProvince">
+            {{#if (eq this.registrationFields.birthProvince '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.birthProvince) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.birthProvince" @default="Provincia di nascita"/>
+          </label>
+          <input id="registrationBirthProvince" type="text" {{on 'input' (fn this.storeNewValue 'birthProvince')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- birthZIP --}}
+      {{#if (not-eq this.registrationFields.birthZIP '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationBirthZip">
+            {{#if (eq this.registrationFields.birthZIP '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.birthZIP) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.birthZIP" @default="C.A.P. di nascita"/>
+          </label>
+          <input id="registrationBirthZip" type="text" {{on 'input' (fn this.storeNewValue 'birthZIP')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- birthState --}}
+      {{#if (not-eq this.registrationFields.birthState '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationBirthState">
+            {{#if (eq this.registrationFields.birthState '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.birthState) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.birthState" @default="Stato di nascita"/>
+          </label>
+          <select id="registrationBirthState" data-field="birthState" class="select-nations form-control">
+            <option value="">--</option>
+            {{#each this.nations as |nation|}}
+            <option value={{nation.code}} selected={{(eq nation.code this.currentLang)}}>{{nation.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- residenceCity --}}
+      {{#if (not-eq this.registrationFields.residenceCity '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationResidenceCity">
+            {{#if (eq this.registrationFields.residenceCity '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.residenceCity) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.residenceCity" @default="Città di residenza"/>
+          </label>
+          <input id="registrationResidenceCity" type="text" {{on 'input' (fn this.storeNewValue 'residenceCity')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- residenceProvince --}}
+      {{#if (not-eq this.registrationFields.residenceProvince '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationResidenceProvince">
+            {{#if (eq this.registrationFields.residenceProvince '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.residenceProvince) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.residenceProvince" @default="Provincia di residenza"/>
+          </label>
+          <input id="registrationResidenceProvince" type="text" {{on 'input' (fn this.storeNewValue 'residenceProvince')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- residenceZIP --}}
+      {{#if (not-eq this.registrationFields.residenceZIP '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationResidenceZip">
+            {{#if (eq this.registrationFields.residenceZIP '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.residenceZIP) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.residenceZIP" @default="C.A.P. di residenza"/>
+          </label>
+          <input id="registrationResidenceZip" type="text" {{on 'input' (fn this.storeNewValue 'residenceZIP')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- residenceState --}}
+      {{#if (not-eq this.registrationFields.residenceState '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationResidenceState">
+            {{#if (eq this.registrationFields.residenceState '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.residenceState) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.residenceState" @default="Stato di residenza"/>
+          </label>
+          <select id="registrationResidenceState" data-field="residenceState" class="select-nations form-control">
+            <option value="">--</option>
+            {{#each this.nations as |nation|}}
+            <option value={{nation.code}} selected={{(eq nation.code this.currentLang)}}>{{nation.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- residenceAddress --}}
+      {{#if (not-eq this.registrationFields.residenceAddress '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationResidenceAddress">
+            {{#if (eq this.registrationFields.residenceAddress '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.residenceAddress) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.residenceAddress" @default="Indirizzo di residenza"/>
+          </label>
+          <input id="registrationResidenceAddress" type="text" {{on 'input' (fn this.storeNewValue 'residenceAddress')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- residenceHouseNumber --}}
+      {{#if (not-eq this.registrationFields.residenceHouseNumber '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="residenceHouseNumber">
+            {{#if (eq this.registrationFields.residenceHouseNumber '2')}}
+            <span class={{if (is-empty this.newValue.residenceHouseNumber) "text-danger" "text-success"}}>*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.residenceHouseNumber" @default="N° civico"/>
+          </label>
+          <input id="residenceHouseNumber" type="text" {{on 'input' (fn this.storeNewValue 'residenceHouseNumber')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- occupation --}}
+      {{#if (not-eq this.registrationFields.occupation '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationOccupation">
+            {{#if (eq this.registrationFields.occupation '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.occupation) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.occupation" @default="Occupazione"/>
+          </label>
+          <input id="registrationOccupation" type="text" {{on 'input' (fn this.storeNewValue 'occupation')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- description --}}
+      {{#if (not-eq this.registrationFields.description '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationDescription">
+            {{#if (eq this.registrationFields.description '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.description) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            <Standard::TR @key="component.registrationForm.description" @default="Descrizione"/>
+          </label>
+          <input id="registrationDescription" type="text" {{on 'input' (fn this.storeNewValue 'description')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldString1 --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldString1.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldString1">
+            {{#if (eq this.registrationFields.profileFreeFieldString1.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldString1) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldString1.label}}
+          </label>
+          <input id="registrationProfileFreeFieldString1" type="text" {{on 'input' (fn this.storeNewValue 'profileFreeFieldString1')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldString2 --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldString2.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldString2">
+            {{#if (eq this.registrationFields.profileFreeFieldString2.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldString2) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldString2.label}}
+          </label>
+          <input id="registrationProfileFreeFieldString2" type="text" {{on 'input' (fn this.storeNewValue 'profileFreeFieldString2')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldString3 --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldString3.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldString3">
+            {{#if (eq this.registrationFields.profileFreeFieldString3.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldString3) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldString3.label}}
+          </label>
+          <input id="registrationProfileFreeFieldString3" type="text" {{on 'input' (fn this.storeNewValue 'profileFreeFieldString3')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldDateTime --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldDateTime.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldDateTime">
+            {{#if (eq this.registrationFields.profileFreeFieldDateTime.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldDateTime) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldDateTime.label}}
+          </label>
+          <input id="registrationProfileFreeFieldDateTime" type="date" {{on 'input' (fn this.storeNewValue 'profileFreeFieldDateTime')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldInt1 --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldInt1.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldInt1">
+            {{#if (eq this.registrationFields.profileFreeFieldInt1.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldInt1) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldInt1.label}}
+          </label>
+          <input id="registrationProfileFreeFieldInt1" type="number" {{on 'input' (fn this.storeNewValue 'profileFreeFieldInt1')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldInt2 --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldInt2.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldInt2">
+            {{#if (eq this.registrationFields.profileFreeFieldInt2.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldInt2) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldInt2.label}}
+          </label>
+          <input id="registrationProfileFreeFieldInt2" type="number" {{on 'input' (fn this.storeNewValue 'profileFreeFieldInt2')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- profileFreeFieldBoolean --}}
+      {{#if (not-eq this.registrationFields.profileFreeFieldBoolean.field '0')}}
+      <div class="col-md-6">
+        <div class="position-relative form-group">
+          <label for="registrationProfileFreeFieldBoolean">
+            {{#if (eq this.registrationFields.profileFreeFieldBoolean.field '2')}}
+            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldBoolean) "text-danger" "text-success"}}">*</span>
+            {{/if}}
+            {{this.registrationFields.profileFreeFieldBoolean.label}}
+          </label>
+          <input id="registrationProfileFreeFieldBoolean" type="number" {{on 'input' (fn this.storeNewValue 'profileFreeFieldBoolean')}} placeholder="..." autocomplete="off" class="form-control">
+        </div>
+      </div>
+      {{/if}}
+
+    </div>
+    <div class="mt-3 position-relative form-check">
+      <input name="check" id="registrationTermsAccepted" {{on 'change' (fn this.storeNewValue 'termsAccepted')}} type="checkbox" class="form-check-input">
+      <label for="registrationTermsAccepted" class="form-check-label">
+        <Standard::TR @key="component.registrationForm.accept" @default="Accetto i"/>
+        <LinkTo @route="terms" @model="termsEndConditions" class="text-primary">
+          <Standard::TR @key="component.registrationForm.terms" @default="Termini e Condizioni"/>
+        </LinkTo> <Standard::TR @key="component.registrationForm.and" @default="e"/>
+        <LinkTo @route="terms" @model="privacyPolicy" class="text-primary">
+          <Standard::TR @key="component.registrationForm.privacyPolicy" @default="l'Informativa sulla Privacy"/>
+        </LinkTo>.
+      </label>
+    </div>
+    <div class="mt-4 d-flex align-items-center">
+      <h5 class="mb-0">
+        <Standard::TR @key="component.registrationForm.alreadySign" @default="Già registrato?"/>
+        <LinkTo @route="login" class="text-primary">
+          <Standard::TR @key="component.registrationForm.signIn" @default="Accedi"/>
+        </LinkTo>
+      </h5>
+      <div class="ml-auto">
+        <button {{on 'click' this.save}} data-test-registrati class="btn-wide btn-pill btn-shadow btn-hover-shine btn btn-primary btn-lg" type="button">
+          <i class="fa mr-2 {{if this.createUser.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+          <Standard::TR @key="component.registrationForm.signUp" @default="Registrati"/>
+        </button>
+      </div>
+    </div>
+  </form>
+  {{else}}
+  <div class="p-0 pt-3">
+    <div class="alert alert-warning fade show m-3" role="alert">
+      <i class="fa fa-exclamation-triangle"></i> <Standard::TR @key="component.registrationForm.unactiveRegistration" @default="Registrazione non attiva."/>
+    </div>
+  </div>
+  {{/if}}
+</div>
+<div class="d-block d-sm-block d-md-none d-lg-none p-3"></div>

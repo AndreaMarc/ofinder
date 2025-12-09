@@ -1,0 +1,140 @@
+<div ...attributes {{did-update this.start @currentTenant}}>
+  {{!-- WAITING --}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+    <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{else if (eq this.serviceAvailable 'unavailable')}}
+  {{!-- UNAVAILABLE --}}
+  <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+    Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+  </Standard::LoadingSpinner>
+
+  {{else if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+    <div class="card-header text-success">
+      <i class="header-icon lnr-graduation-hat"></i> GESTIONE RUOLI
+    </div>
+
+    <div class="card-body underline p-1">
+      {{#if this.findRecords.isRunning}}
+      <Standard::LoadingSpinner @icon='1' @msg="Caricamento ruoli in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+      {{/if}}
+      {{#if this.findRecords.isIdle}}
+        {{#if (eq this.recordsLength 0)}}
+          <p class="m-3"><em>Non ci sono ruoli da mostrare</em></p>
+        {{else}}
+          {{!-- #region elenco record --}}
+          {{!-- campo di ricerca  --}}
+          <div class="input-group mr-2 pr-0 pt-2 col-md-4 float-right">
+            <input type="text" placeholder="..." class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+            <div class="input-group-append">
+              <button class="btn btn-secondary btn-sm" disabled type="button">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+            <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' this.start}}>
+              <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+            </button>
+          </div>
+
+          <table class="mae-table mb-3">
+            <thead>
+              <tr>
+                <th>NOME DEL RUOLO</th>
+                <th class="col-md-2">LIVELLO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {{#each this.filteredRecords as |record|}}
+              <tr>
+                {{#if (eq this.editingRecordId record.id)}}
+                <td>
+                  <input type="text" class="form-control form-control-sm" value={{record.name}} {{on 'input' (fn this.storeNewValue 'name' true)}}>
+                </td>
+                <td>
+                  <input type="number" class="form-control form-control-sm" value={{record.level}}>
+                </td>
+                <td style="width: 75px;">
+                  <button class="btn-undo-field btn-hover-shine btn btn-sm btn-info" type="button" {{on 'click' this.undoRecord}}>
+                    <i class="fa fa-history"></i>
+                  </button>
+                  <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (fn this.saveVoice record)}}>
+                    {{#if this.saveVoiceConfirmed.isIdle}}
+                    <i class="fa fa-save"></i>
+                    {{/if}}
+                    {{#if this.saveVoiceConfirmed.isRunning}}
+                    <i class="fa fa-refresh fa-spin"></i>
+                    {{/if}}
+                  </button>
+                </td>
+                {{else}}
+                <td>
+                  <input type="text" disabled class="form-control form-control-sm" value={{record.name}}>
+                </td>
+                <td>
+                  <input type="number" class="form-control form-control-sm" value={{record.level}} disabled>
+                </td>
+                <td class="left-border" style="width: 75px;">
+                  {{#if (and (eq this.editingRecordId null) (not record.needful))}}
+                  <button class="btn-edit-field btn-hover-shine btn btn-sm btn-warning" type="button" {{on 'click' (fn this.editRecord record)}}>
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                  <button class="btn-del-field btn-hover-shine btn btn-sm btn-danger" type="button" {{on 'click' (fn this.delVoice record)}}>
+                    <i class="fa fa-trash"></i>
+                  </button>
+                  {{/if}}
+                </td>
+                {{/if}}
+              </tr>
+            {{/each}}
+            </tbody>
+          </table>
+          {{!-- #endregion --}}
+        {{/if}}
+      {{/if}}
+    </div>
+
+    {{!-- #region Aggiungi Record  --}}
+    <div class="card-body">
+      <p class="text-success text-bold">
+        <i class="header-icon ion-android-add"> </i> AGGIUNGI UN RUOLO
+      </p>
+      <table class="mae-table mb-3">
+        <thead>
+          <tr>
+            <th>NOME DEL RUOLO</th>
+            <th style="width: 320px;">TENANT</th>
+            <th style="width: 91px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input type="text" class="form-control form-control-sm" value={{this.newRecord.name}} {{on 'input' (fn this.storeNewValue 'name' false)}}>
+            </td>
+            <td>
+              <input type="text" disabled value={{this.currentTenant.name}} class="form-control form-control-sm">
+            </td>
+            <td>
+              <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
+                <i class="fa mr-2 {{if this.saveNewVoice.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                SALVA
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {{!-- #endregion --}}
+
+  {{else}}
+    <div class="card">
+      <div class="card-body">
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>
+
+{{yield}}

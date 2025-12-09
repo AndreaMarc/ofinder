@@ -1,0 +1,43 @@
+.notifications {
+  display: grid;
+
+  .transition {
+    transition: 1s;
+  }
+
+  .notifications-time {
+    font-size: 70%;
+    text-align: center;
+    opacity: .5;
+
+    span {
+      display: block;
+    }
+  }
+
+  .widget-content-left.datas {
+    overflow: hidden;
+  }
+  .notifications-preview {
+    height: 1.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0 10px 0 0;
+  }
+  .notifications-preview.expanded {
+    height: auto;
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
+  }
+
+  .notify-btn {
+    width: 32px;
+    height: 28px;
+  }
+  .show-btn-hide {
+    display: none;
+  }
+}

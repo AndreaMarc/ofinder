@@ -1,0 +1,520 @@
+<div class="row m-0 customer-users-crud" {{did-update (perform this.start) @triggerRefresh}} ...attributes>
+  {{!-- template-lint-disable require-input-label --}}
+  {{!-- template-lint-disable no-inline-styles --}}
+  {{#if (eq this.available 'waiting')}}
+    {{!-- WAITING --}}
+    <div class="col-md-12">
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info mb-0" />
+    </div>
+  {{else if (eq this.available 'unavailable')}}
+    <div class="col-md-12">
+      <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger mb-0">
+        <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+        <a href="#" class="alert-link" {{on 'click' (perform this.start)}}>Riprova</a>.
+      </Standard::LoadingSpinner>
+    </div>
+  {{else}}
+    {{!-- #region ELENCO UTENTI --}}
+    <div class="{{this.listUserSize}} animated col-md-12">
+      {{#if (has-permissions 'User.read')}}
+        <div class="card-header text-success">
+          <i class="header-icon pe-7s-users"></i> GESTIONE UTENTI<br />
+          {{#if (has-permissions 'canSeeAllTenants')}}
+            <div class="btn-actions-pane-right">
+              <div class="position-relative form-check">
+                <label class="form-label form-check-label {{if this.seeAllTenantsUsers 'text-danger' 'text-secondary'}}">
+                  <input type="checkbox" {{on 'change' this.updateSeeAllTenantsUsers}} checked={{this.seeAllTenantsUsers}} class="form-check-input all-tenants-users">
+                  Vedi utenti di tutte le aziende
+                </label>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+
+        <div class="card-body p-1">
+          {{!-- campo di ricerca  --}}
+          <div class="row">
+            <div class="col-md-12 opacity-4 mb-4">
+              <small><em>NOTA: sono elencati i soli utenti confermati (auto-registrati, registrati da amministrazione o che abbiano accettato l'import da altra Azienda)</em></small>
+            </div>
+            <div class="col-md-12 text-center mb-2">
+              <Standard::PaginationButtons @currentPageNumber={{this.currentPageNumber}} @totalRecords={{this.totalRecords}} @recordsPerPage={{this.recordsPerPage}} @cb={{this.changePageNumber}}/>
+            </div>
+            <div class="col-md-7 mb-2">
+              <select {{on 'change' this.changePageSize}} class="form-control form-control-sm col-md-3">
+                <option value="10" selected={{(eq this.recordsPerPage '10')}}>10 utenti</option>
+                <option value="20" selected={{(eq this.recordsPerPage '20')}}>20 utenti</option>
+                <option value="50" selected={{(eq this.recordsPerPage '50')}}>50 utenti</option>
+                <option value="100" selected={{(eq this.recordsPerPage '100')}}>100 utenti</option>
+                {{!--<option value="" selected={{(eq this.recordsPerPage '')}}>Tutti</option>--}}
+              </select>
+            </div>
+            <div class="col-md-5 text-right mb-2">
+              <div class="input-group pr-0 float-right">
+                <input type="search" placeholder="..." class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                <div class="input-group-append">
+                  <button class="btn btn-secondary btn-sm" disabled type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <button class="btn btn-secondary btn-sm ml-1 pl-2" type="button" {{on 'click' (perform this.start)}}>
+                  <i class="fa {{if this.start.isRunning 'fa-refresh fa-spin' 'fa-refresh'}}"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {{#if this.start.isRunning}}
+            <div class="m-3">
+              <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info mb-0" />
+            </div>
+          {{else}}
+            {{#if (eq this.recordsLength 0)}}
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="m-4"><em>Non ci sono utenti da mostrare</em></p>
+                </div>
+              </div>
+            {{else}}
+              {{!-- #region elenco record --}}
+              <table class="mae-table mb-3">
+                <thead>
+                  <tr>
+                    <th>COGNOME</th>
+                    <th>NOME</th>
+                    <th>E-MAIL</th>
+                    <th>RUOLO</th>
+                    <th>AZIENDA</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {{#each this.records as |record|}}
+                  <tr>
+                    <td>
+                      <input type="text" class="form-control form-control-sm" value={{record.user.userProfile.lastName}} {{on 'input' (fn this.storeNewValue 'lastName' true)}} disabled>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm" value={{record.user.userProfile.firstName}} {{on 'input' (fn this.storeNewValue 'firstName' true)}} disabled>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control-sm" value={{record.user.email}} {{on 'input' (fn this.storeNewValue 'email' true)}} disabled>
+                    </td>
+                    <td>
+                      <select disabled class="form-control form-control-sm">
+                        {{#each this.tenantRoles as | tr |}}
+                          <option value={{tr.id}} selected={{eq tr.id record.userRole.roleId}}>{{tr.name}}</option>
+                        {{/each}}
+                      </select>
+                    </td>
+                    <td>
+                      <small>{{record.tenant.name}}</small>
+                    </td>
+                    <td style="width: 100px;">
+                      {{!-- utente non bannato --}}
+                      {{#if (has-permissions 'User.update')}}
+                        {{#if (eq this.editingRecord.id record.user.id)}}
+                        <button class="btn-undo-field btn-hover-shine btn btn-sm btn-block btn-info" type="button" {{on 'click' this.undoRecord}}>
+                          <i class="fa {{if this.editRecord.isRunning 'fa-spinner fa-spin' 'fa-undo'}}"></i>
+                        </button>
+                        {{else}}
+                          {{#if (eq this.editingRecord null)}}
+                          <button class="btn-edit-field btn-hover-shine btn btn-sm btn-block btn-warning" type="button" {{on 'click' (perform this.editRecord record.user record.userRole.roleId)}}>
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          {{/if}}
+                        {{/if}}
+                      {{/if}}
+                    </td>
+                  </tr>
+                {{/each}}
+                </tbody>
+              </table>
+              {{!-- #endregion --}}
+            {{/if}}
+          {{/if}}
+
+        </div>
+
+      {{else}}
+        <div class="alert alert-danger fade show m-3" role="alert">
+          <i class="fa fa-exclamation-triangle"></i> Area riservata. Impossibile accedere.
+        </div>
+      {{/if}}
+    </div>
+    {{!-- #endregion --}}
+
+    {{!-- #region MODIFICA UTENTE --}}
+    <div class="{{this.editUserSize}} animated col-md-12">
+      <div class="card-header text-warning">
+        <i class="header-icon fa fa-edit"></i> MODIFICA UTENTE
+        <div class="btn-actions-pane-right">
+            <button class="btn btn-secondary btn-hover-shine btn-sm" {{on 'click' this.undoRecord}} type="button">
+              <i class="fa fa-undo mr-2"></i> ANNULLA
+            </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <form class="">
+          <div class="form-row">
+            {{!-- email --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  <span class="user-crud-mandatory text-success">*</span> E-mail
+                </label>
+                <input value={{this.editingRecord.email}} type="email" class="form-control form-control-sm" disabled>
+              </div>
+            </div>
+            {{!-- cognome --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.lastName '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.lastName) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Cognome
+                </label>
+                <input value={{this.oldValue.lastName}} {{on 'input' (fn this.storeNewValue 'lastName')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- nome --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.firstName '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.firstName) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Nome
+                </label>
+                <input value={{this.oldValue.firstName}} {{on 'input' (fn this.storeNewValue 'firstName')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- ruolo --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.firstName '2')}}
+                  {{/if}}
+                  Ruolo
+                </label>
+                <select {{on 'change' this.storeNewRole}} disabled={{eq this.currentUserId this.newValue.userId}} class="form-control form-control-sm">
+                  {{#each this.tenantRoles as | tr |}}
+                    <option value={{tr.id}} selected={{eq tr.id this.newRole.roleId}}>{{tr.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+            {{!-- email di contatto --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.contactEmail '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.contactEmail '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.contactEmail) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  E-mail di contatto
+                </label>
+                <input value={{this.oldValue.contactEmail}} {{on 'input' (fn this.storeNewValue 'contactEmail')}} type="email" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- nickName --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.nickName '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.nickName '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.nickName) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Nickname
+                </label>
+                <input value={{this.oldValue.nickName}} {{on 'input' (fn this.storeNewValue 'nickName')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- telefono fisso --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.fixedPhone '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.fixedPhone '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.fixedPhone) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Telefono fisso
+                </label>
+                <input value={{this.oldValue.fixedPhone}} {{on 'input' (fn this.storeNewValue 'fixedPhone')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- telefono cellulare --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.mobilePhone '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.mobilePhone '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.mobilePhone) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Telefono cellulare
+                </label>
+                <input value={{this.oldValue.mobilePhone}} {{on 'input' (fn this.storeNewValue 'mobilePhone')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- sesso --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.sex '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.sex '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.sex) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Sesso
+                </label>
+                <select value={{this.oldValue.sex}} {{on 'change' (fn this.storeNewValue 'sex')}} class="form-control form-control-sm">
+                  <option value="">--</option>
+                  <option value="M">Uomo</option>
+                  <option value="W">Donna</option>
+                </select>
+              </div>
+            </div>
+            {{!-- codice fiscale --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.taxId '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.taxId '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.taxId) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Codice Fiscale
+                </label>
+                <input value={{this.oldValue.taxId}} {{on 'input' (fn this.storeNewValue 'taxId')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- data di nascita --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.birthDate '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthDate '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthDate) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Data di nascita
+                </label>
+                <input value={{if this.oldValue.birthDate (convertdate this.oldValue.birthDate) ''}} {{on 'input' (fn this.storeNewValue 'birthDate')}} type="date" class="form-control form-control-sm"/>
+              </div>
+            </div>
+
+            {{!-- città di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthCity '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthCity '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthCity) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Città di nascita
+                </label>
+                <input value={{this.oldValue.birthCity}} {{on 'input' (fn this.storeNewValue 'birthCity')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- provincia di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthProvince '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthProvince '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthProvince) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Provincia di nascita
+                </label>
+                <input value={{this.oldValue.birthProvince}} {{on 'input' (fn this.storeNewValue 'birthProvince')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- cap di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthZIP '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthZIP '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthZIP) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  CAP di nascita
+                </label>
+                <input value={{this.oldValue.birthZIP}} {{on 'input' (fn this.storeNewValue 'birthZIP')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- stato di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthState '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthState '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthState) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Stato di nascita
+                </label>
+                <select id="usersCrudBirthState" data-field="birthState" value={{this.oldValue.birthState}} class="select-nations form-control form-control-sm">
+                  <option value="">--</option>
+                  {{#each this.nations as |nation|}}
+                  <option value={{nation.code}}>{{nation.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+
+            {{!-- città di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceCity '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceCity '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceCity) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Città di residenza
+                </label>
+                <input value={{this.oldValue.residenceCity}} {{on 'input' (fn this.storeNewValue 'residenceCity')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- provincia di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceProvince '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceProvince '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceProvince) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Provincia di residenza
+                </label>
+                <input value={{this.oldValue.residenceProvince}} {{on 'input' (fn this.storeNewValue 'residenceProvince')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- cap di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceZIP '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceZIP '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceZIP) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  CAP di residenza
+                </label>
+                <input value={{this.oldValue.residenceZIP}} {{on 'input' (fn this.storeNewValue 'residenceZIP')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- stato di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceState '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceState '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceState) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Stato di residenza
+                </label>
+                <select id="usersCrudResidenceState" data-field="residenceState" value={{this.oldValue.residenceState}} {{on 'change' (fn this.storeNewValue 'residenceState')}} class="select-nations form-control form-control-sm">
+                  <option value="">--</option>
+                  {{#each this.nations as |nation|}}
+                  <option value={{nation.code}}>{{nation.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+            {{!-- indirizzo di residenza --}}
+            <div class="col-md-10 {{if (eq this.registrationFields.residenceAddress '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceAddress '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceAddress) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Indirizzo di residenza
+                </label>
+                <input value={{this.oldValue.residenceAddress}} {{on 'input' (fn this.storeNewValue 'residenceAddress')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- numero civico --}}
+            <div class="col-md-2 {{if (eq this.registrationFields.residenceHouseNumber '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceHouseNumber '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceHouseNumber) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  N° civico
+                </label>
+                <input value={{this.oldValue.residenceHouseNumber}} {{on 'input' (fn this.storeNewValue 'residenceHouseNumber')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- professione --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.occupation '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.occupation '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.occupation) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Professione
+                </label>
+                <input value={{this.oldValue.occupation}} {{on 'input' (fn this.storeNewValue 'occupation')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- descrizione --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.description '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.description '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.description) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Descrizione
+                </label>
+                <textarea class="form-control form-control-sm" {{on 'input' (fn this.storeNewValue 'description')}}>{{this.oldValue.description}}</textarea>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label><small><em>* i campi contrassegnati dall'asterisco sono obbligatori</em></small></label>
+              </div>
+            </div>
+
+            <div class="col-6 text-right mb-3">
+              <button class="btn btn-secondary btn-hover-shine btn-sm btn-block" {{on 'click' this.undoRecord}} type="button">
+                <i class="fa fa-undo mr-2"></i> ANNULLA
+              </button>
+            </div>
+            <div class="col-6 text-right mb-5">
+              {{#if (has-permissions 'User.update')}}
+                <button class="btn btn-info btn-hover-shine btn-sm btn-block" {{on 'click' this.saveVoice}} type="button">
+                  <i class="fa mr-2 {{if this.updateUser.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i> SALVA
+                </button>
+              {{/if}}
+            </div>
+
+            {{#if (has-permissions 'User.delete')}}
+              {{#if (or (has-permissions 'isOwner') (has-permissions 'isDeveloper') (has-permissions 'isSuperAdmin') (has-permissions 'isCustomerAdmin'))}}
+                <div class="col-12 col-md-6 text-center mb-3">
+                  <button {{on 'click' this.removeUser}} class="btn btn-danger btn-hover-shine btn-sm btn-block" type="button">
+                    <i class="fa mr-2 {{if this.removeUserConfirmed.isRunning 'fa-spinner fa-spin' 'fa-exclamation-triangle'}}"></i> ELIMINAZIONE DAL DB
+                  </button>
+                </div>
+              {{/if}}
+            {{/if}}
+
+            <div class="col-12 text-center mb-3">
+              {{#if (and (has-permissions 'User.update') (or (has-permissions 'isOwner') (has-permissions 'isDeveloper') (has-permissions 'isSuperAdmin') (has-permissions 'isAdmin')))}}
+                <div class="dropdown d-inline-block">
+                  <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="btn btn-alternate btn-sm btn-block dropdown-toggle">
+                    <i class="fa mr-2 {{if this.banConfirmed.isRunning 'fa-spinner fa-spin' 'fa-exclamation-triangle'}}"></i> BANNA
+                  </button>
+                  <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-xl dropdown-menu pb-0">
+                    <div class="dropdown-menu-header mb-0">
+                      <div class="dropdown-menu-header-inner bg-alternate">
+                        <div class="menu-header-image opacity-1" style="background-image: url('assets/images/dropdown-header/abstract3.jpg');"></div>
+                        <div class="menu-header-content">
+                          <h5 class="menu-header-title">BLOCCA UTENTE</h5>
+                          <h6 class="menu-header-subtitle">Scegli la durata del blocco</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <button {{on 'click' (fn this.ban 1)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-secondary" type="button">1 giorno</button>
+                    <button {{on 'click' (fn this.ban 2)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-secondary" type="button">2 giorni</button>
+                    <button {{on 'click' (fn this.ban 7)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-secondary" type="button">7 giorni</button>
+                    <button {{on 'click' (fn this.ban 14)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-warning" type="button">14 giorni</button>
+                    <button {{on 'click' (fn this.ban 30)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-warning" type="button">1 mese</button>
+                    <button {{on 'click' (fn this.ban 60)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-warning" type="button">2 mesi</button>
+                    <button {{on 'click' (fn this.ban 90)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-warning" type="button">3 mesi</button>
+                    <button {{on 'click' (fn this.ban 180)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-danger" type="button">6 mesi</button>
+                    <button {{on 'click' (fn this.ban 365)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-danger" type="button">1 anno</button>
+                    <button {{on 'click' (fn this.ban 36500)}} tabindex="0" class="dropdown-item btn-transition btn btn-square btn-outline-danger" type="button">Per sempre</button>
+                  </div>
+                </div>
+              {{/if}}
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+    {{!-- #endregion --}}
+  {{/if}}
+</div>
+{{yield}}

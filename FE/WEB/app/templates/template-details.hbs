@@ -1,0 +1,6 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Modifica Template" @titleKey="template.templateDetails.title" @description="Modifica i dettagli del template" @descriptionKey="template.templateDetails.subTitle" @icon="pe-7s-news-paper">
+  <Standard::BackButton class="btn-hover-shine btn btn-sm btn-light">Torna all'elenco</Standard::BackButton>
+</ArchitectUi::AppMain::AppPageTitle>
+
+<Standard::Core::TemplateDetailsCrud @model={{this.model.record}} @showObject={{this.model.showObject}} @showTags={{this.model.showTags}} @showFeaturedImage={{this.model.showFeaturedImage}} @handleModificationStatus={{this.handleModificationStatus}} />
+{{outlet}}

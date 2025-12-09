@@ -1,0 +1,4 @@
+<div id={{this.cid}} class="flip-switch" ...attributes {{did-insert (perform this.start)}} {{did-update this.changeAttr @disabled @checked}}>
+  <input id={{this.id}} type="checkbox" checked={{this.checked}}>
+</div>
+{{yield}}

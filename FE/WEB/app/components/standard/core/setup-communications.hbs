@@ -1,0 +1,78 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div>
+    <div class="row">
+      <div class="col-md-4 p-3"></div>
+    </div>
+
+    {{!-- chat --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Attivare la chat?</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'internalChat')}} class="form-control">
+            <option value="0" selected={{(eq this.recordWeb.internalChat '0')}}>No</option>
+            <option value="1" selected={{(eq this.recordWeb.internalChat '1')}}>Sì, solo tra utenti ed amministratori</option>
+            <option value="2" selected={{(eq this.recordWeb.internalChat '2')}}>Sì, tra tutti gli utenti</option>
+          </select>
+          <small class="form-text text-muted">Consente all'utente di utilizzare il servizio chat. Comparirà un apposito indicatore nell'header.</small>
+      </div>
+    </div>
+
+    {{!-- notifiche interne --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Attivare le notifiche interne?</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'internalNotifications')}} class="form-control col-md-4">
+            <option value="" selected={{(eq this.recordWeb.internalNotifications false)}}>No</option>
+            <option value="1" selected={{(eq this.recordWeb.internalNotifications true)}}>Sì</option>
+          </select>
+          <small class="form-text text-muted">Consente all'utente di visualizzare avvisi, comunicazioni e lo storico di eventuali notifiche push dell'App. Comparirà un apposito indicatore nell'header.</small>
+      </div>
+    </div>
+
+    {{!-- notifiche push --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Attivare le notifiche push per l'App?</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'pushNotifications')}} disabled={{(eq this.recordWeb.internalNotifications false)}} class="form-control col-md-4">
+            <option value="" selected={{(eq this.recordWeb.pushNotifications false)}}>No</option>
+            <option value="1" selected={{(eq this.recordWeb.pushNotifications true)}}>Sì</option>
+          </select>
+          <small class="form-text text-muted">Ricorda di impostare i corretti parametri di connessione a Firebase nel BE.</small>
+      </div>
+    </div>
+
+    <div class="pt-5 text-right">
+      <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+        <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+        SALVA
+      </button>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+</div>
+{{yield}}

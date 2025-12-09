@@ -1,0 +1,70 @@
+<div class="users-master">
+  {{!-- #region TAB DI NAVIGAZIONE --}}
+  <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+    {{#if (has-permissions 'User.read')}}
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#tab-rolePerms-0">
+        <Standard::TR @key="component.usersMaster.users" @default="ELENCO UTENTI"/>
+      </a>
+    </li>
+    {{/if}}
+    {{#if (has-permissions 'User.create')}}
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#tab-rolePerms-5">
+        <Standard::TR @key="component.usersMaster.add" @default="CREA NUOVO UTENTE"/>
+      </a>
+    </li>
+    {{/if}}
+    {{#if (has-permissions 'User.read')}}
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#tab-rolePerms-10">
+        <Standard::TR @key="component.usersMaster.requests" @default="RICHIESTE DI AUTORIZZAZIONE"/>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#tab-rolePerms-15">
+        <Standard::TR @key="component.usersMaster.banned" @default="UTENTI BANNATI"/>
+      </a>
+    </li>
+    {{/if}}
+    {{#if (has-permissions 'Notification.create')}}
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#tab-rolePerms-20">
+        <Standard::TR @key="component.usersMaster.communications" @default="COMUNICAZIONI"/>
+      </a>
+    </li>
+    {{/if}}
+  </ul>
+  {{!-- #endregion --}}
+
+  {{!-- #region AREA DEI CONTENUTI --}}
+  <div class="card mb-3">
+      <div class="tab-content">
+        {{#if (has-permissions 'User.read')}}
+        <div class="tab-pane active" id="tab-rolePerms-0" role="tabpanel">
+          <Standard::Core::UsersCrud @users={{this.confirmedUsers}} @methodUpdateVisibility={{this.updateSeeAllTenantsUsers}} @seeAllTenantsUsers={{this.seeAllTenantsUsers}} @triggerRefreshFn={{this.triggerRefreshFn}} @triggerRefresh={{this.triggerRefresh}}/>
+        </div>
+        {{/if}}
+        {{#if (has-permissions 'User.create')}}
+        <div class="tab-pane" id="tab-rolePerms-5" role="tabpanel">
+          <Standard::Core::UsersCreate @triggerRefreshFn={{this.triggerRefreshFn}} @triggerRefresh={{this.triggerRefresh}}/>
+        </div>
+        {{/if}}
+        {{#if (has-permissions 'User.read')}}
+        <div class="tab-pane" id="tab-rolePerms-10" role="tabpanel">
+          <Standard::Core::UsersRequests @triggerRefresh={{this.triggerRefresh}} @methodUpdateVisibility={{this.updateSeeAllTenantsUsers}} @seeAllTenantsUsers={{this.seeAllTenantsUsers}}/>
+        </div>
+        <div class="tab-pane" id="tab-rolePerms-15" role="tabpanel">
+          <Standard::Core::UsersBanned @triggerRefresh={{this.triggerRefresh}} @methodUpdateVisibility={{this.updateSeeAllTenantsUsers}} @seeAllTenantsUsers={{this.seeAllTenantsUsers}}/>
+        </div>
+        {{/if}}
+        {{#if (has-permissions 'Notification.create')}}
+          <div class="tab-pane" id="tab-rolePerms-20" role="tabpanel">
+            <Standard::Core::SendCommunications @triggerRefresh={{this.triggerRefresh}} @methodUpdateVisibility={{this.updateSeeAllTenantsUsers}} @seeAllTenantsUsers={{this.seeAllTenantsUsers}}/>
+          </div>
+        {{/if}}
+      </div>
+  </div>
+  {{!-- #endregion --}}
+</div>
+{{yield}}

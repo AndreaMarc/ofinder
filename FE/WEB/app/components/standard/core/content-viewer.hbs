@@ -1,0 +1,31 @@
+<div class="content-viewer" ...attributes {{did-update this.start @guid}}>
+  {{#if (eq this.available 'waiting')}}
+  <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{/if}}
+  {{#if (eq this.available 'unavailable')}}
+  <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+    {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+  </Standard::LoadingSpinner>
+  {{/if}}
+  {{#if (eq this.available 'available')}}
+    {{this.content}}
+    <hr />
+    {{!-- #region Navigazion everso i template precedente e successivo --}}
+    <div class="row">
+      <div class="col-md-4 text-left">
+        {{log this.prev.id}}
+        {{#if this.prev.id}}
+          <a href="#" {{on 'click' (fn this.changeGuid this.prev.id this.prev.name)}}><i class="lnr-arrow-left"></i> {{this.prev.name}}</a>
+        {{/if}}
+      </div>
+      <div class="col-md-4 text-center"></div>
+      <div class="col-md-4 text-right">
+        {{#if this.next.id}}
+          <a href="#" {{on 'click' (fn this.changeGuid this.next.id this.next.name)}}>{{this.next.name}} <i class="lnr-arrow-right"></i></a>
+        {{/if}}
+      </div>
+    </div>
+    {{!-- #endregion --}}
+  {{/if}}
+</div>
+{{yield}}

@@ -1,0 +1,92 @@
+.choose-language {
+  display: inherit;
+
+  .choose-lang-menu-header {
+    background-image: url('images/dropdown-header/city2.jpg');
+  }
+  .menu-header-content {
+    color: #495057;
+  }
+
+  .chose-languade-unlogged {
+
+    span.language-icon {
+      cursor: pointer;
+    }
+    .icon-wrapper {
+      position: relative;
+      margin-right: 0.6666666667rem;
+
+      .input-holder {
+        height: auto;
+        width: 42px;
+        overflow: hidden;
+        position: relative;
+        transition: all .3s ease-in-out;
+
+        .search-lang {
+          width: 42px;
+          height: 42px;
+          border: none;
+          padding: 0;
+          outline: none;
+          position: relative;
+          z-index: 2;
+          /*float: right;*/
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+          background: rgba(0, 0, 0, 0.06);
+          border-radius: 30px;
+
+          div {
+            overflow: hidden;
+            border-radius: 15px;
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            margin-top: 6px;
+            box-sizing: border-box;
+          }
+        }
+      }
+
+      .btn-close {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: -100px;
+        width: 27px;
+        height: 27px;
+        margin-top: -14px;
+        cursor: pointer;
+        opacity: 0!important;
+        transition: all .2s cubic-bezier(.285,-.45,.935,.11);
+        transition-delay: .1s;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        transform: rotate(-45deg);
+      }
+    }
+    .icon-wrapper.active {
+      width: auto;
+
+      .input-holder {
+        width: auto;
+        margin-left: 45px;
+        border-radius: 18px; /*50px;*/
+        /*background: rgba(0, 0, 0, 0.05);*/
+        transition: all 0.5s cubic-bezier(0, 0.105, 0.035, 1.57);
+      }
+
+      .btn-close {
+        left: 0;
+        opacity: .6 !important;
+        transition: all 0.6s cubic-bezier(0, 0.105, 0.035, 1.57);
+        transition-delay: 0.5s;
+        transform: rotate(0deg);
+      }
+    }
+  }
+}
+

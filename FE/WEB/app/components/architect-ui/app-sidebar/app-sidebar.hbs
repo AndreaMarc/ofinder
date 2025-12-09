@@ -1,0 +1,11 @@
+<div class="app-sidebar {{this.styleSidebarClass}}" {{did-insert this.start}} ...attributes>
+    <ArchitectUi::AppHeader::AppHeaderLogo/>
+    <div class="scrollbar-sidebar" {{did-insert this.startupScrollbar}}>
+        <div class="app-sidebar__inner">
+            <ul class="vertical-nav-menu">
+                {{this.menuItems}}
+            </ul>
+        </div>
+    </div>
+</div>
+{{yield}}

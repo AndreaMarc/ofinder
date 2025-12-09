@@ -1,0 +1,163 @@
+<div ...attributes {{did-update this.start @currentTenant}} {{did-update (perform this.findRoles) @lastUpdateRoles}}>
+  {{#if (eq this.serviceUpperAvailable 'waiting')}}
+    {{!-- WAITING --}}
+    <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{else if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+
+      <div class="card-header text-success">
+        <i class="header-icon lnr-thumbs-up"></i> ASSOCIAZIONI RUOLI &divide; PERMESSI
+        
+        <div class="btn-actions-pane-right">
+          <div class="btn-toolbar" role="toolbar">
+
+            <div class="input-group mr-2">
+              <div class="input-group-prepend">
+                <button class="btn btn-sm btn-success" type="button" {{on 'click' (perform this.findRoles)}} disabled={{this.findRoles.isRunning}}>
+                  <i class="fa fa-refresh mr-2 {{if this.findRoles.isRunning 'fa-spin'}}"></i> RUOLO
+                </button>
+              </div>
+              <select class="form-control form-control-sm" {{on 'change' this.updateRole}} aria-describedby="btnGroup1">
+                <option value="">--</option>
+                {{#each this.roles as | role |}}
+                <option value={{role.id}}>{{role.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="swatch-holder swatch-holder-sm bg-success text-center" data-toggle="collapse" data-target="#info-role-permissions" type="button" style="border-radius: 50%;">
+              <i class="fa fa-info text-white"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-body underline p-1">
+        <div id="info-role-permissions" class="row collapse m-0">
+          <div class="col-md-12 p-3">
+            <div class="alert alert-success fade show mb-5" role="alert">
+              Definisci i permessi per ciascun ruolo. Tali permessi <strong>non</strong> riguardano:<br />
+              <ul>
+                <li>le operazioni di CRUD (per le quali è definita l'apposita sezione "Permessi CRUD")</li>
+                <li>le autorizzazioni d'accesso alle pagine (vedi sezione "Rotte")</li>
+              </ul>
+              I permessi qui inseriti sono da intendersi come feature aggiuntiva cui generalmente corrisponde un equivalente permesso hard-coded nel FE e/o nel BE. Usare con parsimonia!
+            </div>
+          </div>
+        </div>
+
+        {{#if (eq this.currentRole '')}}
+          <p class="m-3"><em>Scegli il ruolo!</em></p>
+        {{else}}
+          {{#if this.findRecords.isRunning}}
+          <Standard::LoadingSpinner @icon='1' @msg="Caricamento dati in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+          {{#if this.findRecords.isIdle}}
+            {{#if (eq this.recordsLength 0)}}
+              <p class="m-3"><em>Non ci sono dati da mostrare!</em></p>
+            {{else}}
+              {{!-- #region elenco record --}}
+              {{!-- campo di ricerca  --}}
+              <div class="row mb-3">
+                <div class="col-md-12">
+                  <div class="input-group mr-2 pr-0 pt-2 col-md-4 float-right">
+                    <input type="text" placeholder="..." class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary btn-sm" disabled type="button">
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div>
+                    <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' (perform this.findRecords)}}>
+                      <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row m-0 mb-5">
+                <div class="col-md-12 p-1">
+                  <h6 class="mb-3">Lista dei Permessi</h6>
+                </div>
+                {{#each this.filteredRecords as |record|}}
+                <div class="col-md-4 p-1">
+                  <div class="input-group">
+                    <input type="text" value={{record.claimValue}} disabled class="form-control form-control-sm">
+                    <div class="input-group-append">
+                      <button class="btn btn-danger btn-sm" type="button" {{on 'click' (fn this.delVoice record)}}>
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {{/each}}
+              </div>
+              {{!-- #endregion --}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+      </div>
+
+      {{!-- #region Aggiungi Record  --}}
+      {{#if (and (not-eq this.currentTenant null) (not-eq this.currentRole ''))}}
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="text-success text-bold">
+              <i class="header-icon ion-android-add"> </i> AGGIUNGI UN NUOVO PERMESSO O SCEGLILO DALLA LISTA PREDEFINITA
+            </p>
+            <table class="mae-table mb-3">
+              <thead>
+                <tr>
+                  <th>NOME DEL PERMESSO</th>
+                  <th>PERMESSI PREDEFINITI</th>
+                  <th style="width: 91px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input type="text" class="form-control form-control-sm" value={{this.newRecord.claimValue}} {{on 'input' (fn this.storeNewValue 'claimValue' false)}}>
+                  </td>
+                  <td>
+                    <select class="form-control form-control-sm" value={{this.newRecord.claimValue}} {{on 'change' (fn this.storeNewValue 'claimValue' false)}}>
+                      <option value="">---</option>
+                      {{#each this.freeClaims as | claim |}}
+                      <option value="{{claim.name}}">{{claim.name}} - {{claim.description}}</option>
+                      {{/each}}
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
+                      {{#if this.saveNewVoice.isRunning}}
+                      <i class="fa fa-refresh fa-spin mr-2"></i>
+                      {{/if}}
+                      {{#if this.saveNewVoice.isIdle}}
+                      <i class="fa fa-save mr-2"></i>
+                      {{/if}}
+                      SALVA
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+      </div>  
+      {{/if}}
+      {{!-- #endregion --}}
+
+
+  {{else}}
+    <div class="card">
+      <div class="card-body">
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Non hai i permessi necessari per accedere al servizio.
+        </div>
+      </div>
+    </div>
+  {{/if}}
+
+</div>
+{{yield}}

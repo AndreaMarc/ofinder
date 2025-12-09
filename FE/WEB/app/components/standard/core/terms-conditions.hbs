@@ -1,0 +1,50 @@
+<div test-termsDiv ...attributes>
+  {{#if (eq this.available 'waiting')}}
+    <p>
+      <i class="fa fa-spin fa-spinner mr-3"></i>
+      <em>
+        <Standard::TR @key="component.termsConditions.waitPlease" @default="Recupero in corso, attendere prego..."/>
+      </em>
+    </p>
+  {{else if (eq this.available 'unknown')}}
+    <p class="text-danger">
+      <Standard::TR @key="component.termsConditions.unknownDocument" @default="Il documento richiesto non esiste!"/>
+    </p>
+  {{else if (eq this.available 'unavailable')}}
+    <p class="text-warning">
+      <Standard::TR @key="component.termsConditions.inReview" @default="Il documento è in fase di revisione. Riprovare in un secondo momento!"/>
+    </p>
+  {{else}}
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <h4 class="mb-0">
+          <div class="d-block">
+            {{this.title}}
+          </div>
+        </h4>
+      </div>
+      <div class="col-md-4 text-right">
+        <small class="opacity-6">
+          {{#if (not-eq this.version '')}}
+          <Standard::TR @key="component.termsConditions.version" @default="Versione"/> {{this.version}}
+          <br />
+          {{/if}}
+          {{#if this.dataActivation}}
+          <small><em>{{this.dataActivation}}</em></small>
+          {{/if}}
+        </small>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="scroll-area-md">
+          <div id="termScroll" class="scrollbar-container ps--active-y">
+            {{yield}}
+            {{this.content}}
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>

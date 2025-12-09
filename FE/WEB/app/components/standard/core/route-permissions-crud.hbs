@@ -1,0 +1,137 @@
+<div class="crud-permissions" ...attributes {{did-update this.start @currentTenant}} {{did-update (perform this.findRoles) @lastUpdateRoles}}>
+{{#if (eq this.serviceUpperAvailable 'waiting')}}
+  {{!-- WAITING --}}
+  <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+{{else}}
+  {{#if (and this.available (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+    <div class="card-header text-success">
+      <i class="header-icon lnr-construction"></i> GESTIONE PERMESSI DI ROTTA
+      <div class="btn-actions-pane-right">
+
+        <div class="btn-toolbar" role="toolbar">
+          <div class="input-group mr-2">
+            <div class="input-group-prepend">
+              <button class="btn btn-sm btn-success" disabled={{this.findRoles.isRunning}} {{on 'click' (perform this.findRoles)}} type="button">
+                <i class="fa fa-refresh {{if this.findRoles.isRunning 'fa-spin'}} mr-2"></i> RUOLO
+              </button>
+            </div>
+            <select class="form-control form-control-sm" value={{this.currentRole}} {{on 'change' this.updateRole}} disabled={{this.findRoles.isRunning}} aria-describedby="btnGroup1">
+              <option value="">--</option>
+              {{#each this.roles as | role |}}
+              <option value={{role.id}}>{{role.name}}</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="swatch-holder swatch-holder-sm bg-success text-center" data-toggle="collapse" data-target="#info-route-permissions" type="button" style="border-radius: 50%;">
+            <i class="fa fa-info text-white"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body underline p-1">
+      <div id="info-route-permissions" class="row collapse m-0">
+        <div class="col-md-12 p-3">
+          <div class="alert alert-success fade show mb-5" role="alert">
+            Questa sezione stabilisce, per ciascun ruolo, quali pagine del sito sono accessibili.<br />
+            I link del menù laterale saranno visibili solo in presenza del permesso di accesso.<br />
+            <strong>Nota:</strong><br />
+            <ul>
+              <li>i permessi di accesso non riguardano le pagine visibili agli utenti non loggati. Riguardano cioè le sole pagine visibili agli utenti loggati</li>
+              <li>l'elenco delle pagine va definito a priori nel menù Setup/Rotte</li>
+              <li>il blocco dell'accesso alle pagine avviene automaticamente mentre la visibilità delle voci nel menù laterale richiede che nel file di definizione (_customs/sidebarContents.js) venga specificato il relativo "nome del permesso"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {{#if (eq this.currentRole '')}}
+        <p class="m-3"><em>Scegli il ruolo!</em></p>
+      {{else}}
+        {{#if this.findRecords.isRunning}}
+        <Standard::LoadingSpinner @icon='1' @msg="Caricamento dati in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+        {{/if}}
+        {{#if this.findRecords.isIdle}}
+          {{#if (eq this.routesLength 0)}}
+            <p class="m-3"><em>Non sono state definite le rotte. Chiedi ad un super-admin di impostarle nel menù Setup!</em></p>
+          {{else}}
+            {{!-- #region elenco record --}}
+            <table id="role-permissions-crud-table" class="mae-table mb-3">
+              <thead>
+                <tr>
+                  <th colspan="5" class="text-right pb-3">
+                    {{!-- campo di ricerca  --}}
+                    <div class="input-group mr-2 pr-0 pt-2 col-md-4 float-right">
+                      <input type="search" placeholder="..." class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                      <div class="input-group-append">
+                        <button class="btn btn-secondary btn-sm" disabled type="button">
+                          <i class="fa fa-search"></i>
+                        </button>
+                      </div>
+                      <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' (perform this.findRecords)}}>
+                        <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+                      </button>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <th>ROTTA</th>
+                  <th>NOME DEL PERMESSO</th>
+                  <th style="width: 150px;" class="text-center">PERMESSO DI ACCESSO</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each this.filteredRoutes as | route index |}}
+                <tr data-entity="{{this.encode route}}">
+                  <td class="align-middle">
+                    <Standard::TR @key="{{route.key}}" @default="{{route.title}}"/>
+                    <br />
+                    <small>
+                      <em>
+                      <Standard::TR @key="{{route.keyDescription}}" @default="{{route.description}}"/>
+                      </em>
+                    </small>
+                  </td>
+                  <td class="align-middle">
+                    <small><em>r-p-{{route.route}}</em></small>
+                  </td>
+                  <td class="text-center">
+                    <input checked={{route.associatedClaim}} data-route="r-p-{{route.route}}" class="route-perms form-check-input" type="checkbox" data-toggle="toggle" data-size="sm" data-onstyle="danger" data-offstyle="light" data-on="Sì" data-off="No">
+                  </td>
+                </tr>
+                {{this.bootstrapToggle index}}
+                {{/each}}
+              </tbody>
+            </table>
+            {{!-- #endregion --}}
+          {{/if}}
+        {{/if}}
+      {{/if}}
+
+    </div>
+
+    {{!-- #region Salvataggio  --}}
+    {{#if (not-eq this.currentRole '')}}
+      <div class="card-body text-right">
+        <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' this.save}}>
+          <i class="fa mr-2 {{if this.saveConfirmed.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+          SALVA
+        </button>
+      </div>
+    {{/if}}
+    {{!-- #endregion --}}
+
+  {{else}}
+      <div class="card">
+        <div class="card-body">
+          <div class="alert alert-danger fade show m-0" role="alert">
+              <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+              <a href="#" class="alert-link" {{on 'click' this.start}}>Riprova</a>.
+          </div>
+        </div>
+      </div>
+  {{/if}}
+{{/if}}
+</div>
+{{yield}}

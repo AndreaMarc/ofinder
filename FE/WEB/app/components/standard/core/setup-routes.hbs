@@ -1,0 +1,168 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  {{!-- maggiori informazioni --}}
+    <div class="card-shadow-info border mb-5 card card-body border-info p-0">
+      <div id="setup-routes-accordion" class="accordion-wrapper m-0 no-border">
+        <div class="card no-border">
+          <div id="headingOne" class="card-header">
+            <button type="button" data-toggle="collapse" data-target="#setup-routes-info" aria-expanded="false" class="text-left m-0 p-0 btn btn-link btn-block">
+                <h5 class="m-0 p-0 text-info">Maggiori informazioni...</h5>
+            </button>
+          </div>
+          <div data-parent="#setup-routes-accordion" id="setup-routes-info" aria-labelledby="headingOne" class="collapse">
+            <div class="card-body">
+              Per limitare l'accesso a pagine specifiche del sito è necessario indicare per ognuna gli opportuni Permessi necessari.<br />
+              L'assegnazione di tali Permessi viene gestita nel menù Autorizzazioni.<br /><br />
+              In questa sezione puoi indicare <strong>quali sono le pagine ad accesso limitato</strong>.<br />
+              Per ciascuna pagina occorre indicare:<br />
+              <ul>
+                <li>la rotta (come definita in route.js)</li>
+                <li>un <em>titolo</em> ovvero una versione "parlante" della rotta</li>
+                <li>una descrizione, per rendere più comprensibile il contenuto della pagina</li>
+                <li>se usi le traduzioni vanno inserite anche la chiavi di traduzione del titolo e della descrizione (fare riferimento 
+                  a component/setup-routes nella pagina 'Struttura traduzioni')
+                </li>
+              </ul>
+              <strong>NOTA:</strong> elencare solo le pagine che necessitano di permessi di accesso!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3 pb-3 underline">
+      {{#if (eq this.recordsLength 0)}}
+        <p class="m-3"><em>Non ci sono rotte da mostrare</em></p>
+      {{else}}
+      <table class="mae-table mb-3">
+        <thead>
+          <tr>
+            <th>ROTTA</th>
+            <th>TITOLO DELLA PAGINA</th>
+            <th>CHIAVE DI TRADUZIONE DEL TITOLO</th>
+            <th>DESCRIZIONE DELLA PAGINA</th>
+            <th>CHIAVE DI TRADUZIONE DELLA DESCRIZIONE</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each this.routesList as | route |}}
+            <tr>
+              {{#if (eq this.editingRecord route)}}
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{route.route}} {{on 'input' (fn this.storeNewValue 'route' true)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{route.title}} {{on 'input' (fn this.storeNewValue 'title' true)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{route.key}} {{on 'input' (fn this.storeNewValue 'key' true)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{route.description}} {{on 'input' (fn this.storeNewValue 'description' true)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{route.keyDescription}} {{on 'input' (fn this.storeNewValue 'keyDescription' true)}}>
+              </td>
+              <td style="width: 75px;" class="text-right">
+                <button class="btn-undo-field btn-hover-shine btn btn-sm btn-info" type="button" {{on 'click' (fn this.undoRecord route)}}>
+                  <i class="fa fa-history"></i>
+                </button>
+                <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (fn this.saveVoice route)}}>
+                  <i class="fa fa-save"></i>
+                </button>
+              </td>
+
+              {{else}}
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value={{route.route}}>
+              </td>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value={{route.title}}>
+              </td>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value={{route.key}}>
+              </td>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value={{route.description}}>
+              </td>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value={{route.keyDescription}}>
+              </td>
+              <td style="width: 75px;" class="text-right">
+                <button class="btn-edit-field btn-hover-shine btn btn-sm btn-warning" type="button" {{on 'click' (fn this.editRecord route)}}>
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button class="btn-del-field btn-hover-shine btn btn-sm btn-danger" type="button" {{on 'click' (fn this.delVoice route)}}>
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+
+              {{/if}}
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <table class="mb-3 col-md-12">
+          <tbody>
+            <tr>
+              <td class="align-top"><label>Rotta</label></td>
+              <td class="align-top"><label>Titolo della pagina</label></td>
+              <td class="align-top"><label>Chiave di traduzione del titolo</label></td>
+              <td class="align-top"><label>Descrizione della pagina</label></td>
+              <td class="align-top"><label>Chiave di traduzione della descrizione</label></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{this.newRecord.route}} {{on 'input' (fn this.storeNewValue 'route' false)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{this.newRecord.title}} {{on 'input' (fn this.storeNewValue 'title' false)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{this.newRecord.key}} {{on 'input' (fn this.storeNewValue 'key' false)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{this.newRecord.description}} {{on 'input' (fn this.storeNewValue 'description' false)}}>
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" value={{this.newRecord.keyDescription}} {{on 'input' (fn this.storeNewValue 'keyDescription' false)}}>
+              </td>
+              <td class="text-right" style="width: 110px; vertical-align: bottom;">
+                <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
+                  <i class="fa mr-2 {{if this.saveNewVoice.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                  AGGIUNGI
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+{{/if}}
+{{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+{{/if}}
+{{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+{{/if}}
+</div>
+{{yield}}

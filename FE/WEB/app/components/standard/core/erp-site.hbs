@@ -1,0 +1,204 @@
+<div class="erp-site">
+  {{!-- WAITING --}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{/if}}
+
+  {{!-- UNACTIVE --}}
+  {{#if (eq this.serviceAvailable 'unactive')}}
+  <Standard::LoadingSpinner @icon="" @style="3" class="alert-warning">
+    Il modulo ERP non é attivo. <a href="#" class="ml-2" {{on 'click' (perform this.start)}}>Riprova.</a>
+  </Standard::LoadingSpinner>
+  {{/if}}
+
+  {{!-- UNAVAILABLE --}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+    Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' (perform this.start)}}>Riprova.</a>
+  </Standard::LoadingSpinner>
+  {{/if}}
+
+  {{!-- AVAILABLE --}}
+  {{#if (eq this.serviceAvailable 'available')}}
+    {{#if (eq this.window 'list')}}
+      <div class="card mb-3">
+        <div class="card-header">
+          ELENCO SEDI
+          <div class="btn-actions-pane-right actions-icon-btn">
+            {{#if (has-permissions 'ErpSite.create')}}
+              <button {{on 'click' (fn this.switchWindow 'insert')}} class="btn btn-sm btn-icon btn-primary btn-hover-shine mr-2" type="button">
+                CREA NUOVA SEDE
+              </button>
+            {{/if}}
+            <button {{on 'click' (perform this.start)}} class="btn btn-sm btn-icon {{if this.start.isRunning 'btn-warning' 'btn-light'}} btn-hover-shine" type="button">
+              <i class="fa fa-refresh {{if this.start.isRunning 'fa-spinner'}}"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <div class="alert alert-danger fade show" role="alert">This is a danger alert — check it out!</div>
+            </div>
+          </div>
+          {{#if (eq (length this.sites) 0)}}
+            <p>
+              <em>Non hai definito alcuna sede!</em>
+            </p>
+          {{else}}
+            <ul class="list-group">
+              {{#each this.sites as | site |}}
+                <li class="list-group-item">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                      <div class="widget-content-left">
+                        <div class="widget-heading">
+                          {{site.name}}
+                        </div>
+                        <div class="widget-subheading">
+                          <div>
+                            <span class="mr-2">{{site.city}} | {{site.province}}</span>
+                            {{#if site.registeredOffice}}
+                              <div class="badge badge-pill badge-primary mr-2">SEDE LEGALE</div>
+                            {{/if}}
+                            {{#if site.registeredOffice}}
+                              <div class="badge badge-pill badge-info mr-2">SEDE AMMINISTRATIVA</div>
+                            {{/if}}
+                            {{#if site.operationalHeadquarters}}
+                              <div class="badge badge-pill badge-secondary mr-2">SEDE OPERATIVA</div>
+                            {{/if}}
+                          </div>
+                        </div>
+                        <div class="widget-subheading">
+                          <small class="text-secondary">
+                            <i class="fa fa-phone"></i>
+                            <span class="pl-1">{{site.phone}}</span>
+                          </small>
+                        </div>
+                      </div>
+                      <div class="widget-content-right">
+                        <div role="group" class="btn-group-sm btn-group">
+                          {{!-- edit --}}
+                          {{#if (has-permissions 'ErpSite.update')}}
+                            <button {{on 'click' (fn this.edit site)}} type="button" class="btn btn-warning btn-shadow btn-hover-shine btn-icon">
+                              <i class="fa fa-edit"></i>
+                            </button>
+                          {{/if}}
+                          {{!-- delete --}}
+                          {{#if (has-permissions 'ErpSite.delete')}}
+                            <button {{on 'click' (fn this.deleteSite site)}} type="button" class="btn btn-danger btn-shadow btn-hover-shine btn-icon">
+                              <i class="fa {{if this.deleteConfirmed.isRunning 'fa-spinner fa-spin' 'fa-trash'}}"></i>
+                            </button>
+                          {{/if}}
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </li>
+            {{/each}}
+            </ul>
+          {{/if}}
+
+        </div>
+      </div>
+    {{else if (or (eq this.window 'insert') (eq this.window 'update'))}}
+      <div class="card mb-3">
+        <div class="card-header">
+          {{#if this.newRecord.id}}
+            MODIFICA SEDE
+          {{else}}
+            CREA NUOVA SEDE
+          {{/if}}
+          <div class="btn-actions-pane-right actions-icon-btn">
+            <button {{on 'click' (fn this.switchWindow 'list')}} class="btn btn-sm btn-icon btn-secondary btn-hover-shine" type="button">
+              ANNULLA
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <form class="">
+            <div class="position-relative form-group mb-3">
+              <label>Nome*</label>
+              {{!-- template-lint-disable require-input-label --}}
+              <input type="text" class="form-control" {{on 'input' (fn this.changeValue 'name')}} value={{this.newRecord.name}}>
+            </div>
+            <div class="form-row mb-3">
+              <div class="col-12 col-md-5">
+                <div class="position-relative form-group">
+                  <label>Città</label>
+                  <input type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'city')}} value={{this.newRecord.city}}>
+                </div>
+              </div>
+              <div class="col-12 col-md-5">
+                <div class="position-relative form-group">
+                  <label>Provincia</label>
+                  <input type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'province')}} value={{this.newRecord.province}}>
+                </div>
+              </div>
+              <div class="col-12 col-md-2">
+                <div class="position-relative form-group">
+                  <label>C.A.P.</label>
+                  <input type="text" maxlength="5" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'zip')}} value={{this.newRecord.zip}}>
+                </div>
+              </div>
+              <div class="col-12 col-md-10">
+                <div class="position-relative form-group">
+                  <label>Indirizzo</label>
+                  <input type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'address')}} value={{this.newRecord.address}}>
+                </div>
+              </div>
+              <div class="col-12 col-md-2">
+                <div class="position-relative form-group">
+                  <label>N°</label>
+                  <input type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'addressNumber')}} value={{this.newRecord.addressNumber}}>
+                </div>
+              </div>
+              <div class="col-2 col-md-2">
+                <div class="position-relative form-group">
+                  <label>Stato <span class="text-secondary">(es: IT)</span></label>
+                  <input type="text" maxlength="2" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'state')}} value={{this.newRecord.state}}>
+                </div>
+              </div>
+              <div class="col-10 col-md-10">
+                <div class="position-relative form-group">
+                  <label>Telefono</label>
+                  {{!-- template-lint-disable require-input-label --}}
+                  <input type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'phone')}} value={{this.newRecord.phone}}>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-12 col-md-4 text-center">
+                <button {{on 'click' (fn this.changeValue 'administrativeHeadquarters')}} class="btn btn-sm btn-pill btn-block  {{if this.newRecord.administrativeHeadquarters 'btn-primary' 'btn-light'}}" type="button">
+                  SEDE LEGALE
+                </button>
+              </div>
+              <div class="col-12 col-md-4 text-center">
+                <button {{on 'click' (fn this.changeValue 'registeredOffice')}} class="btn btn-sm btn-pill btn-block {{if this.newRecord.registeredOffice 'btn-info' 'btn-light'}}" type="button">
+                  SEDE AMMINISTRATIVA
+                </button>
+              </div>
+              <div class="col-12 col-md-4 text-center">
+                <button {{on 'click' (fn this.changeValue 'operationalHeadquarters')}} class="btn btn-sm btn-pill btn-block {{if this.newRecord.operationalHeadquarters 'btn-secondary' 'btn-light'}}" type="button">
+                  SEDE OPERATIVA
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer d-flex justify-content-center gap-2">
+          <button {{on 'click' this.save}} class="btn btn-hover-shine btn-success btn-wide" type="button">
+            <i class="fa {{if this.saveConfirmed.isRunning 'fa-spinner fa-spin' 'fa-save'}} mr-2"></i>
+            SALVA
+          </button>
+        </div>
+      </div>
+    {{/if}}
+
+  {{/if}}
+
+
+</div>
+{{yield}}

@@ -1,0 +1,139 @@
+<div class="permissions-master" ...attributes>
+  {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+    {{!-- WAITING --}}
+    {{#if (eq this.serviceAvailable 'waiting')}}
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+    {{/if}}
+
+    {{!-- UNAVAILABLE --}}
+    {{#if (eq this.serviceAvailable 'unavailable')}}
+      <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+        {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+      </Standard::LoadingSpinner>
+    {{/if}}
+
+    {{!-- AVAILABLE --}}
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div class="card mb-3 bg-transparent">
+        <div class="card-header bg-transparent row border-0">
+
+
+          <div class="col-md-6">
+          {{#if (eq this.tenantSelected '')}}
+            <i class="header-icon lnr-question-circle text-danger"></i>
+            {{!-- template-lint-disable no-inline-styles --}}
+            <span class=" text-danger" style="text-transform: none;">Seleziona l'azienda...</span>
+          {{/if}}
+          </div>
+          <div class="col-md-6">
+            <div class="btn-toolbar" role="toolbar">
+              <div class="input-group tenantSelect">
+                <div class="input-group-prepend">
+                  <button class="btn btn-sm btn-{{if (eq this.tenantSelected '') 'danger' 'success'}}" type="button" {{on 'click' (perform this.findRecords)}}>
+                    <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin' ''}} mr-2"></i>
+                    AZIENDA
+                  </button>
+                </div>
+                <div>
+                  <Standard::SelectTwo @addEmptyOption="" @options={{this.selectTenantList}} @changeCB={{this.updateTenant}}/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div>
+        {{!-- #region TAB DI NAVIGAZIONE --}}
+        <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link active" data-toggle="tab" href="#tab-rolePerms-0" id="permissions-master-link-0">
+              {{!-- template-lint-disable require-presentational-children --}}
+              <Standard::TR @key="template.rolePermissions.tenants" @default="TENANT"/>
+            </a>
+          </li>
+          {{#if (not-eq this.tenantSelected '')}}
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-rolePerms-5">
+              <Standard::TR @key="template.rolePermissions.roles" @default="RUOLI"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-rolePerms-15">
+              {{!-- template-lint-disable require-presentational-children --}}
+              <Standard::TR @key="template.rolePermissions.rolesPermissionsMapping" @default="ASSOCIAZIONI R&divide;P"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-rolePerms-20">
+              {{!-- template-lint-disable require-presentational-children --}}
+              <Standard::TR @key="template.rolePermissions.crud" @default="PERMESSI CRUD"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-rolePerms-25">
+              {{!-- template-lint-disable require-presentational-children --}}
+              <Standard::TR @key="template.rolePermissions.routes" @default="ROTTE"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-rolePerms-30">
+              {{!-- template-lint-disable require-presentational-children --}}
+              <Standard::TR @key="template.rolePermissions.userRoles" @default="RUOLI UTENTI"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            {{!-- template-lint-disable require-context-role --}}
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-rolePerms-35">
+              {{!-- template-lint-disable require-presentational-children --}}
+              <Standard::TR @key="template.rolePermissions.tenantsUsersMapping" @default="ASSOCIAZIONI T&divide;U"/>
+            </a>
+          </li>
+          {{/if}}
+        </ul>
+        {{!-- #endregion --}}
+
+        <div class="card mb-3">
+          {{!-- #region AREA DEI CONTENUTI --}}
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-rolePerms-0" role="tabpanel">
+              <Standard::Core::TenantCrud @reloadMaster={{this.findRecords}}/>
+            </div>
+            {{#if (not-eq this.tenantSelected '')}}
+            <div class="tab-pane" id="tab-rolePerms-5" role="tabpanel">
+              <Standard::Core::RolesCrud @currentTenant={{this.tenantSelected}} @updateRole={{this.updateRole}}/>
+            </div>
+            <div class="tab-pane" id="tab-rolePerms-15" role="tabpanel">
+              <Standard::Core::RolesPermissionsCrud @currentTenant={{this.tenantSelected}} @lastUpdateRoles={{this.lastUpdateRoles}}/>
+            </div>
+            <div class="tab-pane" id="tab-rolePerms-20" role="tabpanel">
+              <Standard::Core::CrudPermissions @currentTenant={{this.tenantSelected}} @lastUpdateRoles={{this.lastUpdateRoles}}/>
+            </div>
+            <div class="tab-pane" id="tab-rolePerms-25" role="tabpanel">
+              <Standard::Core::RoutePermissionsCrud @currentTenant={{this.tenantSelected}} @lastUpdateRoles={{this.lastUpdateRoles}}/>
+            </div>
+            <div class="tab-pane" id="tab-rolePerms-30" role="tabpanel">
+              <Standard::Core::UserRolesCrud @currentTenant={{this.tenantSelected}} @lastUpdateRoles={{this.lastUpdateRoles}}/>
+            </div>
+            <div class="tab-pane" id="tab-rolePerms-35" role="tabpanel">
+              <Standard::Core::TenantUserCrud @currentTenant={{this.tenantSelected}} @updateRole={{this.updateRole}}/>
+            </div>
+            {{/if}}
+          </div>
+          {{!-- #endregion --}}
+
+        </div>
+      </div>
+
+    {{/if}}
+
+  {{/if}}
+</div>
+{{yield}}

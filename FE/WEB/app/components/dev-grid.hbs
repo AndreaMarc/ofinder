@@ -1,0 +1,10 @@
+<div {{did-insert this.start}} {{did-update this.change @filterState @filterCategories @filterAttributes}} class="row p-4" ...attributes>
+  {{!-- eventuali errori --}}
+  <div class="dev-grid-error col-md-12 mb-2 text-danger">{{this.error}}</div>
+  {{!-- sunto dei parametri di ricerca --}}
+  {{!-- template-lint-disable no-triple-curlies --}}
+  <div class="col-md-12 filterSummary">{{{this.summaryCategories}}}{{{this.summaryTypes}}}{{{this.summaryState}}}</div>
+  {{!-- div in cui iniettare la tabella --}}
+  <div id={{this.id}} class="col-md-12"></div>
+</div>
+{{!-- yield  --}}

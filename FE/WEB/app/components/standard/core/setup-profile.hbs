@@ -1,0 +1,706 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div ...attributes>
+    <form>
+      <div class="alert alert-secondary fade show" role="alert">
+          Indica quali campi del profilo utente sono attivi nella pagina di registrazione (se prevista) e nella pagina di
+          amministrazione del profilo utente.
+      </div>
+      <div class="row underline">
+        <div class="col-md-4 p-3"></div>
+        <div class="col-md-4 p-3">
+          <b>REGISTRAZIONE</b>
+        </div>
+        <div class="col-md-4 p-3">
+          <b>PROFILO UTENTE</b>
+        </div>
+      </div>
+
+      {{!-- nome --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Nome</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select disabled class="form-control col-md-8">
+                <option value="0">No</option>
+                <option value="2" selected>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select disabled class="form-control col-md-8">
+                <option value="0">No</option>
+                <option value="2" selected>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- cognome --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Cognome</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select disabled class="form-control col-md-8">
+                <option value="0">No</option>
+                <option value="2" selected>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select disabled class="form-control col-md-8">
+                <option value="0">No</option>
+                <option value="2" selected>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- email --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>E-mail</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select disabled class="form-control col-md-8">
+                <option value="0">No</option>
+                <option value="2" selected>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select disabled class="form-control col-md-8">
+                <option value="0">No</option>
+                <option value="2" selected>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- email di contatto --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Email di contatto</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select disabled class="form-control col-md-8">
+                <option value="0" selected>No</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'contactEmail' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.contactEmail) (eq this.registrationFields.profile.contactEmail "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.contactEmail "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.contactEmail "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- nickname --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Nick-name</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'nickName' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.nickName) (eq this.registrationFields.registration.nickName "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.nickName "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.nickName "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'nickName' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.nickName) (eq this.registrationFields.profile.nickName "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.nickName "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.nickName "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- sesso --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Sesso</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'sex' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.sex) (eq this.registrationFields.registration.sex "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.sex "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.sex "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'sex' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.sex) (eq this.registrationFields.profile.sex "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.sex "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.sex "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- codice fiscale --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Codice Fiscale</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'taxId' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.taxId) (eq this.registrationFields.registration.taxId "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.taxId "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.taxId "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'taxId' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.taxId) (eq this.registrationFields.profile.taxId "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.taxId "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.taxId "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- telefono fisso --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Telefono fisso</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'fixedPhone' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.fixedPhone) (eq this.registrationFields.registration.fixedPhone "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.fixedPhone "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.fixedPhone "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'fixedPhone' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.fixedPhone) (eq this.registrationFields.profile.fixedPhone "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.fixedPhone "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.fixedPhone "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- telefono cellulare --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Telefono cellulare</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'mobilePhone' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.mobilePhone) (eq this.registrationFields.registration.mobilePhone "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.mobilePhone "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.mobilePhone "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'mobilePhone' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.mobilePhone) (eq this.registrationFields.profile.mobilePhone "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.mobilePhone "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.mobilePhone "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- data di nascita --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Data di nascita</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthDate' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.birthDate) (eq this.registrationFields.registration.birthDate "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.birthDate "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.birthDate "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthDate' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.birthDate) (eq this.registrationFields.profile.birthDate "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.birthDate "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.birthDate "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- città di nascita --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Città di nascita</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthCity' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.birthCity) (eq this.registrationFields.registration.birthCity "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.birthCity "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.birthCity "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthCity' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.birthCity) (eq this.registrationFields.profile.birthCity "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.birthCity "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.birthCity "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- provincia di nascita --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Provincia di nascita</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthProvince' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.birthProvince) (eq this.registrationFields.registration.birthProvince "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.birthProvince "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.birthProvince "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthProvince' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.birthProvince) (eq this.registrationFields.profile.birthProvince "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.birthProvince "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.birthProvince "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- cap di nascita --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>CAP di nascita</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthZIP' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.birthZIP) (eq this.registrationFields.registration.birthZIP "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.birthZIP "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.birthZIP "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthZIP' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.birthZIP) (eq this.registrationFields.profile.birthZIP "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.birthZIP "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.birthZIP "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- stato di nascita --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Stato di nascita</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthState' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.birthState) (eq this.registrationFields.registration.birthState "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.birthState "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.birthState "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'birthState' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.birthState) (eq this.registrationFields.profile.birthState "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.birthState "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.birthState "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- città di residenza --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Città di residenza</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceCity' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.residenceCity) (eq this.registrationFields.registration.residenceCity "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.residenceCity "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.residenceCity "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceCity' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.residenceCity) (eq this.registrationFields.profile.residenceCity "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.residenceCity "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.residenceCity "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- provincia di residenza --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Provincia di residenza</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceProvince' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.residenceProvince) (eq this.registrationFields.registration.residenceProvince "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.residenceProvince "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.residenceProvince "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceProvince' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.residenceProvince) (eq this.registrationFields.profile.residenceProvince "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.residenceProvince "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.residenceProvince "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- cap di residenza --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>CAP di residenza</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceZIP' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.residenceZIP) (eq this.registrationFields.registration.residenceZIP "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.residenceZIP "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.residenceZIP "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceZIP' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.residenceZIP) (eq this.registrationFields.profile.residenceZIP "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.residenceZIP "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.residenceZIP "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- stato di residenza --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Stato di residenza</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceState' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.residenceState) (eq this.registrationFields.registration.residenceState "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.residenceState "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.residenceState "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceState' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.residenceState) (eq this.registrationFields.profile.residenceState "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.residenceState "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.residenceState "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- indirizzo di residenza --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Indirizzo di residenza</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceAddress' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.residenceAddress) (eq this.registrationFields.registration.residenceAddress "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.residenceAddress "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.residenceAddress "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceAddress' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.residenceAddress) (eq this.registrationFields.profile.residenceAddress "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.residenceAddress "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.residenceAddress "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- numero civico di residenza --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>N° civico di residenza</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceHouseNumber' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.residenceHouseNumber) (eq this.registrationFields.registration.residenceHouseNumber "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.residenceHouseNumber "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.residenceHouseNumber "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'residenceHouseNumber' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.residenceHouseNumber) (eq this.registrationFields.profile.residenceHouseNumber "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.residenceHouseNumber "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.residenceHouseNumber "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- professione --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Professione</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'occupation' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.occupation) (eq this.registrationFields.registration.occupation "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.occupation "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.occupation "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'occupation' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.occupation) (eq this.registrationFields.profile.occupation "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.occupation "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.occupation "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- descrizione --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Descrizione</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'description' true)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.registration.description) (eq this.registrationFields.registration.description "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.registration.description "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.registration.description "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+        <div class="col-md-4 p-3 left-border">
+            <select class="form-control col-md-8" {{on 'change' (fn this.changeValue 'description' false)}}>
+                <option value="0" selected={{if (or (not this.registrationFields.profile.description) (eq this.registrationFields.profile.description "0")) "selected"}}>No</option>
+                <option value="1" selected={{if (eq this.registrationFields.profile.description "1") "selected"}}>Sì, facoltativo</option>
+                <option value="2" selected={{if (eq this.registrationFields.profile.description "2") "selected"}}>Sì, obbligatorio</option>
+            </select>
+        </div>
+      </div>
+
+      {{!-- CAMPI CUSTOM --}}
+      {{!-- profileFreeFieldString1 --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 1 - stringa</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldString1' 'field' 0 'string')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldString1.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldString1.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldString1.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldString1.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldString1' 'field' 1 'string')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldString1.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldString1.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldString1.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldString1.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldString1.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldString1' 'label' 2 'string')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- profileFreeFieldString2 --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 2 - stringa</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldString2' 'field' 0 'string')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldString2.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldString2.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldString2.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldString2.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldString2' 'field' 1 'string')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldString2.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldString2.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldString2.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldString2.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldString2.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldString2' 'label' 2 'string')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- profileFreeFieldString3 --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 3 - stringa</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldString3' 'field' 0 'string')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldString3.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldString3.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldString3.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldString3.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldString3' 'field' 1 'string')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldString3.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldString3.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldString3.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldString3.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldString3.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldString3' 'label' 2 'string')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- profileFreeFieldDateTime --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 4 - data</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldDateTime' 'field' 0 'date')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldDateTime.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldDateTime.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldDateTime.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldDateTime.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldDateTime' 'field' 1 'date')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldDateTime.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldDateTime.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldDateTime.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldDateTime.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldDateTime.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldDateTime' 'label' 2 'date')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- profileFreeFieldInt1 --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 5 - intero</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldInt1' 'field' 0 'number')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldInt1.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldInt1.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldInt1.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldInt1.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldInt1' 'field' 1 'number')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldInt1.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldInt1.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldInt1.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldInt1.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldInt1.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldInt1' 'label' 2 'number')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- profileFreeFieldInt2 --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 6 - intero</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldInt2' 'field' 0 'number')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldInt2.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldInt2.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldInt2.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldInt2.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldInt2' 'field' 1 'number')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldInt2.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldInt2.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldInt2.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldInt2.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldInt2.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldInt2' 'label' 2 'number')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- profileFreeFieldBoolean --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Campo Custom 7 - booleano</label>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="row m-0">
+            <div class="col-md-6 p-3 underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldBoolean' 'field' 0 'checkbox')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.registration.profileFreeFieldBoolean.field) 'undefined') (eq this.registrationFields.registration.profileFreeFieldBoolean.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.registration.profileFreeFieldBoolean.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.registration.profileFreeFieldBoolean.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-6 p-3 left-border underline">
+                <select class="form-control col-md-8" {{on 'change' (fn this.changeCustom 'profileFreeFieldBoolean' 'field' 1 'checkbox')}}>
+                    <option value="0" selected={{if (or (eq (typeof this.registrationFields.profile.profileFreeFieldBoolean.field) 'undefined') (eq this.registrationFields.profile.profileFreeFieldBoolean.field "0")) "selected"}}>No</option>
+                    <option value="1" selected={{if (eq this.registrationFields.profile.profileFreeFieldBoolean.field "1") "selected"}}>Sì, facoltativo</option>
+                    <option value="2" selected={{if (eq this.registrationFields.profile.profileFreeFieldBoolean.field "2") "selected"}}>Sì, obbligatorio</option>
+                </select>
+            </div>
+            <div class="col-md-12 p-3">
+              <label>Label</label>
+              <input type="text" class="form-control form-control-sm" value={{this.registrationFields.profile.profileFreeFieldBoolean.label}} {{on 'change' (fn this.changeCustom 'profileFreeFieldBoolean' 'label' 2 'checkbox')}}>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="pt-5 text-right">
+      <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" {{on "click" (perform this.save)}} type="submit">
+        <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+        SALVA
+      </button>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+</div>
+{{yield}}

@@ -1,0 +1,21 @@
+<div class="app-header-right">
+    {{!-- PULSANTI LAMPEGGIANTI (notifiche, shopping, cambio lingua....) --}}
+    <div class="header-dots">
+        <Standard::Core::IncompleteConfiguration/>
+        <Standard::Core::MessagesNotifications/>
+        <Standard::Core::ChooseLanguage @position="header"/>
+    </div>
+
+    <div class="header-btn-lg pr-0">
+        <Standard::Core::HeaderUserMenu/>
+    </div>
+    {{#if (has-permissions 'canSeeRightBar')}}
+    <div class="header-btn-lg">
+        <button type="button" class="hamburger hamburger--elastic open-right-drawer">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+    </div>
+    {{/if}}
+</div>

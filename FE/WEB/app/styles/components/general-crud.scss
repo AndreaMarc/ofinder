@@ -1,0 +1,118 @@
+.general-crud {
+  textarea {
+    max-height: 15em;
+  }
+
+  .container-div {
+    width: 100%;           // Imposta la larghezza al 100% del contenitore parent
+    max-width: 100%;       // Assicurati che non vada oltre il suo contenitore
+    overflow-x: auto;      // Attiva lo scroll orizzontale se necessario
+    white-space: nowrap;   // Impedisce di andare a capo
+    display: grid;
+
+    .content-div {
+      display: inline-block;  // Questo farà sì che il div prenda solo la larghezza del suo contenuto
+      overflow-y: auto;
+      max-height: calc(100vh - 260px); /* 100px rappresenta un valore approssimativo dell'header e di eventuali altri elementi. A seconda dei tuoi contenuti, potresti dover regolare questo valore */
+    }
+  }
+  .crud-table {
+    /*table-layout: fixed;*/
+    width: unset;
+    border-collapse: collapse;
+
+    thead {
+      display: table-header-group;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+
+      tr {
+        border-bottom: 1px solid #dee2e6;
+  
+        th:not(:first-of-type) {
+          border-left: 1px solid #d4d3d3;
+        }
+  
+        th {
+          font-size: 90%;
+          font-weight: 500;
+          background-color: #ffffff;
+          position: relative;
+      
+          small {
+            font-weight: 200;
+          }
+        }
+
+        th.resizable {
+          padding-right: 10px;
+        }
+        th.resizable:after {
+          content: "";
+          position: absolute;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          width: 8px;
+          cursor: ew-resize;
+          z-index: 1;
+        }
+
+        th.px-280 {
+          min-width: 282px;
+          width: 282px;
+        }
+        th.px-190 {
+          min-width: 190px;
+          width: 190px;
+        }
+        th.px-150 {
+          min-width: 150px;
+          width: 150px;
+        }
+        th.px-100 {
+          min-width: 100px;
+          width: 100px;
+        }
+        th.px-80 {
+          min-width: 80px;
+          width: 80px;
+        }
+        th.px-50 {
+          min-width: 50px;
+          width: 50px;
+        }        
+      }
+    }
+    tbody {
+      display: table-row-group;
+      
+      tr {
+        td:not(:first-of-type) {
+          border-left: 1px solid #e8e8e8;
+        }
+
+        td {
+          position: relative;
+        }
+
+        td:first-of-type {
+          font-size: 65%;
+        }
+      }
+
+      tr.new {
+        background-color: #e8eef5;
+        border-bottom: 3px solid #8b8f92;
+      }
+      tr.search {
+        background-color: #e8f5f1;
+      }
+      tr.selected {
+        background-color: #fefacb;
+      }
+    }
+  }
+
+}

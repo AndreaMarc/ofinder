@@ -1,0 +1,123 @@
+<div ...attributes {{did-update this.start @currentTenant}}>
+  {{!-- WAITING --}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+    <Standard::LoadingSpinner @icon="true" @msg="Caricamento associazioni in corso, attendere prego..." @style="3" class="alert-info" />
+  {{/if}}
+
+  {{!-- UNAVAILABLE --}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+      {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+    </Standard::LoadingSpinner>
+  {{/if}}
+
+  {{!-- AVAILABLE --}}
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div class="card-header text-success">
+    <i class="header-icon lnr-license"></i> ASSOCIAZIONI TENANT &divide; UTENTI
+  </div>
+
+  <div class="card-body underline p-1">
+    <div class="row m-0">
+      <div class="col-md-12 p-3">
+        <div class="alert alert-warning fade show mb-4" role="alert">
+          In questa sezione puoi associare gli Utenti ai Tenant.<br />
+          La procedura canonica prevede che sia l'utente ad autorizzare la condivisione al Tenant dei propri dati.<br />
+          Pertanto le funzionalità presenti in questa pagina sono da intendersi <strong>per soli fini di sviluppo/test</strong> ed
+          andrebbero utilizzate con i soli utenti di test.
+        </div>
+      </div>
+    </div>
+
+    {{#if this.findRecords.isRunning}}
+    <Standard::LoadingSpinner @icon='1' @msg="Caricamento associazioni in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+    {{/if}}
+    {{#if this.findRecords.isIdle}}
+      {{#if (eq this.recordsLength 0)}}
+        <p class="m-3"><em>Non ci sono associazioni da mostrare</em></p>
+      {{else}}
+        {{!-- #region elenco record --}}
+        {{!-- campo di ricerca  --}}
+        <div class="input-group mr-2 pr-0 pt-2 col-md-4 float-right">
+          <input type="text" placeholder="..." class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+          <div class="input-group-append">
+            <button class="btn btn-secondary btn-sm" disabled type="button">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+          <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' (perform this.findRecords)}}>
+            <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+          </button>
+        </div>
+
+        <table class="mae-table mb-3">
+          <thead>
+            <tr>
+              <th>COGNOME</th>
+              <th>NOME</th>
+              <th>EMAIL</th>
+              <th style="width: 52px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+          {{#each this.filteredRecords as |record|}}
+            <tr>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value="{{record.lastName}}">
+              </td>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value="{{record.firstName}}">
+              </td>
+              <td>
+                <input type="text" disabled class="form-control form-control-sm" value="{{record.email}}">
+              </td>
+              <td class="left-border text-right">
+                <button class="btn-del-field btn-hover-shine btn btn-sm btn-danger" type="button" {{on 'click' (fn this.delVoice record)}}>
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+        {{!-- #endregion --}}
+      {{/if}}
+    {{/if}}
+  </div>
+
+  {{!-- #region Aggiungi Record  --}}
+  <div class="card-body">
+    <p class="text-success text-bold">
+      <i class="header-icon ion-android-add"> </i> CREA ASSOCIAZIONE
+    </p>
+    <table class="mae-table mb-3">
+      <thead>
+        <tr>
+          <th>UTENTE</th>
+          <th style="width: 320px;">TENANT</th>
+          <th style="width: 91px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <Standard::SelectTwo @addEmptyOption="1" @options={{this.freeUsers}} @changeCB={{this.storeNewValue}}/>
+          </td>
+          <td>
+            <input type="text" disabled value={{this.currentTenant.name}} class="form-control form-control-sm">
+          </td>
+          <td>
+            <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' this.saveNewVoice}}>
+              <i class="fa fa-save mr-2 {{if this.saveNewVoiceConfirmed.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+              SALVA
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {{!-- #endregion --}}
+  {{/if}}
+</div>
+
+{{yield}}

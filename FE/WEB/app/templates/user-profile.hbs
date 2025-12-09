@@ -1,0 +1,9 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Profilo personale" @titleKey="template.userProfile.title" @description="Gestisci i tuoi dati personali" @descriptionKey="template.userProfile.subTitle" @icon="pe-7s-user">
+  <LinkTo @route="change-password" class="mb-2 me-2 btn-hover-shine btn btn-light">
+    <i class="pe-7s-key mr-2"></i>
+    Cambio password
+  </LinkTo>
+</ArchitectUi::AppMain::AppPageTitle>
+
+<Standard::Core::UserProfile/>
+{{outlet}}

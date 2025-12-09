@@ -1,0 +1,146 @@
+<div class="send-communications" {{did-update (perform this.start) @users}} ...attributes>
+  {{#if (eq this.available 'waiting')}}
+    {{!-- WAITING --}}
+    <div class="col-md-12">
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info mb-0" />
+    </div>
+  {{else if (eq this.available 'unavailable')}}
+    <div class="col-md-12">
+      <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger mb-0">
+        <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+        <a href="#" class="alert-link" {{on 'click' (perform this.start)}}>Riprova</a>.
+      </Standard::LoadingSpinner>
+    </div>
+  {{else}}
+    <div class="card">
+      <div class="card-header">Compila i dati della comunicazione</div>
+      <div class="card-body p-3">
+
+        <form class="">
+          <div class="form-row underline">
+            <div class="col-md-4 p-3">
+              <div class="position-relative form-group">
+                <label>Destinatario</label>
+              </div>
+            </div>
+            <div class="col-md-8 p-3">
+              <div class="position-relative form-group">
+                {{#if (gt (length this.users) 0)}}
+                  <Standard::SelectTwo @addEmptyOption="1" @options={{this.usersText}} @changeCB={{this.changeUser}}/>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row underline">
+            <div class="col-md-3 p-3">
+              <div class="position-relative form-group">
+                <label>Tipo di comunicazione</label>
+                <select class="form-control" {{on 'change' this.changeNotificationType}}>
+                  <option value="1" selected>Notifica push</option>
+                  <option value="2">Email</option>
+                  <option value="0">Email + Notifica push</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-3 p-3 border-left">
+              {{#if this.newRecord.sendPushNotification}}
+                <div class="position-relative form-group">
+                  <label>Tipo di Notifica</label>
+                  <select class="form-control" {{on 'change' this.changeSilent}}>
+                    <option value="" selected>Standard</option>
+                    <option value="1">Silente</option>
+                  </select>
+                </div>
+              {{/if}}
+            </div>
+
+            <div class="col-md-3 p-3 border-left">
+              <div class="position-relative form-group">
+                <label>Inviare WebSocket</label>
+                <select class="form-control" {{on 'change' this.changeWebSocket}}>
+                  <option value="1" selected={{(eq this.newRecord.sendWebSocket true)}}>Sì</option>
+                  <option value="" selected={{(eq this.newRecord.sendWebSocket false)}}>No</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-3 p-3 border-left">
+              {{#if this.newRecord.sendWebSocket}}
+                <div class="position-relative form-group">
+                  <label>Inviare WebSocket all'App</label>
+                  <select class="form-control" {{on 'change' this.changeWebSocketApp}}>
+                    <option value="1" selected={{(eq this.newRecord.forceWebSocketApp true)}}>Sì</option>
+                    <option value="" selected={{(eq this.newRecord.forceWebSocketApp false)}}>No</option>
+                  </select>
+                </div>
+              {{/if}}
+            </div>
+          </div>
+
+          <div class="form-row underline">
+            <div class="col-md-6 p-3">
+              <div class="position-relative form-group">
+                <label>Oggetto</label>
+                <small class="form-text text-muted">Comune a Notifiche ed E-mail</small>
+                <input type="text" class="form-control" {{on 'input' (fn this.changeValue 'title')}}>
+              </div>
+            </div>
+
+            <div class="col-md-6 p-3 border-left">
+              <div class="position-relative form-group">
+                <label>Push-Type</label>
+                <small class="form-text text-muted">Identifica il tipo di call-back</small>
+                <input type="text" class="form-control" {{on 'input' (fn this.changeValue 'type')}}>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row underline">
+            <div class="col-md-4 p-3">
+              <div class="position-relative form-group">
+                <label>Messaggio</label>
+              </div>
+            </div>
+            <div class="col-md-8 p-3">
+              <div class="position-relative form-group">
+                <Standard::TextareaAutosize @rows="2" @size="sm" @autosize="fixed" @cb={{(fn this.changeValue 'body')}}/>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row underline">
+            <div class="col-md-4 p-3">
+              <div class="position-relative form-group">
+                <label>Dato <em>(facoltativo)</em></label>
+                <small class="form-text text-muted">Valevole per le sole notifiche</small>
+              </div>
+            </div>
+            <div class="col-md-8 p-3">
+              <div class="position-relative form-group">
+                <Standard::TextareaAutosize @rows="2" @size="sm" @autosize="fixed" @cb={{(fn this.changeValue 'data')}}/>
+                <small class="form-text text-muted">Esempio:<br />
+                  <em>- {"tenantId":1673, "tenantName": "SAFIM SRL", "projectName": "SAFIM - DELIVERY", "projectId": 14, "vpsNumber": 38722}</em>
+                  <br />
+                  <em>- {"tenantId":1673, "tenantName": "SAFIM SRL", "projectName": "SAFIM - DELIVERY", "projectId": 14}</em>
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row text-right">
+            <div class="col-12 p-3">
+              <button {{on 'click' this.send}} type="button" class="btn btn-sm btn-hover-shome btn-custom1">
+                <i class="fa fa-paper-plane mr-2"></i> INVIA
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+  {{/if}}
+</div>
+{{yield}}

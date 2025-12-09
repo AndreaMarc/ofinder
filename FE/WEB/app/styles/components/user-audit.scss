@@ -1,0 +1,20 @@
+.user-audit {
+  .user-audit-log {
+    margin-bottom: 0;
+  }
+
+  .log-details-cont{
+    display: none;
+    overflow-wrap: break-word;
+  }
+
+  .log-details-cont.active {
+    border: 1px solid #e3e3e3;
+    margin-top: 2em;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    background: #f1f4f6;
+    display: block;
+    overflow-wrap: break-word;
+  }
+}

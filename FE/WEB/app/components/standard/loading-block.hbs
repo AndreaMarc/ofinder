@@ -1,0 +1,22 @@
+<div class="loading-block">
+  <div class="overlay-wrapper {{if this.taskTracker.isBusy "visible" "hidden"}}">
+    <div class="blockUI blockOverlay full-screen"></div>
+
+    <div class="loading-block-cont">
+      <div class="loader bg-transparent no-shadow p-0">
+        <div class="ball-grid-pulse">
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+          <div class="bg-white"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{yield}}

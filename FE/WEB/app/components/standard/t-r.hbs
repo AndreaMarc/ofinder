@@ -1,0 +1,8 @@
+<span {{did-update this.start @key @default}} ...attributes>
+  {{#if this.editOnTheFly}}
+  <button class="change-translation mr-1 btn btn-danger btn-sm" type="button" {{on 'click' (fn this.changeText this.key)}}>
+    <i class="fa fa-pencil"></i><span class="badge bg-warning badge-dot badge-dot-sm"> </span>
+  </button>
+  {{/if}}
+  {{this.text}}{{yield}}
+</span>

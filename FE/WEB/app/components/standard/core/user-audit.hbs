@@ -1,0 +1,269 @@
+<div class="row user-audit">
+  <div class="col-md-12 col-sm-12">
+    <div class="main-card mb-3 card">
+      {{#if (eq this.available 'waiting')}}
+        <div class="alert alert-info fade show m-0" role="alert">
+            <i class="fa fa-spin fa-spinner"></i> Recupero dati in corso, attendere prego...
+        </div>
+      {{/if}}
+      {{#if (eq this.available 'unavailable')}}
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Errore nel recupero dei dati. <a href="#" {{on 'click' this.editRecord}}>Riprova!</a>
+        </div>
+      {{/if}}
+      {{#if (and (eq this.available 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isAudit')))}}
+        <div class="card-body">
+          {{!-- #region AREA RICERCA --}}
+          <div class="row mb-3">
+            {{!-- tenant --}}
+            <div class="col-md-4 col-sm-12">
+              <label class="mb-0">Azienda</label>
+              <select class="form-control form-control-sm" value={{this.tenantId}} {{on 'change' (fn this.changeFilter 'tenantId')}}>
+                {{#each this.tenants as | tenant |}}
+                  <option value="{{tenant.id}}">{{tenant.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+            {{!-- utente --}}
+            <div class="col-md-4 col-sm-12">
+              <label class="mb-0">Utente</label>
+              <select class="form-control form-control-sm" value={{this.userId}} {{on 'change' (fn this.changeFilter 'userId')}}>
+                <option value="">--</option>
+                {{#each this.users as | user |}}
+                  <option value="{{user.id}}">{{user.lastName}} {{user.firstName}} - {{user.email}}</option>
+                {{/each}}
+              </select>
+            </div>
+            {{!-- email --}}
+            <div class="col-md-4 col-sm-12">
+              <label class="mb-0">E-mail utente</label>
+              <input type="email" class="form-control form-control-sm" value={{this.userEmail}} {{on 'keyup' (fn this.changeFilter 'userEmail')}}>
+            </div>
+          </div>
+          <div class="row mb-3">
+            {{!-- url --}}
+            <div class="col-md-4 col-sm-12">
+              <label class="mb-0">Url</label>
+              <input type="text" class="form-control form-control-sm" {{on 'keyup' (fn this.changeFilter 'partialRoute')}}>
+            </div>
+            {{!-- data inizio --}}
+            <div class="col-md-3 col-sm-12">
+              <label class="mb-0">Data inizio</label>
+              <input type="datetime-local" class="form-control form-control-sm" {{on 'keyup' (fn this.changeFilter 'startDate')}} {{on 'change' (fn this.changeFilter 'startDate')}}>
+            </div>
+            {{!-- data fine --}}
+            <div class="col-md-3 col-sm-12">
+              <label class="mb-0">Data fine</label>
+              <input type="datetime-local" class="form-control form-control-sm" {{on 'keyup' (fn this.changeFilter 'endDate')}} {{on 'change' (fn this.changeFilter 'endDate')}}>
+            </div>
+            {{!-- metodo --}}
+            <div class="col-md-2 col-sm-12">
+              <label class="mb-0">Metodo</label>
+              <select class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'metod')}}>
+                <option value="">--</option>
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PATCH">PATCH</option>
+                <option value="UPDATE">UPDATE</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-5">
+            {{!-- numero elementi --}}
+            <div class="col-md-2 col-sm-12">
+              <label class="mb-0">Visualizza</label>
+              <select class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'pageSize')}}>
+                <option value="20">20 record</option>
+                <option value="50" selected>50 record</option>
+                <option value="100">100 record</option>
+                <option value="">Tutti i record</option>
+              </select>
+            </div>
+            {{!-- pulsante ricerca --}}
+            <div class="col-md-10 col-sm-12 text-right">
+              <br />
+              <button type="button" class="btn btn-sm btn-hover-shine btn-primary btn-wide" {{on 'click' (perform this.findResults)}}>
+                {{#if this.findResults.isRunning}}
+                  <i class="fa fa-spin fa-spinner mr-2"></i>
+                {{else if this.findResults.isIdle}}
+                  <i class="fa fa-search mr-2"></i>
+                {{/if}}
+                Cerca
+              </button>
+            </div>
+          </div>
+          {{!-- #endregion --}}
+          {{!-- #region Area ELENCO RISULTATI --}}
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12">
+                {{#if this.noResults}}
+                <p><em>Non ci sono risultati corrispondenti ai parametri di ricerca inseriti.</em></p>
+                {{else}}
+                <ul class="list-group">
+                  {{#if (gt this.numberRecords 0)}}
+                  <li class="list-group-item user-audit-log bg-light text-center">
+                    Stai visualizzando {{this.numberRecords}} risultati. Pagina {{this.currentPageNumber}} di {{this.pages}}
+
+                    {{!-- #region Paginazione --}}
+                    {{#if (gt this.pages 1)}}
+                    <div class="col-md-12 text-center pt-3">
+                      <nav class="d-inline-block" aria-label="Page navigation example">
+                        <ul class="pagination">
+                          {{#if (not-eq this.currentPageNumber 1)}}
+                          <li class="page-item">
+                            <a href="#" class="page-link" aria-label="Previous" {{on 'click' (fn this.changePageNumber 1)}}>
+                              <span aria-hidden="true">«</span>
+                              <span class="visually-hidden">Inizio</span>
+                            </a>
+                          </li>
+                          {{/if}}
+                          {{#if (not-eq this.currentPageNumber 1)}}
+                          <li class="page-item">
+                            <a href="#" class="page-link" aria-label="Previous" {{on 'click' (fn this.changePageNumber this.previousPageNumber)}}>
+                              <span aria-hidden="true">«</span>
+                              <span class="visually-hidden">Precedente</span>
+                            </a>
+                          </li>
+                          {{/if}}
+                          {{#each this.arrayPages as | page |}}
+                          <li class="page-item {{if (eq this.currentPageNumber page) 'active'}}">
+                            <a href="#" class="page-link" {{on 'click' (fn this.changePageNumber page)}}>{{page}}</a>
+                          </li>
+                          {{/each}}
+                          {{#if (not-eq this.currentPageNumber this.pages)}}
+                          <li class="page-item">
+                            <a disabled href="#" class="page-link" aria-label="Next" {{on 'click' (fn this.changePageNumber this.nextPageNumber)}}>
+                              <span class="visually-hidden">Successiva</span>
+                              <span aria-hidden="true">»</span>
+                            </a>
+                          </li>
+                          {{/if}}
+                          {{#if (not-eq this.currentPageNumber this.pages)}}
+                          <li class="page-item">
+                            <a disabled href="#" class="page-link" aria-label="Next" {{on 'click' (fn this.changePageNumber this.pages)}}>
+                              <span class="visually-hidden">Ultima</span>
+                              <span aria-hidden="true">»</span>
+                            </a>
+                          </li>
+                          {{/if}}
+                        </ul>
+                      </nav>
+                    </div>
+                    {{/if}}
+                    {{!-- #endregion --}}
+                  </li>
+                  {{/if}}
+
+
+
+                  {{#each this.results as | audit |}}
+                  <li class="list-group-item user-audit-log">
+                    <div class="widget-content p-0">
+                      <div class="widget-content-wrapper">
+                        <div class="widget-content-left mr-3">
+                          {{!-- data e ora --}}
+                          <div class="ms-auto badge bg-secondary text-white">
+                            <span class="d-block mb-2">{{convertdate audit.Date 'DD/MM/YYYY'}}</span>
+                            <span class="d-block">{{convertdate audit.Date 'HH:mm'}}</span>
+                          </div>
+                        </div>
+                        {{!-- utente, endpoint, metodo --}}
+                        <div class="widget-content-left">
+                            <div class="widget-heading">{{audit.User.Email}}</div>
+                            <div class="widget-subheading">
+                              {{#if (eq audit.RequestMethod 'GET')}}
+                              <div class="ms-auto badge bg-success text-white">
+                                <small>{{audit.RequestMethod}}</small>
+                              </div>
+                              {{else if (eq audit.RequestMethod 'POST')}}
+                              <div class="ms-auto badge bg-primary text-white">
+                                <small>{{audit.RequestMethod}}</small>
+                              </div>
+                              {{else if (eq audit.RequestMethod 'DELETE')}}
+                              <div class="ms-auto badge bg-danger text-white">
+                                <small>{{audit.RequestMethod}}</small>
+                              </div>
+                              {{else}}
+                              <div class="ms-auto badge bg-warning text-white">
+                                <small>{{audit.RequestMethod}}</small>
+                              </div>
+                              {{/if}}
+                              {{audit.Data}}
+                              <small class="ml-2">({{audit.auditType}})</small>
+                            </div>
+                        </div>
+                        {{!-- pulsanti visualizzazione dettagli --}}
+                        <div class="widget-content-right">
+                          <div role="group" class="btn-group-sm btn-group">
+                            <button type="button" class="btn-transition btn btn-sm btn-outline-secondary dropdown-toggle" {{on 'click' (fn this.showDetails audit 'headers')}}>Headers</button>
+                            <button type="button" class="btn-transition btn btn-sm btn-outline-secondary btn-square dropdown-toggle" {{on 'click' (fn this.showDetails audit 'payload')}}>Payload</button>
+                            <button type="button" class="btn-transition btn btn-sm btn-outline-secondary dropdown-toggle" {{on 'click' (fn this.showDetails audit 'parameters')}}>Parameters</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="log-details-cont animated fadeIn" data-id="{{audit.Id}}">{{this.details}}</div>
+                  </li>
+                  {{/each}}
+                </ul>
+                {{/if}}
+              </div>
+              {{!-- #region Paginazione --}}
+              {{#if (gt this.pages 1)}}
+              <div class="col-md-12 text-center pt-3">
+                <nav class="d-inline-block" aria-label="Page navigation example">
+                  <ul class="pagination">
+                    {{#if (not-eq this.currentPageNumber 1)}}
+                    <li class="page-item">
+                      <a href="#" class="page-link" aria-label="Previous" {{on 'click' (fn this.changePageNumber 1)}}>
+                        <span aria-hidden="true">«</span>
+                        <span class="visually-hidden">Inizio</span>
+                      </a>
+                    </li>
+                    {{/if}}
+                    {{#if (not-eq this.currentPageNumber 1)}}
+                    <li class="page-item">
+                      <a href="#" class="page-link" aria-label="Previous" {{on 'click' (fn this.changePageNumber this.previousPageNumber)}}>
+                        <span aria-hidden="true">«</span>
+                        <span class="visually-hidden">Precedente</span>
+                      </a>
+                    </li>
+                    {{/if}}
+                    {{#each this.arrayPages as | page |}}
+                    <li class="page-item {{if (eq this.currentPageNumber page) 'active'}}">
+                      <a href="#" class="page-link" {{on 'click' (fn this.changePageNumber page)}}>{{page}}</a>
+                    </li>
+                    {{/each}}
+                    {{#if (not-eq this.currentPageNumber this.pages)}}
+                    <li class="page-item">
+                      <a disabled href="#" class="page-link" aria-label="Next" {{on 'click' (fn this.changePageNumber this.nextPageNumber)}}>
+                        <span class="visually-hidden">Successiva</span>
+                        <span aria-hidden="true">»</span>
+                      </a>
+                    </li>
+                    {{/if}}
+                    {{#if (not-eq this.currentPageNumber this.pages)}}
+                    <li class="page-item">
+                      <a disabled href="#" class="page-link" aria-label="Next" {{on 'click' (fn this.changePageNumber this.pages)}}>
+                        <span class="visually-hidden">Ultima</span>
+                        <span aria-hidden="true">»</span>
+                      </a>
+                    </li>
+                    {{/if}}
+                  </ul>
+                </nav>
+              </div>
+              {{/if}}
+              {{!-- #endregion --}}
+            </div>
+          </div>
+          {{!-- #endregion --}}
+        </div>
+      {{/if}}
+    </div>
+  </div>
+</div>
+{{yield}}

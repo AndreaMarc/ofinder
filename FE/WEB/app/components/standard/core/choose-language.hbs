@@ -1,0 +1,81 @@
+<div class="choose-language" ...attributes>
+{{#if this.showComponent}}
+    {{#if this.unloggedArea}}
+        <div class="chose-languade-unlogged">
+
+            <div class="icon-wrapper {{if this.unloggedActive 'active'}}">
+                <div class="input-holder">
+                    {{!--<input type="text" class="search-input" placeholder="Type to search">--}}
+                    <button class="search-lang" type="button" {{on 'click' this.toggleUnloggedArea}}>
+                        <div {{on 'click' this.toggleUnloggedArea}}>
+                            <span class="language-icon opacity-8 flag large {{convertLangCode this.currentLang}} d-block" {{on 'click' this.toggleUnloggedArea}}></span>
+                        </div>
+                    </button>
+                    {{#if this.unloggedActive}}
+                        {{#each this.availableActiveLanguages as |lang|}}
+                            {{#if (not-eq lang.code this.currentLang)}}
+                            <button class="search-lang" type="button">
+                                <div {{on "click" (fn this.changeLang lang.code)}}>
+                                    <span class="language-icon opacity-8 flag large {{convertLangCode lang.code}} d-block m-auto"></span>
+                                </div>
+                            </button>
+                            {{/if}}
+                        {{/each}}
+                    {{/if}}
+                </div>
+                <button type="button" class="btn-close btn-icon btn-icon-only" aria-label="Close" {{on 'click' this.toggleUnloggedArea}}>
+                    <i class="lnr-cross"></i>
+                </button>
+            </div>            
+        </div>
+    {{else}}
+        <div class="dropdown"> 
+            {{#if this.headerArea}}
+            {{!-- header --}}
+            <button type="button" data-toggle="dropdown" class="p-0 mr-2 btn btn-link">
+                <span class="icon-wrapper icon-wrapper-alt rounded-circle">
+                    <span class="icon-wrapper-bg bg-focus"></span>
+                    <span class="language-icon opacity-8 flag large {{convertLangCode this.currentLang}}"></span>
+                </span>
+            </button>
+            {{/if}}
+            {{#if this.footerArea}}
+            {{!-- footer --}}
+            <a class="dot-btn-wrapper" aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
+                <i class="dot-btn-icon {{this.icon}}"></i>
+            </a>
+            {{/if}}
+            {{#if this.genericArea}}
+            <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn {{this.buttonClass}}">
+                <i class="this.icon"></i> {{this.label}}
+            </button>
+            {{/if}}
+            {{!-- common dropdown --}}
+            <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu">
+                <div class="dropdown-menu-header">
+                    <div class="dropdown-menu-header-inner pt-4 pb-4 {{this.getBgColor}}">
+                        <div class="menu-header-image opacity-08 choose-lang-menu-header" style=""></div>
+                        <div class="menu-header-content text-center {{this.getTextColor}}">
+                            <h6 class="menu-header-subtitle mt-0">
+                                <Standard::TR @key="component.tr.choice" @default="Scegli la lingua"/>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+
+                {{#each this.availableActiveLanguages as |lang|}}
+                <button type="button" tabindex="0" class="dropdown-item {{if (eq this.currentLang lang.code) 'active' ''}}" {{on "click" (fn this.changeLang lang.code)}}>
+                    <span class="mr-3 opacity-8 flag large {{convertLangCode lang.code}}"></span> {{lang.label}}
+                </button>
+                {{/each}}
+            </div>
+        </div>
+        {{#if this.footerArea}}
+            {{!-- footer --}}
+            <div class="dots-separator"></div>
+        {{/if}}
+    {{/if}}
+
+{{/if}}
+</div>
+{{yield}}

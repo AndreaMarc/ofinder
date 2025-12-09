@@ -1,0 +1,210 @@
+<div class="messages-configurations">
+  {{#if this.active}}
+    <div class="dropdown" {{did-insert this.startWebSocket}}>
+      <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="p-0 mr-2 btn btn-link">
+        <span class="icon-wrapper icon-wrapper-alt rounded-circle">
+          <span class="icon-wrapper-bg bg-danger"></span>
+          <i class="icon text-danger ion-android-notifications {{if this.showAlert 'icon-anim-pulse' 'opacity-6'}}"></i>
+          {{!-- icona di messaggi presenti --}}
+          {{#if this.showAlert}}
+            <span class="badge badge-dot badge-dot-sm badge-danger">Notifications</span>
+          {{/if}}
+        </span>
+      </button>
+      <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-xl rm-pointers dropdown-menu dropdown-menu-right">
+        <div class="dropdown-menu-header mb-0">
+          <div class="dropdown-menu-header-inner {{this.getBgColor}}">
+            <div class="menu-header-image opacity-1" style="background-image: url('/assets/images/dropdown-header/city3.jpg');"></div>
+            <div class="menu-header-content {{this.getTextColor}}">
+              <h5 class="menu-header-title">
+                <Standard::TR @key="component.messagesNotifications.notificationsAndMessages" @default="Notifiche e Messaggi"/>
+              </h5>
+              <h6 class="menu-header-subtitle">
+                {{this.info.msg}}
+              </h6>
+            </div>
+          </div>
+        </div>
+        <ul class="tabs-animated-shadow tabs-animated nav nav-justified tabs-shadow-bordered p-3">
+          {{#if this.info.activeNotifications}}
+            <li class="nav-item">
+              <a {{on 'click' (fn this.clickTab 1)}} role="tab" class="nav-link {{if this.info.active1 'active'}}" data-toggle="tab" href="#messages-notifications-tab-1">
+                <span>
+                  <Standard::TR @key="component.messagesNotifications.notifications" @default="Notifiche"/> ({{this.notifications}})
+                </span>
+              </a>
+            </li>
+          {{/if}}
+          {{#if this.info.activeMessages}}
+            <li class="nav-item">
+              <a {{on 'click' (fn this.clickTab 2)}} role="tab" class="nav-link {{if this.info.active2 'active'}}" data-toggle="tab" href="#messages-notifications-tab-2">
+                <span>
+                  <Standard::TR @key="component.messagesNotifications.messages" @default="Messaggi"/> ({{this.messages}})
+                </span>
+              </a>
+            </li>
+          {{/if}}
+        </ul>
+        <div class="tab-content">
+          {{!-- #region AREA NOTIFICHE --}}
+          <div class="tab-pane {{if this.info.active1 'active'}}" id="messages-notifications-tab-1" role="tabpanel">
+            <div class="scroll-area-sm">
+              <div class="scrollbar-container">
+                <div class="p-3">
+                  {{#if this.updatingAdvices}}
+                    <Standard::LoadingSpinner @icon="true" @style="3" class="alert-secondary" >
+                      <Standard::TR @key="component.messagesNotifications.waitPlease" @default="Attendere prego..."/>
+                    </Standard::LoadingSpinner>
+                  {{else}}
+                    {{#if (gt (length this.notificationsList) 0)}}
+                      <div class="vertical-without-time vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                        {{#each this.advicesList.notifications as | advice |}}
+                          <div class="vertical-timeline-item vertical-timeline-element">
+                              <div>
+                                  <span class="vertical-timeline-element-icon bounce-in">
+                                      <i class="badge badge-dot badge-dot-xl badge-warning"> </i>
+                                  </span>
+                                  <div class="vertical-timeline-element-content bounce-in">
+                                      <h4 class="timeline-title">{{advice.title}}</h4>
+                                      <p class="two-lines m-0">{{advice.body}}</p>
+                                      <p>
+                                        <small class="text-success">{{convertdate advice.dateSent 'DD/MM/YY HH:mm'}}</small>
+                                      </p>
+                                      <span class="vertical-timeline-element-date"></span>
+                                  </div>
+                              </div>
+                          </div>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="text-center mt-5"><em>Non ci sono nuove notifiche</em></p>
+                    {{/if}}
+                  {{/if}}
+                </div>
+            </div>
+            </div>
+          </div>
+          {{!-- #endregion --}}
+          {{!-- #region AREA MESSAGGI --}}
+          <div class="tab-pane {{if this.info.active2 'active'}}" id="messages-notifications-tab-2" role="tabpanel">
+            <div class="scroll-area-sm">
+              <div class="scrollbar-container">
+                <div class="p-3">
+                  {{#if this.updatingAdvices}}
+                    <Standard::LoadingSpinner @icon="true" @style="3" class="alert-secondary" >
+                      <Standard::TR @key="component.messagesNotifications.waitPlease" @default="Attendere prego..."/>
+                    </Standard::LoadingSpinner>
+                  {{else}}
+                    <div class="vertical-without-time vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                      <div class="vertical-timeline-item vertical-timeline-element">
+                          <div>
+                              <span class="vertical-timeline-element-icon bounce-in">
+                                  <i class="badge badge-dot badge-dot-xl badge-success"> </i>
+                              </span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                  <h4 class="timeline-title">All Hands Meeting</h4>
+                                  <p>Lorem ipsum dolor sic amet, today at
+                                      <a href="#">12:00 PM</a>
+                                  </p>
+                                  <span class="vertical-timeline-element-date"></span>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="vertical-timeline-item vertical-timeline-element">
+                          <div>
+                              <span class="vertical-timeline-element-icon bounce-in">
+                                  <i class="badge badge-dot badge-dot-xl badge-warning"> </i>
+                              </span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                  <p>Another meeting today, at <b class="text-danger">12:00 PM</b></p>
+                                  <p>Yet another one, at <span class="text-success">15:00 PM</span></p>
+                                  <span class="vertical-timeline-element-date"></span>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="vertical-timeline-item dot-primary vertical-timeline-element">
+                          <div>
+                              <span class="vertical-timeline-element-icon bounce-in"></span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                  <h4 class="timeline-title">Something not important
+                                      <div class="avatar-wrapper mt-2 avatar-wrapper-overlap">
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/1.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/2.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/3.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/4.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/5.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/9.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/7.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm">
+                                              <div class="avatar-icon">
+                                                  <img src="/assets/images/avatars/8.jpg" alt="">
+                                              </div>
+                                          </div>
+                                          <div class="avatar-icon-wrapper avatar-icon-sm avatar-icon-add">
+                                              <div class="avatar-icon"><i>+</i></div>
+                                          </div>
+                                      </div>
+                                  </h4>
+                                  <span class="vertical-timeline-element-date"></span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+          {{!-- #endregion --}}
+        </div>
+        <ul class="nav flex-column">
+          <li class="nav-item-divider nav-item"></li>
+          <li class="nav-item-btn text-center nav-item">
+            {{#if this.info.active1}}
+              <button class="btn-shadow btn-wide btn-pill btn btn-focus btn-sm animated fadeInLeft" type="button">
+                <LinkTo @route="notifications" class="text-white">
+                  <Standard::TR @key="component.messagesNotifications.goToNotifications" @default="Vai alle Notifiche"/>
+                </LinkTo>
+              </button>
+            {{else}}
+              <button class="btn-shadow btn-wide btn-pill btn btn-focus btn-sm animated fadeInRight" type="button">
+                <LinkTo @route="notifications" class="text-white">
+                  <Standard::TR @key="component.messagesNotifications.goToMessages" @default="Vai ai Messaggi"/>
+                </LinkTo>
+              </button>
+            {{/if}}
+          </li>
+        </ul>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

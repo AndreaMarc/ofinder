@@ -1,0 +1,134 @@
+<div class="category-viewer" ...attributes>
+  {{#if (eq this.available 'waiting')}}
+  <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{/if}}
+  {{#if (eq this.available 'unavailable')}}
+  <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+    {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+  </Standard::LoadingSpinner>
+  {{/if}}
+
+  {{#if (eq this.available 'available')}}
+    {{#if (eq this.step 1)}}
+    {{!-- #region Elenco Categorie --}}
+    <div class="main-card card mb-3">
+      <div class="card-header text-success">
+        <i class="header-icon pe-7s-menu"></i> INDICE
+        {{#if this.enableSearch}}
+          <div class="btn-actions-pane-right">
+            <div class="input-group">
+              <input type="search" class="form-control form-control-small" aria-label="cerca" placeholder="..." {{on 'input' this.changeFilter}}>
+              <div class="input-group-append mr-2">
+                <button class="btn btn-sm btn-secondary btn-icon-only" type="button">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <button class="btn btn-sm {{if this.start.isRunning 'btn-warning' 'btn-light'}} btn-icon-only" type="button" {{on 'click' (perform this.start)}}>
+                <i class="fa {{if this.start.isRunning 'fa-spinner fa-spin' 'fa-refresh'}}"></i>
+              </button>
+            </div>
+          </div>
+        {{/if}}
+
+      </div>
+
+
+      <div class="card-body underline">
+        {{#if this.start.isRunning }}
+          <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+        {{else}}
+        <div class="row">
+          <div class="col-md-12">
+            <div class="accordion-wrapper mb-3">
+              {{#if (eq (length this.filteredCategories) 0)}}
+                <p class="pt-3 pl-3">Non sono presenti articoli!</p>
+              {{else}}
+                {{#each this.filteredCategories as |category index|}}
+                  <div id="accordion-{{this.accordionId}}" class="card">
+                    <div id="heading-{{index}}" class="card-header bg-custom1">
+                      <button type="button" disabled={{(eq (this.templateLength category.template) 0)}} data-toggle="collapse" data-target="#collapse-cat-{{index}}" aria-expanded="{{if (eq index 0) 'true' 'false'}}" aria-controls="collapse-{{index}}" class="text-left m-0 p-0 btn btn-link btn-block text-white">
+                        {{!-- template-lint-disable no-heading-inside-button --}}
+                        <h5 class="m-0 p-0">{{category.name}} <small>({{this.templateLength category.template}})</small></h5>
+                      </button>
+                    </div>
+                    <div data-parent="#accordion-{{this.accordionId}}" id="collapse-cat-{{index}}" aria-labelledby="heading-{{index}}" class="collapse {{if (eq index 0) 'show'}}">
+                      <div class="card-body p-0">
+                        {{#if (gt this.templateLength category.template)}}
+                        <ul class="list-group list-group-flush">
+                          {{#each category.template as |template index|}}
+                            {{#if this.seePreview}}
+                              <div class="row m-2">
+                                <div class="col-12 col-md-6 pt-2">
+                                  <Standard::ShowImage @image={{template.featuredImage}} @byUrl="" @size="md" class="image-box"/>
+                                </div>
+
+                                <div class="col-12 col-md-6 pt-2">
+                                  <h4>{{template.name}}</h4>
+                                  <p>{{this.htmlText template.content}}</p>
+                                  <a href="mailto:marketing@maestrale.it" class="btn-hover-shine btn btn-lg btn-custom1">
+                                    <div class="d-flex">
+                                      <div class="d-flex align-items-center mr-2 icon-mail">
+                                        <i class="fa fa-envelope"></i>
+                                      </div>
+                                      <div>
+                                        <h6><strong>Contattaci</strong><br><small><em>marketing@maestrale.it</em></small></h6>
+                                      </div>
+                                    </div>
+                                  </a>
+                                </div>
+
+                                {{#if (not-eq (increasebyone index) category.template.length)}}
+                                  <hr class="mt-4">
+                                {{/if}}
+                              </div>
+                            {{else}}
+                              <button class="list-group-item-action list-group-item" type="button" {{on 'click' (fn this.openTemplate template.id template.name)}}>{{template.name}}</button>
+                            {{/if}}
+
+                          {{/each}}
+                        </ul>
+                        {{else}}
+                        <p class="opacity-7"><em>Non ci sono articoli in questa categoria</em></p>
+                        {{/if}}
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
+              {{/if}}
+  </div>
+          </div>
+        </div>
+
+        {{/if}}
+
+      </div>
+    </div>
+    {{!-- #endregion --}}
+    {{else}}
+    {{!-- #region Template --}}
+    <div class="main-card card mb-3">
+      <div class="card-header text-primary">
+        {{this.templateTitle}}
+        <div class="btn-actions-pane-right actions-icon-btn">
+          <button class="btn-icon btn btn-link btn-icon-only" type="button" {{on 'click' this.closeTemplate}}>
+              <i class="fa fa-times btn-icon-wrapper"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <Standard::Core::ContentViewer @guid={{this.templateId}} @cb={{this.openTemplate}}/>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- #endregion --}}
+    {{/if}}
+
+
+  {{/if}}
+</div>
+
+{{yield}}

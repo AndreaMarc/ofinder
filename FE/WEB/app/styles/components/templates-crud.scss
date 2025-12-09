@@ -1,0 +1,30 @@
+#templateTree {
+  border: 1px dashed;
+  border-radius: 5px;
+  padding: 0.5em 0.3em;
+  overflow-x: auto;
+
+  .badge{
+    font-weight: 500;
+    color: #fff;
+    padding: 4px 8px;
+    min-width: 74px;
+  }
+
+  tbody > tr > td {
+    text-align: left;
+  }
+  tbody > tr:not(.fancytree-folder):hover > td {
+    background-color: #ced4da;
+  }
+
+  .fancytree-title {
+    width: calc(100% - 40px);
+  }
+
+  .description-box {
+    display: block;
+    opacity: 0.5;
+    font-size: 85%;
+  }
+}

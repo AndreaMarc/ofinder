@@ -1,0 +1,11 @@
+{{!-- Pagina a cui vengono reindirizzati gli utenti che al login sono associati ad un'azienda disattivata --}}
+<ArchitectUi::AppMain::AppPageTitle @title="Verifica della licenza" @titleKey="template.tenantFallback.title" @description="Potrebbe essersi verificato un problema con la licenza di utilizzo" @descriptionKey="template.tenantFallback.subTitle" @icon="lnr-license" />
+
+<div class="card-shadow-danger border mb-3 card card-body bg-danger text-white">
+    <h5 class="card-title text-white">ATTENZIONE</h5>
+    L'azienda a cui sei connesso risulta disattivata. Contatta i fornitori del servizio per risolvere il problema.<br />
+    <small>Nel box sottostante puoi passare ad un'altra azienda se il tuo profilo lo prevede.</small>
+</div>
+{{!-- TODO : in futuro gestire da qui il rinnovo della licenza con pagamento, se il ruolo dell'utente lo consente --}}
+<Standard::Core::ChangeTenant/>
+{{outlet}}

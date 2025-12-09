@@ -1,0 +1,336 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div>
+    {{!-- Utilità di conversione --}}
+    <div class="row underline">
+      <div class="col-md-4 p-0 pl-3 pr-3 unable-box">
+        <small class="form-text text-muted pt-1"><em>Convertitore giorni/minuti</em></small>
+      </div>
+      <div class="col-md-8 p-0 pl-3 pr-3 unable-box">
+        <div class="row">
+          <div class="col-md-6 p-1">
+            <div class="input-group">
+              <input type="number" min="0" step="1" value={{this.convertedInverse}} {{on 'input' this.converter}} class="form-control form-control-sm">
+              <div class="input-group-append">
+                <button class="clearButton btn btn-sm btn-success disabled" type="button">
+                  giorni
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 p-1">
+            <div class="input-group">
+              <input type="number" min="0" step="1" value={{this.converted}} {{on 'input' this.converterInverse}} class="form-control form-control-sm" style="width: 200px;">
+              <div class="input-group-append">
+                <button class="clearButton btn btn-sm btn-success disabled" type="button">
+                  minuti
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- durata access token --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Tempo di validità dell'Access Token, in minuti</label>
+      </div>
+      <div class="col-md-4 p-3">
+        <strong>APP</strong>
+        <input type="number" min="0" step="1" value={{this.recordApp.accessTokenExpiresIn}} {{on 'input' (fn this.changeValue 'app'  'accessTokenExpiresIn')}} class="form-control" style="width: 200px;">
+      </div>
+      <div class="col-md-4 p-3 left-border">
+        <strong>WEB</strong>
+        <input type="number" min="0" step="1" value={{this.recordWeb.accessTokenExpiresIn}} {{on 'input' (fn this.changeValue 'web'  'accessTokenExpiresIn')}} class="form-control" style="width: 200px;">
+      </div>
+    </div>
+
+    {{!-- durata refresh token --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Tempo di validità del Refresh Token, in minuti</label>
+        <small class="form-text text-muted">Deve essere ≥ di quanto specificato per l'Access Token.</small>
+      </div>
+      <div class="col-md-4 p-3">
+        <strong>APP</strong>
+        <input type="number" min="0" step="1" value={{this.recordApp.refreshTokenExpiresIn}} {{on 'input' (fn this.changeValue 'app'  'refreshTokenExpiresIn')}} class="form-control" style="width: 200px;">
+      </div>
+      <div class="col-md-4 p-3 left-border">
+        <strong>WEB</strong>
+        <input type="number" min="0" step="1" value={{this.recordWeb.refreshTokenExpiresIn}} {{on 'input' (fn this.changeValue 'web'  'refreshTokenExpiresIn')}} class="form-control" style="width: 200px;">
+      </div>
+    </div>
+
+    {{!-- durata OTP --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Tempo di validità degli OTP, in minuti</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <input type="number" min="0" step="1" value={{this.recordWeb.mailTokenExpiresIn}} {{on 'input' (fn this.changeValue 'both'  'mailTokenExpiresIn')}} class="form-control" style="width: 200px;">
+          <small class="form-text text-muted">In minuti. Indica il tempo di validità degli OTP inviati nelle comunicazioni e-mail.</small>
+      </div>
+    </div>
+
+    {{!-- Usare MD5 --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Crittografare le password con MD5?</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <select class="form-control col-md-4" value={{this.recordWeb.useMD5}} {{on 'change' (fn this.changeValue 'both'  'useMD5')}}>
+          <option value="" selected={{(eq this.recordWeb.useMD5 false)}}>No</option>
+          <option value="1" selected={{(eq this.recordWeb.useMD5 true)}}>Sì</option>
+        </select>
+      </div>
+    </div>
+
+    {{!-- scadenza password --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>La scadenza della password è attiva?</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'both'  'passwordExpirationPeriod')}} class="form-control">
+            <option value="0" selected={{(eq this.recordWeb.passwordExpirationPeriod 0)}}>No</option>
+            <option value="30" selected={{(eq this.recordWeb.passwordExpirationPeriod 30)}}>Sì, dura 1 mese</option>
+            <option value="60" selected={{(eq this.recordWeb.passwordExpirationPeriod 60)}}>Sì, dura 2 mesi</option>
+            <option value="90" selected={{(eq this.recordWeb.passwordExpirationPeriod 90)}}>Sì, dura 3 mesi</option>
+            <option value="120" selected={{(eq this.recordWeb.passwordExpirationPeriod 120)}}>Sì, dura 4 mesi</option>
+            <option value="180" selected={{(eq this.recordWeb.passwordExpirationPeriod 180)}}>Sì, dura 6 mesi</option>
+            <option value="365" selected={{(eq this.recordWeb.passwordExpirationPeriod 365)}}>Sì, dura 12 mesi</option>
+          </select>
+          <small class="form-text text-muted">Se attiva, le password degli utenti scadranno dopo il periodo selezionato</small>
+      </div>
+    </div>
+
+    {{!-- restrizioni cambio password --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Restrizioni sul cambio password</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'both'  'previousPasswordsStored')}} class="form-control col-md-12">
+            <option value="0" selected={{(eq this.recordWeb.previousPasswordsStored 0)}}>Nessuna</option>
+            <option value="1" selected={{(eq this.recordWeb.previousPasswordsStored 1)}}>Impedisci l'utilizzo dell'ultima password</option>
+            <option value="2" selected={{(eq this.recordWeb.previousPasswordsStored 2)}}>Impedisci l'utilizzo delle ultime 2 password</option>
+            <option value="3" selected={{(eq this.recordWeb.previousPasswordsStored 3)}}>Impedisci l'utilizzo delle ultime 3 password</option>
+            <option value="5" selected={{(eq this.recordWeb.previousPasswordsStored 5)}}>Impedisci l'utilizzo delle ultime 5 password</option>
+            <option value="10" selected={{(eq this.recordWeb.previousPasswordsStored 10)}}>Impedisci l'utilizzo delle ultime 10 password</option>
+          </select>
+      </div>
+    </div>
+
+    {{!-- restrizioni al login --}}
+    <div class="row">
+      <div class="col-md-4 p-3">
+        <label>Retrizioni per login errati</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'both'  'failedLoginAttempts')}} class="form-control">
+            <option value="0" selected={{(eq this.recordWeb.failedLoginAttempts 0)}}>No</option>
+            <option value="2" selected={{(eq this.recordWeb.failedLoginAttempts 2)}}>Sì, blocca l'utente al 2° tentativo errato</option>
+            <option value="3" selected={{(eq this.recordWeb.failedLoginAttempts 3)}}>Sì, blocca l'utente al 3° tentativo errato</option>
+            <option value="4" selected={{(eq this.recordWeb.failedLoginAttempts 4)}}>Sì, blocca l'utente al 4° tentativo errato</option>
+            <option value="5" selected={{(eq this.recordWeb.failedLoginAttempts 5)}}>Sì, blocca l'utente al 5° tentativo errato</option>
+            <option value="10" selected={{(eq this.recordWeb.failedLoginAttempts 10)}}>Sì, blocca l'utente al 10° tentativo errato</option>
+            <option value="20" selected={{(eq this.recordWeb.failedLoginAttempts 20)}}>Sì, blocca l'utente al 20° tentativo errato</option>
+          </select>
+          <small class="form-text text-muted">Indica se bloccare temporaneamente l'accesso dopo il numero selezionato di login errati consecutivi</small>
+      </div>
+    </div>
+
+    {{!-- durata blocco utente --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Durata del blocco utente</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <input type="number" value={{this.recordWeb.blockingPeriodDuration}} {{on 'input' (fn this.changeValue 'both'  'blockingPeriodDuration')}} min="0" step="1" class="form-control col-md-4">
+        <small class="form-text text-muted">Numero di minuti in cui l'utente viene temporaneamente bloccato in caso di superamento della soglia di login errati</small>
+      </div>
+    </div>
+
+
+    {{!-- password di default --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Password di default</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <input type="text" value={{this.recordWeb.defaultUserPassword}} {{on 'input' (fn this.changeValue 'both'  'defaultUserPassword')}} class="form-control col-md-12">
+        <small class="form-text text-muted">Password temporanea utilizzata quando si crea una nuova utenza</small>
+        <div class="text-danger">
+          <small>{{this.passwordError}}</small>
+        </div>
+      </div>
+    </div>
+
+    {{!-- puntamenti ai Media --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Puntamenti ai media</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'both'  'useUrlStaticFiles')}} class="form-control">
+            <option value="" selected={{(eq this.recordWeb.useUrlStaticFiles false)}}>Tramite url</option>
+            <option value="1" selected={{(eq this.recordWeb.useUrlStaticFiles true)}}>Tramite Base64</option>
+          </select>
+          <small class="form-text text-muted">Se il FE e il BE  risiedono sulla stessa <em>macchina</em> puoi utilizzare il puntamento tramite url, altrimenti devi necessariamente usare quello tramite Base64.</small>
+      </div>
+    </div>
+
+    {{!-- mailerUsesAltText --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Testo alternativo per comunicazioni e-mail</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'both'  'mailerUsesAltText')}} class="form-control col-md-4">
+            <option value="" selected={{(eq this.recordWeb.mailerUsesAltText false)}}>No</option>
+            <option value="1" selected={{(eq this.recordWeb.mailerUsesAltText true)}}>Sì</option>
+          </select>
+          <small class="form-text text-muted">Indica se l'applicativo BE utilizzato per l'invio delle e-mail prevede il campo 'testo alternativo' (non Html). Se sì, l'editor dei Template mostrerà l'apposito campo per inserire/modificare il testo alternativo.</small>
+      </div>
+    </div>
+
+    {{!-- cambio Tenant --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Consentire il cambio Tenant?</label>
+      </div>
+      <div class="col-md-8 p-3">
+          <select {{on 'change' (fn this.changeValue 'both'  'canChangeTenants')}} class="form-control col-md-4">
+            <option value="" selected={{(eq this.recordWeb.canChangeTenants false)}}>No</option>
+            <option value="1" selected={{(eq this.recordWeb.canChangeTenants true)}}>Sì</option>
+          </select>
+          <small class="form-text text-muted">Se l'applicazione prevede il cambio Tenant, comparirà una select nell'header per consentirne la scelta.</small>
+      </div>
+    </div>
+
+    {{!-- force login --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Forzare il redirect al login?</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <select {{on 'change' (fn this.changeValue 'both'  'forceLoginRedirect')}} class="form-control col-md-4">
+          <option value="" selected={{(eq this.recordWeb.forceLoginRedirect false)}}>No</option>
+          <option value="1" selected={{(eq this.recordWeb.forceLoginRedirect true)}}>Sì</option>
+        </select>
+        <small class="form-text text-muted">
+          Forza il redirect alla pagina di login per gli utenti non loggati. Dalla pagina di login sarà possibile
+          navigare nelle altre pagine in essa linkate ma il tentativo di accesso via url ad una pagina diversa
+          dal login non è consentito e comporta il redirect. Scegli 'No' se il sito è principalmente un sito 'vetrina'. La pagina 404 per i non loggati è visibile solo se scegli l'opzione 'No'.
+        </small>
+      </div>
+    </div>
+
+    {{!-- cancellazione utente --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Auto-cancellazione Utente</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <select {{on 'change' (fn this.changeValue 'both'  'logicDelete')}} class="form-control">
+          <option value="" selected={{(eq this.recordWeb.forceLoginRedirect false)}}>Cancellazione fisica: l'utenza viene completamente rimossa dal database (consigliata)</option>
+          <option value="1" selected={{(eq this.recordWeb.forceLoginRedirect true)}}>Cancellazione virtuale: l'utenza viene resa anonima ma il record permane nel database</option>
+        </select>
+        <small class="form-text text-muted">
+          La seconda opzione è attuabile solo se il regolamento del sito lo prevede esplicitamente; consultare i Legali.
+        </small>
+      </div>
+    </div>
+
+    {{!-- rolesForEditUsers --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Ruoli per editing degli utenti</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <textarea class="form-control form-control-sm" {{on 'input' (fn this.changeValue 'both'  'rolesForEditUsers')}} value={{this.recordWeb.rolesForEditUsers}}></textarea>
+        <small class="form-text text-muted">
+          Elencare i ruoli di cui mostrare gli utenti nella pagina di "Gestione Utenti" dei sotto-tenant. Inserire i nomi dei ruoli separati da virgole.
+        </small>
+      </div>
+    </div>
+
+    {{!-- defaultClaims --}}
+    <div class="row">
+      <div class="col-md-4 p-3">
+        <label>Inserire i Claims di default</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <small class="form-text text-muted mb-3">
+          Saranno selezionabili nella sezione Autorizzazioni/Associazioni Ruoli÷Permessi. L'eliminazione da questa lista NON comporta la cancellazione dai Ruoli a cui sono stati associati.
+        </small>
+        <table class="mae-table mb-3">
+          <thead>
+            <tr>
+              <th class="w-30">NOME</th>
+              <th>DESCRIZIONE</th>
+              <th style="width: 100px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each this.defaultClaims as | claim index |}}
+            <tr>
+              <td class="col-md-5">
+                <input type="text" value="{{claim.name}}" class="form-control form-control-sm" {{on "keyup" (fn this.updateClaim 'name' index)}}>
+              </td>
+              <td class="col-md-5">
+                <textarea value="{{claim.description}}" class="form-control form-control-sm autosize-input" {{on "keyup" (fn this.updateClaim 'description' index)}}></textarea>
+              </td>
+              <td class="col-md-2 text-right">
+                <button class="btn btn-sm btn-hover-shine btn-danger" type="button" {{on "click" (fn this.removeClaim index)}}>
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+            <tr>
+              <td class="col-md-5">
+                <input type="text" value={{this.newClaim.name}} class="form-control form-control-sm" {{on "keyup" (fn this.populateNewClaim 'name')}}>
+              </td>
+              <td class="col-md-5">
+                <textarea value={{this.newClaim.description}} class="form-control form-control-sm autosize-input" {{on "keyup" (fn this.populateNewClaim 'description')}}></textarea>
+              </td>
+              <td class="col-md-2 text-right">
+                <button class="btn btn-sm btn-hover-shine btn-success" type="button" {{on "click" this.addClaim}}>Aggiungi</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pt-5 text-right">
+      <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+        <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+        SALVA
+      </button>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+</div>
+{{yield}}

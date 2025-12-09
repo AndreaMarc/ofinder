@@ -1,0 +1,92 @@
+<div class="setup-operators" {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div class="row">
+        <div class="col-md-12 p-3">
+          Definisci l'elenco degli utenti Maestrale.<br />
+          Nella sezione <em>Utenti</em> potrai definire quali, tra gli utenti in elenco, aggiungere agli utenti del sito.
+        </div>
+        <div class="col-md-12 p-3 underline">
+          <table class="mae-table">
+            <thead>
+              <tr class="new">
+                <th>AGGIUNGI<br />Cognome</th>
+                <th><br />Nome</th>
+                <th><br />Email</th>
+                <th></th>
+              </tr>
+              <tr class="new">
+                <th>
+                  <input {{on 'input' (fn this.newValue 'lastName')}} value={{this.newUser.lastName}} type="text" class="form-control form-control-sm">
+                </th>
+                <th>
+                  <input {{on 'input' (fn this.newValue 'firstName')}} value={{this.newUser.firstName}} type="text" class="form-control form-control-sm">
+                </th>
+                <th>
+                  <input {{on 'input' (fn this.newValue 'email')}} value={{this.newUser.email}} type="email" class="form-control form-control-sm">
+                </th>
+                <th class="text-center">
+                  <button {{on 'click' this.saveNewUser}} type="button" class="btn btn-sm btn-hover-shine btn-success">
+                    <i class="fa fa-save"></i>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each this.maeUsers as |user index|}}
+              <tr>
+                <td>
+                  <input type="text" {{on 'input' (fn this.updateValue index 'lastName')}} class="form-control form-control-sm {{if (include this.emptyLastName index) 'error'}}" value={{user.lastName}}>
+                </td>
+                <td>
+                  <input type="text" {{on 'input' (fn this.updateValue index 'firstName')}} class="form-control form-control-sm {{if (include this.emptyFirstName index) 'error'}}" value={{user.firstName}}>
+                </td>
+                <td>
+                  <input type="email" {{on 'input' (fn this.updateValue index 'email')}} class="form-control form-control-sm {{if (include this.errorEmail index) 'error'}}" value={{user.email}}>
+                </td>
+                <td class="text-center">
+                  <button type="button" {{on 'click' (fn this.deleteUser index)}} class="btn btn-sm btn-hover-shine btn-danger">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-12 p-3 text-right">
+          <button type="button" {{on 'click' (perform this.saveAll)}} disabled={{this.allSaved}} class="btn btn-sm btn-hover-shine btn-primary">
+            <i class="fa {{if this.saveAll.isRunning 'fa-spinner fa-spin' 'fa-save'}} mr-2"></i> SALVA
+          </button>
+        </div>
+      </div>
+    {{else if (eq this.serviceAvailable 'waiting')}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <p>
+            <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+          </p>
+        </div>
+      </div>
+    {{else if (eq this.serviceAvailable 'unavailable')}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <p>
+            <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+          </p>
+        </div>
+      </div>
+    {{/if}}
+  {{else}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p>
+          <em class="text-danger">Non hai i permessi necessari per visualizzare questa pagina!</em>
+        </p>
+      </div>
+    </div>
+  {{/if}}
+
+
+</div>
+{{yield}}

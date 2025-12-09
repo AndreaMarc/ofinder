@@ -1,0 +1,6 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Modifica Documento Legale" @titleKey="template.legalsDetails.title" @description="Gestisci i dettagli del documento" @descriptionKey="template.legalsDetails.subTitle" @icon="pe-7s-news-paper">
+  <Standard::BackButton class="btn-hover-shine btn btn-sm btn-light">Torna all'elenco</Standard::BackButton>
+</ArchitectUi::AppMain::AppPageTitle>
+
+<Standard::Core::LegalsDetailsCrud @model={{this.model.record}} @handleModificationStatus={{this.handleModificationStatus}}/>
+{{outlet}}

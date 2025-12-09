@@ -1,0 +1,87 @@
+<div class="row user-devices">
+  <div class="col-md-12 col-sm-12">
+    <div class="main-card mb-3 card">
+      {{#if (eq this.available 'waiting')}}
+        <div class="alert alert-info fade show m-0" role="alert">
+            <i class="fa fa-spin fa-spinner"></i> Recupero dati in corso, attendere prego...
+        </div>
+      {{/if}}
+      {{#if (eq this.available 'unavailable')}}
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Errore nel recupero dei dati. <a href="#" {{on 'click' this.editRecord}}>Riprova!</a>
+        </div>
+      {{/if}}
+      {{#if (eq this.available 'available')}}
+        {{#if (eq this.deviceLength 0)}}
+          <p><em>Non sono presenti dispositivi da mostrare!</em></p>
+        {{else}}
+        <div class="card-header">
+          Risulti collegato da {{this.deviceLength}} dispositivi.
+          <div class="btn-actions-pane-right">
+            <button test-update class="btn-hover-shine btn btn-light btn-sm" type="button" {{on 'click' (perform this.findDevices)}}>
+              {{#if this.findDevices.isRunning}}
+              <i class="fa fa-spinner fa-spin mr-2"></i>
+              {{/if}}
+              Aggiorna
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <p>Se <span class="text-danger">non riconosci un dispositivo</span> puoi disconnetterlo con l'apposito pulsante. Inoltre puoi:</p>
+            </div>
+            <div class="col-md-6 col-sm-12 text-center">
+              <button test-disconnect-all class="btn-hover-shine btn btn-danger btn-wide mb-3" type="button" {{on 'click' this.disconnectOtherDevice}}>Disconnettere tutti gli altri dispositivi</button>
+            </div>
+            <div class="col-md-6 col-sm-12 text-center">
+              <LinkTo @route="change-password" class="btn-hover-shine btn btn-danger btn-wide mb-3">Cambiare password</LinkTo>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <hr class="mb-3">
+              <ul class="list-group">
+              {{#each this.myDevices as | device |}}
+                <li class="list-group-item device-row">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                      <div class="widget-content-left mr-3">
+                          <div class="icon-wrapper border-light rounded m-0">
+                              <div class="icon-wrapper-bg bg-light"></div>
+                              {{#if (or (eq device.platform 'app') (eq device.platform 'android') (eq device.platform 'ios'))}}
+                              <i class="lnr-smartphone icon-gradient bg-ripe-malin"></i>
+                              {{else if (eq device.platform 'web')}}
+                              <i class="lnr-laptop icon-gradient bg-happy-green"></i>
+                              {{else}}
+                              <i class="lnr-laptop-phone icon-gradient bg-tempting-azure"></i>
+                              {{/if}}
+                          </div>
+                      </div>
+                      <div class="widget-content-left">
+                          <div class="widget-heading">{{device.deviceName}}</div>
+                          <div class="widget-subheading">Ultimo accesso: {{convertdate device.lastAccess 'DD/MM/YYYY HH:mm'}}</div>
+                      </div>
+                      <div class="widget-content-right">
+                        {{#if (not-eq device.deviceHash this.myFingerprint)}}
+                          <button class="btn-hover-shine btn btn-warning btn-sm btn-wide" type="button" {{on 'click' (fn this.disconnectSingleDevice device)}}>
+                            Disconnetti
+                          </button>
+                        {{else}}
+                          <button class="btn-hover-shine btn btn-light btn-sm btn-wide" type="button" disabled>dispositivo corrente</button>
+                        {{/if}}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {{/each}}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  </div>
+</div>
+{{yield}}

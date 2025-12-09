@@ -1,0 +1,193 @@
+image: harbor.maestrale.it/builder/docker:20.10.6
+
+stages:
+  - build
+  - test
+  # - deploy
+  # - dns
+  # - proxy
+  # - release
+
+variables:
+  PROJECT: $APP_NAME
+  PROJECT_BE: $APP_NAME_BE
+
+build:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^prod$/i'
+      variables:                              
+        BUILD_ENV: $PRODUCTION  
+    - if: '$CI_COMMIT_REF_NAME =~ /^test$/i'
+      variables:
+        BUILD_ENV: $TEST
+    - if: '$CI_COMMIT_REF_NAME =~ /^dev$/i'
+      variables:
+        BUILD_ENV: $DEVELOPMENT
+    - if: '$CI_COMMIT_REF_NAME !~ /^(prod|test|dev)$/i'
+      variables:
+         BUILD_ENV: $DEVELOPMENT
+  script:
+    - docker login $REPO -u $DOCKER_USER -p $DOCKER_PASS
+    - docker build --build-arg IMAGE=$REPO/builder/emberjs --build-arg BUILD_ENV=$BUILD_ENV --no-cache -f ./Dockerfile -t $REPO/library/${PROJECT}:${BUILD_ENV} .
+    - docker push $REPO/library/${PROJECT}:${BUILD_ENV}
+    - docker logout
+    - echo "Done BUILD_ENV -> $BUILD_ENV"
+
+test:
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: '$CI_COMMIT_REF_NAME =~ /^prod$/i'
+      variables:                              
+        BUILD_ENV: $PRODUCTION  
+    - if: '$CI_COMMIT_REF_NAME =~ /^test$/i'
+      variables:
+        BUILD_ENV: $TEST
+    - if: '$CI_COMMIT_REF_NAME =~ /^dev$/i'
+      variables:
+        BUILD_ENV: $DEVELOPMENT
+    - if: '$CI_COMMIT_REF_NAME !~ /^(prod|test|dev)$/i'
+      variables:
+         BUILD_ENV: $DEVELOPMENT
+  image: 
+    name: $REPO/library/${PROJECT}:${BUILD_ENV}
+    entrypoint: [""]
+  stage: test
+  script: 
+    - apt-get update -y
+    - apt-get install -y wget
+    - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    - apt install -y ./google-chrome-stable_current_amd64.deb
+    - cd /WEB/
+    - ember test --silent --r xunit > $CI_PROJECT_DIR/WEB/junit.xml
+  artifacts:
+    when: always
+    paths:
+      - WEB/junit.xml
+    reports:
+      junit: WEB/junit.xml
+
+# deploy:
+#   image: $REPO/builder/ansible
+#   stage: deploy
+#   rules:
+#     - if: '$CI_COMMIT_REF_NAME =~ /^prod$/i'
+#       variables:                              
+#         BUILD_ENV: $PRODUCTION
+#         ANSIBLE_CFG: $ANSIBLE_CFG_DEB
+#         ANSIBLE_HOSTS: $ANSIBLE_HOSTS_PROD
+#         EXTRACT_FILES_FROM_IMAGE: $EXTRACT_FILES_FROM_IMAGE_DEB
+#         PLAYBOOK: $PLAYBOOK_DEB
+#         PLAYBOOK_CONFIGURATION: $PLAYBOOK_START_DEB
+#         NGINX_TEMPLATE: $NGINX_TEMPLATE_PROD
+#     - if: '$CI_COMMIT_REF_NAME =~ /^test$/i'
+#       variables:
+#         BUILD_ENV: $TEST
+#         ANSIBLE_CFG: $ANSIBLE_CFG_DEB
+#         ANSIBLE_HOSTS: $ANSIBLE_HOSTS_TEST
+#         EXTRACT_FILES_FROM_IMAGE: $EXTRACT_FILES_FROM_IMAGE_DEB
+#         PLAYBOOK: $PLAYBOOK_DEB
+#         PLAYBOOK_CONFIGURATION: $PLAYBOOK_START_DEB
+#         NGINX_TEMPLATE: $NGINX_TEMPLATE_TEST
+#     - if: '$CI_COMMIT_REF_NAME =~ /^dev$/i'
+#       variables:
+#         BUILD_ENV: $DEVELOPMENT
+#         ANSIBLE_CFG: $ANSIBLE_CFG_DEB
+#         ANSIBLE_HOSTS: $ANSIBLE_HOSTS_DEV
+#         EXTRACT_FILES_FROM_IMAGE: $EXTRACT_FILES_FROM_IMAGE_DEB
+#         PLAYBOOK: $PLAYBOOK_DEB
+#         PLAYBOOK_CONFIGURATION: $PLAYBOOK_START_DEB
+#         NGINX_TEMPLATE: $NGINX_TEMPLATE_DEV
+#   script: 
+#     - cat $ANSIBLE_CFG > /etc/ansible/ansible.cfg
+#     - export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+#     - cat $ANSIBLE_HOSTS > /etc/ansible/hosts
+#     - cat $EXTRACT_FILES_FROM_IMAGE > /etc/extractFilesFromImages.bak
+#     - cat $NGINX_TEMPLATE > /etc/nginx_template
+#     - cat $NGINX_MODSITE > /etc/nginx_modsite
+#     - cat $PLAYBOOK > /etc/playbook.yml
+#     - echo $PROJECT > /etc/PROJECT.txt
+#     - echo $PROJECT_BE > /etc/PROJECT_BE.txt
+#     - echo $BUILD_ENV > /etc/BUILD_ENV.txt
+#     - ansible-playbook /etc/playbook.yml -vvv
+#     - cat $PLAYBOOK_CONFIGURATION > /etc/playbook_configuration.yml
+#     - ansible-playbook /etc/playbook_configuration.yml -vvv
+#   environment:
+#     name: $BUILD_ENV
+#     url: https://${APP_NAME}-${BUILD_ENV}.maestrale.it
+
+# dns:
+#   image: $REPO/builder/ansible-dns
+#   stage: dns
+#   rules:
+#     - if: '$CI_COMMIT_REF_NAME =~ /^prod$/i'
+#       variables:                              
+#         BUILD_ENV: $PRODUCTION
+#     - if: '$CI_COMMIT_REF_NAME =~ /^test$/i'
+#       variables:
+#         BUILD_ENV: $TEST
+#     - if: '$CI_COMMIT_REF_NAME =~ /^dev$/i'
+#       variables:
+#         BUILD_ENV: $DEVELOPMENT
+#   variables:
+#     ANSIBLE_CFG: $ANSIBLE_CFG_WIN
+#   script: 
+#     - cat $ANSIBLE_CFG > /etc/ansible/ansible.cfg
+#     - export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+#     - cat $ANSIBLE_HOST_DNS > /etc/ansible/hosts
+#     - echo $PROJECT > /etc/PROJECT.txt
+#     - echo $PROJECT_BE > /etc/PROJECT_BE.txt
+#     - echo $BUILD_ENV > /etc/BUILD_ENV.txt
+#     - cat $PLAYBOOK_DNS > /etc/playbook_dns.yml
+#     - ansible-playbook /etc/playbook_dns.yml -vvv
+
+# proxy:
+#   image: $REPO/builder/ansible
+#   stage: proxy
+#   rules:
+#     - if: '$CI_COMMIT_REF_NAME =~ /^prod$/i'
+#       variables:                              
+#         BUILD_ENV: $PRODUCTION
+#         NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_PROD
+#     - if: '$CI_COMMIT_REF_NAME =~ /^test$/i'
+#       variables:
+#         BUILD_ENV: $TEST
+#         NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_TEST
+#     - if: '$CI_COMMIT_REF_NAME =~ /^dev$/i'
+#       variables:
+#         BUILD_ENV: $DEVELOPMENT
+#         NGINX_PROXY_TEMPLATE: $NGINX_PROXY_TEMPLATE_DEV
+#   variables:
+#     ANSIBLE_CFG: $ANSIBLE_CFG_DEB
+#   script:
+#     - cat $ANSIBLE_CFG > /etc/ansible/ansible.cfg
+#     - export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg
+#     - cat $ANSIBLE_HOST_PROXY > /etc/ansible/hosts
+#     - echo $PROJECT > /etc/PROJECT.txt
+#     - echo $PROJECT_BE > /etc/PROJECT_BE.txt
+#     - echo $BUILD_ENV > /etc/BUILD_ENV.txt
+#     - cat $NGINX_PROXY_TEMPLATE > /etc/NGINX_PROXY_TEMPLATE.txt
+#     - cat $PLAYBOOK_PROXY > /etc/playbook_proxy.yml
+#     - ansible-playbook /etc/playbook_proxy.yml -vvv
+
+# release:
+#   stage: release
+#   image: registry.gitlab.com/gitlab-org/release-cli:latest
+#   rules:
+#     - if: $CI_COMMIT_TAG
+#       when: always
+#     - when: never
+#   script:
+#     - echo "GitLab Creating Release $CI_COMMIT_TAG"
+#   release:
+#     tag_name: '$CI_COMMIT_TAG'
+#     description: '$CI_COMMIT_TAG - $CI_COMMIT_TAG_MESSAGE'
+#     ref: '$CI_COMMIT_SHA'
+    

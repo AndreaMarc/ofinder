@@ -1,0 +1,150 @@
+<div class="templates-crud main-card card" ...attributes>
+  {{#if (eq this.available 'waiting')}}
+    <div class="p-2">
+      <div class="alert alert-info fade show" role="alert">
+          <i class="fa fa-spinner fa-spin mr-2"></i> Recupero dati in corso, attendere prego...
+      </div>
+    </div>
+  {{/if}}
+  {{#if (eq this.available 'unavailable')}}
+    <div class="p-2">
+      <div class="alert alert-danger fade show m-0" role="alert">
+        <i class="fa fa-exclamation-triangle mr-2"></i> Servizio non disponibile.
+        <a href="#" class="alert-link" {{on 'click' this.start}}>
+          Riprova
+        </a>
+      </div>
+    </div>
+  {{/if}}
+  {{#if (eq this.available 'wrong')}}
+    <div class="p-2">
+      <div class="alert alert-danger fade show m-0" role="alert">
+        <i class="fa fa-exclamation-triangle mr-2"></i> {{this.textError}}
+      </div>
+    </div>
+  {{/if}}
+  {{#if (eq this.available 'available')}}
+  <div class="card-header {{if this.showRecycle 'text-danger' 'text-success'}}">
+    {{#if this.showRecycle}}
+      <i class="header-icon pe-7s-trash"></i> CESTINO
+    {{else}}
+      <i class="header-icon pe-7s-news-paper"></i> {{this.title}}
+    {{/if}}
+    <div class="btn-actions-pane-right">
+      <div class="position-relative form-check">
+          <input {{on 'change' this.toggleRecycle}} name="check" type="checkbox" class="form-check-input">
+          <label for="exampleCheck" class="form-label form-check-label">Mostra il Cestino</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body underline">
+    <div class="row">
+
+      <div class="col-md-12">
+        {{!-- #region elenco record (tree view) --}}
+        {{#if this.findRecords.isRunning}}
+        <Standard::LoadingSpinner @icon='1' @msg="Caricamento template in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+        {{/if}}
+        {{#if this.findRecords.isIdle}}
+          {{#if (eq this.recordsLength 0)}}
+            <p class="m-3"><em>Non ci sono template da mostrare</em></p>
+          {{else}}
+            <div class="input-group mb-3 p-0 col-md-6 float-right">
+              <input type="search" incremental placeholder="..." autocomplete="off" class="find-template form-control form-control-sm">
+              <div class="input-group-append">
+                <button class="btn btn-secondary btn-sm" disabled type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+              <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' this.start}}>
+                <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+              </button>
+            </div>
+
+            <div>
+              <table id="templateTree" class="col-md-12">
+                <colgroup>
+                  <col width="400px"/>
+                  <col width="100px"/>
+                  <col width="150px"/>
+                  <col />
+                  <col width="70px"/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="text-center">STATO</th>
+                    <th></th>
+                    <th>CAMBIA CATEGORIA</th>
+                    <th>AZIONI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          {{/if}}
+        {{/if}}
+        {{!-- #endregion --}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- #region Aggiungi Record  --}}
+  {{#if (has-permissions 'Template.create')}}
+  <div class="card-body">
+    <p class="text-success text-bold">
+      <i class="header-icon ion-android-add"> </i> AGGIUNGI UN TEMPLATE
+    </p>
+    <table class="mae-table mb-3">
+      <thead>
+        <tr>
+          <th>NOME DEL TEMPLATE *</th>
+          <th style="width: 260px;">CATEGORIA *</th>
+          <th style="width: 91px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <input type="text" class="form-control form-control-sm" value={{this.newRecord.name}} {{on 'input' (fn this.storeNewValue 'name')}}>
+          </td>
+          <td>
+            <select class="form-control form-control-sm" value={{this.newRecord.categoryId}}  {{on 'change' (fn this.storeNewValue 'categoryId')}}>
+              <option value="0" selected>--</option>
+              {{#each this.realCategoriesAdapted as | category|}}
+                {{#if category.name}}
+                <option value={{category.id}}>{{category.name}}</option>
+                {{/if}}
+              {{/each}}
+            </select>
+          </td>
+          <td>
+            <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
+              {{#if this.saveNewVoice.isRunning}}
+              <i class="fa fa-refresh fa-spin mr-2"></i>
+              {{/if}}
+              {{#if this.saveNewVoice.isIdle}}
+              <i class="fa fa-save mr-2"></i>
+              {{/if}}
+              SALVA
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {{/if}}
+  {{!-- #endregion --}}
+  {{/if}}
+</div>
+
+{{yield}}

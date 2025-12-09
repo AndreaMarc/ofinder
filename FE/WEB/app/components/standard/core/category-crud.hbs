@@ -1,0 +1,231 @@
+<div class="main-card card" ...attributes>
+  {{#if (has-permissions 'Category.read')}}
+    {{#if this.available}}
+    <div class="card-header text-success">
+      <i class="header-icon pe-7s-album"></i> GESTIONE CATEGORIE
+    </div>
+
+    <div class="card-body underline">
+      <div class="row">
+
+        <div class="col-md-7">
+          {{!-- #region elenco record (tree view) --}}
+          {{#if this.findRecords.isRunning}}
+          <Standard::LoadingSpinner @icon='1' @msg="Caricamento categorie in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+          {{#if this.findRecords.isIdle}}
+            <h6 class="mb-4">Lista delle Categorie</h6>
+            {{#if (eq this.recordsLength 0)}}
+              <p class="m-3"><em>Non ci sono categorie da mostrare</em></p>
+            {{else}}
+              <div class="input-group mb-3 text-right">
+                <input type="search" incremental placeholder="..." autocomplete="off" class="find-category form-control form-control-sm">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary btn-sm" disabled type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' this.start}}>
+                  <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+                </button>
+              </div>
+
+              <div class="col-md-12" id="categoriesTree"></div>
+              <p class="m-2 ml-0 opacity-3">
+                <smal><em>Il simbolo <i class="fa fa-ban"> </i> identifica le Categorie non cancellabili</em></smal>
+              </p>
+            {{/if}}
+          {{/if}}
+          {{!-- #endregion --}}
+        </div>
+
+        {{#if this.showUpdateCategory}}
+        <div class="col-md-5 border-left">
+          <h6 class="mb-4">Modifica Categoria</h6>
+          {{#if this.findRecord.isRunning}}
+            <Standard::LoadingSpinner @icon='1' @msg="Caricamento categoria in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+
+          <form test-updateForm>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">Nome</label>
+                      <input test-updateName placeholder="..." type="text" value={{this.category.name}} {{on 'input' (fn this.storeNewValue 'name' true)}} class="form-control form-control-sm">
+                  </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">Descrizione</label>
+                      <textarea test-updateDesc placeholder="..." class="form-control form-control-sm" {{on 'input' (fn this.storeNewValue 'description' true)}}>{{this.category.description}}</textarea>
+                  </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label for="tenantOrganization" class="">Categoria superiore</label>
+                      <select value={{this.category.parentCategory}} {{on 'change' (fn this.storeNewValue 'parentCategory' true)}} class="form-control form-control-sm">
+                        <option value="0">--</option>
+                        {{#each this.allCategoriesForEdit as | parent |}}
+                          {{#if parent.name}}
+                          <option value={{parent.id}}>{{parent.name}}</option>
+                          {{/if}}
+                        {{/each}}
+                      </select>
+                  </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">ID</label>
+                      <input disabled type="text" class="form-control form-control-sm" value={{this.category.id}}>
+                  </div>
+              </div>
+            </div>
+            <div class="form-row mb-5">
+              <div class="col-md-12 text-right">
+                <button class="btn-save-field btn-hover-shine btn btn-sm btn-secondary" type="button" {{on 'click' this.undoRecord}}>
+                  ANNULLA
+                </button>
+                {{#if (has-permissions 'Category.update')}}
+                <button test-updateSave class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' this.saveVoice}}>
+                  {{#if this.saveVoiceConfirmed.isRunning}}
+                  <i class="fa fa-refresh fa-spin mr-2"></i>
+                  {{/if}}
+                  {{#if this.saveVoiceConfirmed.isIdle}}
+                  <i class="fa fa-save mr-2"></i>
+                  {{/if}}
+                  SALVA
+                </button>
+                {{/if}}
+              </div>
+            </div>
+            {{#if (has-permissions 'Category.delete')}}
+            <div class="form-row">
+              <div class="col-md-12 text-right">
+                {{#if (eq this.erasableCategory '')}}
+                <div id="deleteDropdown" class="dropdown d-inline-block">
+                    <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 me-2 dropdown-toggle btn btn-danger">
+                        {{#if this.delVoice.isRunning}}
+                        <i class="fa fa-refresh fa-spin mr-2"></i>
+                        {{/if}}
+                        {{#if this.delVoice.isIdle}}
+                        <i class="fa fa-trash mr-2"></i>
+                        {{/if}}
+                        ELIMINA CATEGORIA
+                    </button>
+
+                    <div test-deleteDropdown {{on 'click' this.preventDropdownClose}} tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-hover-link dropdown-menu-lg dropdown-menu-right">
+                        <div class="dropdown-menu-header">
+                            <div class="dropdown-menu-header-inner bg-alternate">
+                                <div class="menu-header-image opacity-2" style="background-image: url('assets/images/dropdown-header/abstract2.jpg');"></div>
+                                <div class="menu-header-content">
+                                    <h5 class="menu-header-title">Eliminazione della Categoria</h5>
+                                    <h6 class="menu-header-subtitle">Scegli l'opzione...</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pl-2 pr-2 d-grid">
+                          <button test-deleteAll {{on 'click' (fn this.delVoice 'eraseAll')}} type="button" class="btn-transition btn btn-outline-danger w-100 mb-2">Elimina sia la categoria che i template associati</button>
+
+                          <div tabindex="-1" class="dropdown-divider"></div>
+
+                          <h6 tabindex="-1" class="dropdown-header text-warning">Assegna i Template a questa categoria...</h6>
+                          <select {{on 'change' this.reassignment}} class="form-control form-control-sm mb-3">
+                            <option value="0" selected>--</option>
+                            {{#each this.allCategoriesForEdit as | parent |}}
+                              {{#if parent.name}}
+                              <option value={{parent.id}}>{{parent.name}}</option>
+                              {{/if}}
+                            {{/each}}
+                          </select>
+                          <button {{on 'click' (fn this.delVoice '')}} type="button" class="btn-transition btn btn-outline-warning w-100">Elimina la categoria e riassocia i template</button>
+                        </div>
+
+                    </div>
+                </div>
+                {{else}}
+                <p class="text-danger">
+                  <em>{{this.erasableCategory}}</em>
+                </p>
+                {{/if}}
+              </div>
+            </div>
+            {{/if}}
+          </form>
+
+        </div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- #region Aggiungi Record  --}}
+    {{#if (has-permissions 'Category.create')}}
+    <div class="card-body">
+      <p class="text-success text-bold">
+        <i class="header-icon ion-android-add"> </i> AGGIUNGI UNA CATEGORIA
+      </p>
+      <table class="mae-table mb-3">
+        <thead>
+          <tr>
+            <th>NOME DELLA CATEGORIA *</th>
+            <th>DESCRIZIONE</th>
+            <th style="width: 260px;">CATEGORIA SUPERIORE</th>
+            <th style="width: 91px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input test-input-name type="text" class="form-control form-control-sm" value={{this.newRecord.name}} {{on 'input' (fn this.storeNewValue 'name' false)}}>
+            </td>
+            <td>
+              <textarea test-input-description rows="1" class="form-control form-control-sm" value={{this.newRecord.description}} {{on 'input' (fn this.storeNewValue 'description' false)}}></textarea>
+            </td>
+            <td>
+              <select class="form-control form-control-sm" value={{this.newRecord.parentCategory}}  {{on 'change' (fn this.storeNewValue 'parentCategory' false)}}>
+                <option value="0" selected>--</option>
+                {{#each this.allCategories as | parent|}}
+                  {{#if parent.name}}
+                  <option value={{parent.id}}>{{parent.name}}</option>
+                  {{/if}}
+                {{/each}}
+              </select>
+            </td>
+            <td>
+              <button test-save class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
+                {{#if this.saveNewVoice.isRunning}}
+                <i class="fa fa-refresh fa-spin mr-2"></i>
+                {{/if}}
+                {{#if this.saveNewVoice.isIdle}}
+                <i class="fa fa-save mr-2"></i>
+                {{/if}}
+                SALVA
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {{/if}}
+
+    {{!-- #endregion --}}
+
+    {{else}}
+    <div class="card">
+      <div class="card-body">
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+            <a href="#" class="alert-link" {{on 'click' this.start}}>Riprova</a>.
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  {{/if}}
+
+</div>
+{{yield}}

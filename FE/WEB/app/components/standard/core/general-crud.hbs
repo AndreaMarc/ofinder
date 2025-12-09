@@ -1,0 +1,210 @@
+<div class="general-crud" ...attributes>
+  {{#if (eq this.available 'waiting')}}
+    {{!-- WAITING --}}
+    <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{else if (eq this.available 'unavailable')}}
+    {{!-- UNAVAILABLE --}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+      {{this.error}} 
+      <a href="#" class="ml-2" {{on 'click' this.start}}>
+        <Standard::TR @key="component.generalCrud.retry" @default="Riprova"/>.
+      </a>
+    </Standard::LoadingSpinner>
+  {{else if (eq this.available 'available')}}
+    {{!-- AVAILABLE --}}
+    <div class="main-card mb-3 card">
+
+      <div class="card-body underline pt-2 pb-2">
+        <div class="row">
+          <div class="col-md-10">
+            {{#if (eq this.addEmptyOption '1')}}
+              {{!-- mostro select di scelta dell'entità --}}
+
+              <div class="input-group mr-2">
+                <div class="input-group-prepend">
+                  <button class="btn btn-sm btn-primary" type="button" {{on 'click' this.start}}>
+                    <i class="fa fa-refresh mr-2 {{if this.findRecords.isRunning 'fa-spin'}}"></i> <Standard::TR @key="component.generalCrud.choiceEntity" @default="SCEGLI L'ENTITÀ"/>
+                  </button>
+                </div>
+                <div>
+                  <Standard::SelectTwo @addEmptyOption={{this.addEmptyOption}} @options={{this.select2Entities}} class="form-control form-control-sm" @changeCB={{this.setEntity}}/>                                  
+                </div>
+                <div class="input-group-append">
+                  <button {{on 'click' this.refresh}} class="btn btn-sm btn-light" type="button">
+                    <i class="fas fa-refresh"></i>
+                  </button>
+                </div>
+              </div>
+
+            {{else}}
+              {{!-- mostro la sola entità passata per argomento --}}
+              <h6 class="text-success mb-0">
+                <Standard::TR @key="component.generalCrud.crudOnEntity" @default="CRUD SULL'ENTITÀ"/>: <span><em>{{this.uniqueIdentitity}}</em></span>
+              </h6>
+            {{/if}}
+          </div>
+          <div class="col-md-2">
+            <select {{on 'change' this.changePageSize}} value={{this.pageSize}} class="form-control form-control-sm">
+              <option value="5" selected={{if (eq this.pageSize "5") true}}>5 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+              <option value="10" selected={{if (eq this.pageSize "10") true}}>10 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+              <option value="20" selected={{if (eq this.pageSize "20") true}}>20 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+              <option value="50" selected={{if (eq this.pageSize "50") true}}>50 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+              <option value="100" selected={{if (eq this.pageSize "100") true}}>100 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+              <option value="500" selected={{if (eq this.pageSize "500") true}}>500 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+              <option value="1000" selected={{if (eq this.pageSize "1000") true}}>1000 <Standard::TR @key="component.generalCrud.record" @default="record"/></option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="card-body pt-0">
+        {{#if (not-eq this.userEntitySelected '')}}
+        {{!-- #region Area di ricerca --}}
+          <div class="row mb-2 pt-2 pb-2">
+            <div class="col-md-12 text-center">
+              <Standard::PaginationButtons @currentPageNumber={{this.pageNumber}} @totalRecords={{this.recordsLength}} @recordsPerPage={{this.pageSize}} @this.maxButtonsNumber="5" @cb={{this.changePageNumber}}/>
+            </div>
+          </div>
+          {{!-- #endregion --}}
+          {{!-- Area Risultati --}}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="container-div">
+                <div class="content-div table-responsive">
+                  <table class="mae-table mb-3 crud-table" {{did-insert this.setupResizableColumns}}>
+                    {{!-- #region Intestazione tabella: mostra i nomi delle colonne --}}
+                    <thead>
+                      <tr>
+                        <th class="px-80 resizable" colspan="2"><small>#</small></th>
+                        <th class="px-280 resizable">Id/Guid<br /><small>string</small></th>
+                        {{#each this.tableStructure as |column|}}
+                          <th class="width px-{{column.width}} resizable">{{column.name}}<br /><small>{{column.inputType}}</small></th>
+                        {{/each}}
+                        <th class="px-100 resizable"></th>
+                      </tr>
+                    </thead>
+                    {{!-- #endregion --}}
+                    <tbody>
+                      {{!-- #region NUOVO RECORD --}}
+                      <tr class="new">
+                        <td colspan="2"><Standard::TR @key="component.generalCrud.newRecord" @default="NUOVO<br />RECORD"/></td>
+                        <td>
+                          <Standard::TextareaAutosize @size="sm" @rows="1" @autosize="on" @cb={{(fn this.updateNewRecord 'id' false)}}/>
+                        </td>
+                        {{#each this.tableStructure as |column|}}
+                          <td>
+                            {{#if (eq column.inputType 'string')}}
+                              <Standard::TextareaAutosize @size="sm" @rows="1" @autosize="on" @value={{get-prop this.recordStructure column.name}} @cb={{(fn this.updateNewRecord column.name false)}}/>
+                            {{else if (eq column.inputType 'date')}}
+                              <input {{on 'input' (fn this.updateNewRecord column.name false)}} type="date" value={{get-prop this.recordStructure column.name}} class="form-control form-control-sm">
+                            {{else if (eq column.inputType 'number')}}
+                              <input {{on 'input' (fn this.updateNewRecord column.name false)}} type="number" step="0.01" value={{get-prop this.recordStructure column.name}} class="form-control form-control-sm">
+                            {{else if (eq column.inputType 'boolean')}}
+                              <input {{on 'change' (fn this.updateNewRecord column.name true)}} type="checkbox" checked={{get-prop this.recordStructure column.name}} class="form-control form-control-sm">
+                            {{else}}
+                              <Standard::TextareaAutosize @size="sm" @rows="1" @autosize="off" @value={{get-prop this.recordStructure column.name}} @type={{column.inputType}} @cb={{(fn this.updateNewRecord column.name false)}}/>
+                            {{/if}}
+                          </td>
+                        {{/each}}
+                        <td class="text-right">
+                          <button {{on 'click' this.saveNewRecord}} class="btn btn-sm btn-success btn-hover-shine w-100" type="button">
+                            {{#if this.saveNew.isRunning}}
+                              <i class="fa mr-2 fa-spinner fa-spin"></i>
+                            {{else}}
+                              <i class="fa mr-2 fa-save"></i>
+                            {{/if}}
+                            <Standard::TR @key="component.generalCrud.create" @default="CREA"/>                            
+                          </button>
+                        </td>
+                      </tr>
+                      {{!-- #endregion --}}
+
+                      {{!-- #region FILTRI DI RICERCA --}}
+                      <tr class="search">
+                        <td colspan="2"><Standard::TR @key="component.generalCrud.filters" @default="FILTRI DI<br />RICERCA"/></td>
+                        <td>
+                          <Standard::Core::FilterSelect @column="id" @size="sm" @inputType="string" @autosize="off" @cbChange={{this.changeFilter}} @cbOrder={{this.changeOrder}}/>
+                        </td>
+                        {{#each this.tableStructure as |column|}}
+                          <td>
+                            <Standard::Core::FilterSelect @column={{column.name}} @size="sm" @inputType={{column.inputType}} @autosize="off" @cbChange={{this.changeFilter}} @cbOrder={{this.changeOrder}} @value={{get-prop this.recordStructure column.name}}/>
+                          </td>
+                        {{/each}}
+                        <td class="text-right">
+                          <button {{on 'click' (perform this.findRecords)}} class="btn btn-sm btn-secondary btn-hover-shine btn-wide" type="button">
+                            <Standard::TR @key="component.generalCrud.find" @default="CERCA"/>
+                          </button>
+                        </td>
+                      </tr>
+                      {{!-- #endregion --}}
+
+                      {{!-- #region RISULTATI DI RICERCA --}}
+                      {{#each this.records as |record index|}}
+                      <tr class="{{if (eq this.selectedRow index) 'selected'}}">
+                        <td class="align-middle">
+                          {{this.numberRecord index this.pageNumber this.pageSize}}
+                        </td>
+                        <td class="align-bottom text-center">
+                          <input type="radio" name="general-crud-radio" {{on 'change' (fn this.selectRow index)}} disabled={{this.recordChanged}}>
+                        </td>
+                        <td>
+                          <Standard::TextareaAutosize @size="sm" @rows="1" @autosize="on" @value={{record.id}} @disabled={{(not-eq this.selectedRow index)}} @cb={{(fn this.changeExisting record 'id' false)}}/>
+                        </td>
+                        {{#each this.tableStructure as |column |}}
+                          <td>
+                            {{#if (eq column.inputType 'string')}}
+                              <Standard::TextareaAutosize @size="sm" @rows="1" @autosize="off" @value={{get-prop record column.name}} @disabled={{(not-eq this.selectedRow index)}} @cb={{(fn this.changeExisting record column.name false)}}/>
+                            {{else if (eq column.inputType 'date')}}
+                              <input type="date" value={{get-prop record column.name}} disabled={{(not-eq this.selectedRow index)}} {{on 'input' (fn this.changeExisting record column.name false)}} class="form-control form-control-sm">
+                            {{else if (eq column.inputType 'number')}}
+                              <input type="number" step="0.01" value={{get-prop record column.name}} disabled={{(not-eq this.selectedRow index)}} {{on 'input' (fn this.changeExisting record column.name false)}} class="form-control form-control-sm">
+                            {{else if (eq column.inputType 'boolean')}}
+                              <input type="checkbox" checked={{get-prop record column.name}} disabled={{(not-eq this.selectedRow index)}} {{on 'input' (fn this.changeExisting record column.name true)}} class="form-control form-control-sm">
+                            {{else}}
+                              <Standard::TextareaAutosize @size="sm" @rows="1" @autosize="off" @value={{get-prop record column.name}} @type={{column.inputType}} @disabled={{(not-eq this.selectedRow index)}} @cb={{(fn this.changeExisting record column.name false)}}/>
+                            {{/if}}
+                          </td>
+                        {{/each}}
+                        <td class="text-center">
+                          {{#if (eq this.selectedRow index)}}
+                            {{#if this.recordChanged}}
+                              <button disabled={{(not-eq this.selectedRow index)}} {{on 'click' (fn this.undoChange record)}} class="btn btn-sm btn-success btn-icon-only btn-hover-shine" type="button">
+                                <i class="fa fa-undo"></i>
+                              </button>
+                              <button disabled={{(not-eq this.selectedRow index)}} {{on 'click' (fn this.saveChange record)}} class="btn btn-sm btn-warning btn-icon-only btn-hover-shine" type="button">
+                                <i class="fa {{if this.saveChangeConfirmed.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                              </button>
+                            {{else}}
+                              <button {{on 'click' (fn this.deleteRecord record)}} class="btn btn-sm btn-danger btn-icon-only btn-hover-shine" type="button">
+                                <i class="fa {{if this.deleteRecordConfirmed.isRunning 'fa-spinner fa-spin' 'fa-trash'}}"></i>
+                              </button>
+                            {{/if}}
+                          {{/if}}
+                        </td>
+                      </tr>
+                      {{/each}}
+                      {{!-- #endregion --}}
+                    </tbody>
+                  </table>
+
+                  {{#if this.findRecords.isRunning}}
+                    <div class="w-100 p-2 text-center">
+                      <Standard::LoadingSpinner @icon="true" @style="3" class="alert-warning w-80">
+                        <Standard::TR @key="component.generalCrud.wait" @default="Attendere prego..."/>
+                      </Standard::LoadingSpinner>
+                    </div>
+                  {{/if}}
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        {{/if}}
+      </div>
+
+
+    </div>
+  {{/if}}
+</div>
+{{yield}}

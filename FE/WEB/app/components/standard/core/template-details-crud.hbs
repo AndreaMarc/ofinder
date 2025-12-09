@@ -1,0 +1,174 @@
+<div class="template-details" {{did-insert this.start @model}} ...attributes> {{!--  {{did-update this.start @model}} --}}
+  {{#if (eq this.available 'waiting')}}
+  <div class="main-card card">
+    <div class="p-2">
+      <div class="alert alert-info fade show" role="alert">
+          <i class="fa fa-spinner fa-spin mr-2"></i> Recupero dati in corso, attendere prego...
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if (eq this.available 'unavailable')}}
+  <div class="main-card card">
+    <div class="p-2">
+      <div class="alert alert-danger fade show m-0" role="alert">
+        <i class="fa fa-exclamation-triangle mr-2"></i> Servizio non disponibile.
+        <a href="#" class="alert-link" {{on 'click' this.start}}>
+          Riprova
+        </a>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if (eq this.available 'available')}}
+    {{#if (and this.showLangArea (has-permissions 'Template.create') (has-permissions 'Template.update'))}}
+    <div class="main-card card mb-3">
+      <div class="card-body p-2">
+        <div class="row m-0">
+          {{#each this.langToShow as | lang |}}
+          <div {{on 'click' (fn this.createOpenTemplate lang.templateExists lang.templateCode lang.langCode lang.categoryId lang.templateName)}} class="lang-card {{if (eq lang.langCode this.template.language) 'bordered'}} col-md-2 text-center">
+            <span class="flag large {{lang.flagCode}} d-block m-auto"></span> {{this.code}}
+            {{#if lang.complete}}
+            <div class="mb-2 me-2 badge rounded-pill bg-success text-white">COMPLETO</div>
+            {{else}}
+            <div class="mb-2 me-2 badge rounded-pill bg-warning text-white">INCOMPLETO</div>
+            {{/if}}
+          </div>
+          {{/each}}
+          <div class="col-md-12">
+            <small class="form-text text-muted opacity-4"><em>Sono considerati Completi i template che abbiano il Contenuto non vuoto e lo Stato attivo</em></small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/if}}
+
+
+  <div class="main-card card mb-3">
+    <div class="card-body underline">
+      <form class="">
+        <div class="form-row">
+          <div class="col-md-12">
+            <div class="position-relative form-group">
+              <span class="ml-5 opacity-5 float-right"><em>Categoria: {{this.template.category.name}}</em></span>
+              <label class="">Titolo</label>
+              <input type="text" class="form-control" value={{this.template.name}} {{on 'input' (fn this.storeNewValue 'name')}} disabled={{(eq this.erasable false)}}>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-12">
+            <div class="position-relative form-group">
+              <label class="">Descrizione (ad uso interno)</label>
+              <textarea rows="2" class="form-control" value={{this.template.description}} {{on 'input' (fn this.storeNewValue 'description')}}></textarea>
+            </div>
+          </div>
+        </div>
+        {{#if this.showFeaturedImage}}
+        <div class="form-row">
+          <div class="col-md-10">
+            <div class="position-relative form-group">
+              <label class="">Immagine in evidenza</label>
+              <input type="text" maxlength="250" class="form-control" value={{this.template.featuredImage}} {{on 'input' (fn this.storeNewValue 'featuredImage')}}>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <Standard::ShowImage @image={{this.template.featuredImage}} @byUrl="true" />
+          </div>
+        </div>
+        {{/if}}
+        {{#if this.showObject}}
+        <div class="form-row">
+          <div class="col-md-12">
+            <div class="position-relative form-group">
+              <label class="">Oggetto dell'e-mail</label>
+              <input type="text" maxlength="250" class="form-control" value={{this.template.objectText}} {{on 'input' (fn this.storeNewValue 'objectText')}}>
+            </div>
+          </div>
+        </div>
+        {{/if}}
+        {{#if this.showTags}}
+        <div class="form-row">
+          <div class="col-md-12">
+            <div class="position-relative form-group">
+              <label class="">Tags</label>
+              <textarea rows="2" class="form-control" value={{this.template.tags}} {{on 'input' (fn this.storeNewValue 'tags')}}></textarea>
+              <small class="form-text text-muted">Inserire i tags alfanumerici separati da virgola. Non sono ammessi spazi nè caratteri speciali (eccetto l'underscore).</small>
+            </div>
+          </div>
+        </div>
+        {{/if}}
+        <div class="form-row">
+          <div class="col-md-2">
+            <div class="position-relative form-group">
+              <label class="">Attivo?</label>
+              <br />
+              <input checked={{this.template.active}} class="bootstrapToggle form-check-input" type="checkbox" data-toggle="toggle" data-size="sm" data-onstyle="success" data-offstyle="danger" data-on="Sì" data-off="No">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="position-relative form-group">
+              <label class="">Lingua</label>
+              <br />
+              <span class="flag large {{convertLangCode this.template.language}} d-inline-block mr-2"></span>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="position-relative form-group">
+              <label class="">Codice</label>
+              <input value={{this.template.code}} class="form-control form-control-sm" type="text" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-12">
+            <div class="position-relative form-group">
+              <label class="">Contenuto HTML</label>
+              <Standard::CkEditor @defaultValue={{this.template.content}} @reload={{this.ckReload}} @changeCallback={{this.changeHtml}}/>
+            </div>
+          </div>
+        </div>
+        {{#if this.stp.mailerUsesAltText}}
+        <div class="form-row">
+          <div class="col-md-12">
+            <div class="position-relative form-group">
+              <label class="">Contenuto alternativo (non HTML)</label>
+              <textarea rows="2" class="form-control" value={{this.template.contentNoHtml}} {{on 'input' (fn this.storeNewValue 'contentNoHtml')}}></textarea>
+              <small class="form-text text-muted">Usare \r\n (codici ASCII) per il ritorno a capo.</small>
+            </div>
+          </div>
+        </div>
+        {{/if}}
+
+        <div class="form-row pt-3 mb-2">
+          <div class="col-md-4">
+            {{#if (and this.erasable (has-permissions 'Template.delete'))}}
+              <button class="btn-hover-shine btn btn-danger" {{on 'click' this.delTemplate}} type="button">ELIMINA</button>
+            {{/if}}
+          </div>
+          <div class="col-md-4 text-center">
+            {{#if this.localState}}
+            <div class="mb-2 me-2 badge bg-success text-white">STATO:<br />COMPLETO</div>
+            {{else}}
+            <div class="mb-2 me-2 badge bg-warning text-white">STATO:<br />INCOMPLETO</div>
+            {{/if}}
+          </div>
+          <div class="col-md-4 text-right">
+            {{#if (and (has-permissions 'Template.create') (has-permissions 'Template.update'))}}
+            <button disabled={{this.savedChanges}} {{on 'click' (perform this.save)}} class="btn-hover-shine btn btn-primary" type="button">
+              <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+              SALVA
+            </button>
+            {{/if}}
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  {{/if}}
+</div>
+{{yield}}

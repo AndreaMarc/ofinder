@@ -1,0 +1,24 @@
+.template-details {
+
+  .lang-card {
+    cursor: pointer;
+    margin-bottom: 1em;
+    transition-duration: 60ms;
+  }
+  .lang-card.bordered {
+    border-bottom: 4px solid #16aaff;
+  }
+  .lang-card:not(.bordered):hover {
+    border-bottom: 4px solid #ced4da;
+  }
+
+  .change-category {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+  .change-category-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

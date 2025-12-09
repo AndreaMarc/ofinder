@@ -1,0 +1,26 @@
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.log
+*.tmp
+*.temp
+
+# Documentation cache
+FRAMEWORK_KNOWLEDGE.md
+
+# Cordova
+APP/platforms/
+APP/plugins/
+APP/www/
+
+# FE - See FE/WEB/.gitignore for frontend-specific ignores

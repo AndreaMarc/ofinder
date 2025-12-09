@@ -1,0 +1,24 @@
+.ticket-operators {
+  .mae-table {
+    background: #ffffff;
+
+    .col-img {
+      width: 60px;
+    }
+    .col-operator {
+      width: auto;
+    }
+    .col-master {
+      width: 100px;
+    }
+    .col-btn {
+      width: 60px;
+    }
+  }
+
+  .ticket-operator-user-image {
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,171 @@
+<div class="media-categories main-card card" ...attributes>
+  {{#if (has-permissions 'MediaCategory.read')}}
+    {{#if this.available}}
+    <div class="card-header text-success">
+      <i class="header-icon pe-7s-album"></i> GESTIONE DELLA STRUTTURA
+    </div>
+
+    <div class="card-body underline">
+      <div class="row">
+
+        <div class="col-md-12">
+          {{!-- #region elenco record (tree view) --}}
+          {{#if this.findRecords.isRunning}}
+          <Standard::LoadingSpinner @icon='1' @msg="Caricamento categorie in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+          {{#if this.findRecords.isIdle}}
+            {{#if (eq this.recordsLength 0)}}
+              <p class="m-3"><em>Non ci sono categorie da mostrare</em></p>
+            {{else}}
+              <div class="input-group mb-3 text-right">
+                <input type="search" incremental placeholder="..." autocomplete="off" class="find-category form-control form-control-sm">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary btn-sm" disabled type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' this.start}}>
+                  <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+                </button>
+              </div>
+
+              <table class="col-md-12 mae-table" id="categoriesTree">
+                <colgroup>
+                  <col width="400px"/>
+                  <col width="82px"/>
+                  <col/>
+                  <col/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>TIPOLOGIA - CATEGORIA - ALBUM</th>
+                    <th>ORDINAMENTO</th>
+                    <th class="text-center">CANCELLAZIONE CON RECUPERO DEL CONTENUTO</th>
+                    <th class="text-right">CANCELLAZIONE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td class="text-left"></td>
+                    <td class="text-center"></td>
+                    <td class="text-right"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="m-2 ml-0 opacity-3">
+                <smal><em>Shift+Click per modificare il nome.</em></smal>
+              </p>
+            {{/if}}
+          {{/if}}
+          {{!-- #endregion --}}
+        </div>
+      </div>
+    </div>
+
+    {{!-- #region Aggiungi Record  --}}
+    {{#if (has-permissions 'MediaCategory.create')}}
+      <div class="card-body">
+        <div class="card-header">
+          <ul class="nav">
+            <li class="nav-item">
+              <a data-toggle="tab" href="#media-category-0" class="active nav-link">Aggiungi Tipologia</a>
+            </li>
+            <li class="nav-item">
+              <a data-toggle="tab" href="#media-category-1" class="nav-link">Aggiungi Categoria</a>
+            </li>
+            <li class="nav-item">
+              <a data-toggle="tab" href="#media-category-2" class="nav-link">Aggiungi Album</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card-body">
+          <div class="tab-content">
+            {{!-- aggiungi nuova tipologia --}}
+            <div class="tab-pane active show" id="media-category-0" role="tabpanel">
+              <div class="row">
+                <div class="col-md-3">
+                  <label>Nome della Tipologia</label>
+                  {{!-- template-lint-disable require-input-label --}}
+                  <input {{on 'input' (fn this.storeNewValue 'name' false)}} value={{this.newRecord.name}} type="text" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-9 align-bottom">
+                  <lable><br /></lable>
+                  <button class="d-block btn btn-sm btn-primary btn-shine-hover" type="button" {{on 'click' (fn (perform this.saveNewVoice) 'typology')}}>CREA</button>
+                </div>
+              </div>
+            </div>
+            {{!-- aggiungi nuova categoria --}}
+            <div class="tab-pane" id="media-category-1" role="tabpanel">
+              <div class="row">
+                <div class="col-md-3">
+                  <label>Scegli la Tipologia</label>
+                  <select class="form-control form-control-sm" {{on 'change' this.setTypology}}>
+                    <option value="">--</option>
+                    {{#each this.getTypology as | typology |}}
+                      <option value="{{typology.id}}" selected={{(eq this.newTypology typology.id)}}>{{typology.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>Nome della Categoria</label>
+                  <input {{on 'input' (fn this.storeNewValue 'name' false)}} value={{this.newRecord.name}} type="text" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-6 align-bottom">
+                  <lable><br /></lable>
+                  <button class="d-block btn btn-sm btn-primary btn-shine-hover" type="button" {{on 'click' (fn (perform this.saveNewVoice) 'category')}}>CREA</button>
+                </div>
+              </div>
+            </div>
+            {{!-- aggiungi nuovo album --}}
+            <div class="tab-pane" id="media-category-2" role="tabpanel">
+              <div class="row">
+                <div class="col-md-3">
+                  <label>Scegli la Tipologia</label>
+                  <select class="form-control form-control-sm" {{on 'change' this.setTypology}}>
+                    <option value="">--</option>
+                    {{#each this.getTypology as | typology |}}
+                      <option value="{{typology.id}}" selected={{(eq this.newTypology typology.id)}}>{{typology.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>Scegli la Categoria</label>
+                  <select class="form-control form-control-sm" {{on 'change' this.setCategory}}>
+                    <option value="">--</option>
+                    {{#each this.getCategory as | typology |}}
+                      <option value="{{typology.id}}">{{typology.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>Nome dell'Album</label>
+                  <input {{on 'input' (fn this.storeNewValue 'name' false)}} value={{this.newRecord.name}} type="text" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-3 align-bottom">
+                  <lable><br /></lable>
+                  <button class="d-block btn btn-sm btn-primary btn-shine-hover" type="button" {{on 'click' (fn (perform this.saveNewVoice) 'album')}}>CREA</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+    {{!-- #endregion --}}
+
+    {{else}}
+    <div class="card">
+      <div class="card-body">
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+            <a href="#" class="alert-link" {{on 'click' this.start}}>Riprova</a>.
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  {{/if}}
+
+</div>
+{{yield}}

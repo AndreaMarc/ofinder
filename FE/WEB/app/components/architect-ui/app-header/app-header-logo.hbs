@@ -1,0 +1,71 @@
+<div class="app-header__logo" {{did-insert this.start}}>
+    <div class="logo-src"></div>
+    <div class="header__pane ml-auto">
+        <div>
+            <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="app-header__mobile-menu">
+    <div>
+        <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+    </div>
+</div>
+<div class="app-header__menu">
+    <span>
+        <LinkTo @route="authenticated" class="btn btn-sm btn-icon-only btn-primary mr-2">
+            <span class="btn-icon-wrapper">
+                <i class="fa fa-home fa-w-6"></i>
+            </span>
+        </LinkTo>
+
+        {{#if (and this.showCustomMenu this.hasPerms)}}
+          <div class="dropdown d-inline">
+            <button type="button" data-toggle="dropdown" class="btn btn-sm btn-icon-only btn-primary mr-2">
+              <span class="btn-icon-wrapper">
+                <i class="{{this.customIcon}} fa-w-6"></i>
+              </span>
+            </button>
+
+            <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu dropdown-menu-xl dropdown-menu-right">
+              <div class="dropdown-menu-header">
+                <div class="dropdown-menu-header-inner pt-4 pb-4 {{this.popupBg}}">
+                  {{!-- template-lint-disable no-inline-styles --}}
+                  <div class="menu-header-image opacity-4" style="background-image: url('assets/images/dropdown-header/abstract7.jpg');"></div>
+                  <div class="menu-header-content text-center text-white {{this.styleHeaderClass}}">
+                    {{#if (not-eq this.customLabel '')}}
+                      <h5 class="menu-header-title">{{this.customLabel}}</h5>
+                    {{/if}}
+                    {{#if (not-eq this.customSubLabel '')}}
+                      <h6 class="menu-header-subtitle mt-0">
+                        {{this.customSubLabel}}
+                      </h6>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+
+              <Standard::CustomMenu/>
+            </div>
+          </div>
+        {{/if}}
+
+        <button type="button" class="btn btn-sm btn-icon-only btn-primary mobile-toggle-header-nav">
+            <span class="btn-icon-wrapper">
+                <i class="fa fa-ellipsis-v fa-w-6"></i>
+            </span>
+            {{#if this.showMobileAdvice}}
+            <span class="badge badge-dot badge-danger icon-anim-pulse mobile-dot-notifications">Notifications</span>
+            {{/if}}
+        </button>
+    </span>
+</div>
+{{yield}}

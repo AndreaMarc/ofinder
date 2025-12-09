@@ -1,0 +1,208 @@
+<div class="ticket-scopes p-3" {{did-update (perform this.preload) @lastRefresh}} ...attributes>
+  {{#if this.auth.license.canUseScopes}}
+
+  {{else}}
+
+  {{/if}}
+  <div class="row">
+    <div class="col-12 mb-3">
+      <div class="alert alert-secondary fade show mb-3" role="alert">
+        <strong>INFO:</strong> definisci gli Ambiti operativi in cui suddividere i Ticket (es: "problemi di accesso" oppure "problemi di natura economica" ecc) e assegna tali Ambiti ai Reparti di competenza.<br />
+        <small>Quando l'utente crea un ticket, sceglierà l'Ambito appropriato e la notifica di "nuovo ticket" arriverà {{if (and this.auth.license.canUseLeader this.auth.custom.canUseLeader) 'ai soli Capo-Area' 'agli Operatori'}} del reparto competente.</small>
+      </div>
+    </div>
+  </div>
+
+  {{!-- template-lint-disable require-input-label --}}
+  {{#if (or (eq this.available 'waiting') this.preload.isRunning)}}
+    <Standard::LoadingSpinner @icon='1' @msg="Caricamento in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+  {{else if (eq this.available 'unavailable')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+      Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' (perform this.preload)}}>Riprova.</a>
+    </Standard::LoadingSpinner>
+  {{else if (eq (length this.areas) 0)}}
+    <div class="row m-0 mb-4 underline">
+      <div class="col-md-12 mb-3">
+        <p class="p-5 text-warning">
+          <em>Non hai ancora definito l'elenco delle Aree.</em>
+        </p>
+      </div>
+    </div>
+  {{else}}
+    <div class="mb-3 card">
+      <div class="card-header card-header-tab-animation">
+          <ul class="nav nav-justified">
+              <li class="nav-item"><a data-toggle="tab" href="#ticket-scopes-tab-1" class="active nav-link">ELENCO AMBITI</a></li>
+              <li class="nav-item"><a data-toggle="tab" href="#ticket-scopes-tab-2" class="nav-link">CREAZIONE AMBITO</a></li>
+              <li class="nav-item"><a data-toggle="tab" href="#ticket-scopes-tab-3" class="nav-link">ASSOCIAZIONE REPARTI</a></li>
+          </ul>
+      </div>
+
+      <div class="card-body pt-4">
+        <div class="tab-content">
+          {{!-- LISTA AMBITI --}}
+          <div class="tab-pane active" id="ticket-scopes-tab-1" role="tabpanel">
+            {{#if (eq (length this.pertinences) 0)}}
+              <div class="col-md-12 mb-3">
+                <p class="p-0 text-warning">
+                  <em>Non hai ancora definito Ambiti.</em>
+                </p>
+              </div>
+            {{else}}
+              <div class="col-md-12 mb-3">
+                <table class="mae-table">
+                  <thead>
+                    {{#unless this.inEditing}}
+                      <tr>
+                        <th>AMBITO</th>
+                        <th class="border-left text-center">VISIBILE A</th>
+                        <th class="border-left">REPARTI ASSOCIATI</th>
+                      </tr>
+                    {{/unless}}
+                  </thead>
+                  <tbody>
+                    {{#if this.inEditing}}
+                      <tr>
+                        <td colspan="3" class="p-0 text-center">
+                          <h4 class="text-warning">MODIFICA AMBITO</h4>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3" class="p-0 text-center">
+                          <div class="row m-0">
+                            <div class="col-12 col-md-9 p-2 mb-3">
+                              <label>Nome dell'ambito<br /></label>
+                              <input {{on 'input' this.setName}} value={{this.editRecord.name}} id="ticket-scopes-edit-name" type="text" maxlength="30" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-12 col-md-3 p-2 mb-3">
+                              <label>Visibile a</label>
+                              <select {{on 'change' (fn this.updatePertinence 'availableFor')}} class="form-control form-control-sm">
+                                <option value="0" selected={{(eq this.availableFor 0)}}>Non loggati</option>
+                                <option value="1" selected={{(eq this.availableFor 1)}}>Loggati</option>
+                                <option value="0" selected={{(eq this.availableFor 2)}}>Tutti</option>
+                              </select>
+                            </div>
+                            <div class="col-12 mb-3 p-1 text-center">
+                              <button {{on 'click' this.uneditPertinence}} class="btn btn-sm btn-secondary mr-2" type="button">
+                                ANNULA
+                              </button>
+                              <button {{on 'click' this.saveEdit}} class="btn btn-sm btn-primary mr-2" type="button">
+                                <i class="mr-2 fa {{if this.saveEditConfirmed.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                                SALVA
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    {{else}}
+                      {{#each this.pertinences as | pertinence |}}
+                        <tr>
+                          <td class="text-left">
+
+                            <div class="dropdown d-inline-block">
+                              <button disabled={{this.inEditing}} type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn btn-danger btn-shadow mr-1">
+                                  {{pertinence.name}}
+                                  {{#if this.deletePertinenceConfirmed.isRunning}}
+                                    <i class="ml-2 fa fa-spinner fa-spin"></i>
+                                  {{/if}}
+                              </button>
+                              <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu">
+                                  <button {{on 'click' (fn this.editPertinence pertinence)}} type="button" tabindex="0" class="dropdown-item btn-warning mb-1" disabled={{this.inEditing}}>
+                                    <i class="dropdown-icon fa fa-edit"> </i><span>Modifica</span>
+                                  </button>
+                                  <button {{on 'click' (fn this.deletePertinence pertinence)}} type="button" tabindex="0" class="dropdown-item btn-danger" disabled={{this.inEditing}}>
+                                    <i class="dropdown-icon fa fa-trash"> </i><span>Elimina</span>
+                                  </button>
+
+                              </div>
+                            </div>
+                          </td>
+                          <td class="border-left text-center">
+                            <small>
+                              {{#if (eq pertinence.availableFor 0)}}
+                                NON LOGGATI
+                              {{else if (eq pertinence.availableFor 1)}}
+                                LOGGATI
+                              {{else if (eq pertinence.availableFor 2)}}
+                                TUTTI
+                              {{/if}}
+                            </small>
+                          </td>
+                          <td class="border-left">
+                            {{#if (eq (length pertinence.ticketPertinenceMappings) 0)}}
+                              <p class="text-danger mb-0">Non hai ancora assegnato Reparti di competenza a questo ambito!<br /><small>L'ambito non sarà quindi visibile agli utenti.</small></p>
+                            {{else}}
+                              {{#each pertinence.ticketPertinenceMappings as | mapping |}}
+                                <button disabled={{this.inEditing}} {{on 'click' (fn this.deleteAssociation mapping.id)}} class="mb-1 mr-1 btn btn-warning" type="button">
+                                  {{mapping.area.name}}
+                                  <span class="badge badge-pill badge-light">
+                                    <i class="text-danger fa fa-trash"></i>
+                                  </span>
+                                </button>
+                              {{/each}}
+                            {{/if}}
+                          </td>
+                        </tr>
+                      {{/each}}
+                    {{/if}}
+
+                  </tbody>
+                </table>
+              </div>
+            {{/if}}
+          </div>
+          {{!-- CREAZIONE AMBITO --}}
+          <div class="tab-pane" id="ticket-scopes-tab-2" role="tabpanel">
+            <div class="row m-0">
+              <div class="col-12 mb-3">
+                <label for="ticket-scopes-new-name">Nome del nuovo ambito</label>
+                <input {{on 'input' this.setName}} value={{this.newRecord.name}} id="ticket-scopes-new-name" type="text" maxlength="30" class="form-control form-control-sm">
+                <small class="form-text text-muted">Esempio: "Problemi di accesso" oppure "Questioni di natura commerciale". Max 30 caratteri</small>
+              </div>
+              {{#if (gt this.canChoiseUnlogged 0)}}
+                <div class="col-12 mb-3">
+                  <label>Questo ambito é disponibile per quali utenti?</label>
+                  <select {{on 'change' this.setUnlogged}} class="form-control form-control-sm">
+                    <option value="0" selected={{(eq this.newRecord.availableFor 0)}}>Non loggati</option>
+                    <option value="1" selected={{(eq this.newRecord.availableFor 1)}}>Loggati</option>
+                    <option value="2" selected={{(eq this.newRecord.availableFor 2)}}>Tutti</option>
+                  </select>
+                </div>
+              {{/if}}
+              <div class="col-12 mt-1 mb-3 text-right">
+                <button {{on 'click' this.addPertinence}} type="button" class="btn btn-primary btn-hover-shine">
+                  <i class="fa {{if this.addPertinenceConfirmed.isRunning 'fa-spinner fa-spin' 'fa-plus-circle'}}"></i>
+                  SALVA
+                </button>
+              </div>
+            </div>
+          </div>
+          {{!-- ASSOCIAZIONE AREE --}}
+          <div class="tab-pane" id="ticket-scopes-tab-3" role="tabpanel">
+            <div class="row m-0">
+              <div class="col-12 col-md-5 mb-3">
+                <label for="ticket-scopes-new-name">Seleziona l'Ambito</label>
+                <Standard::SelectTwo @addEmptyOption="1" @changeCB={{this.selectPertinence}} @options={{this.pertinencesString}}/>
+              </div>
+              <div class="col-12 col-md-5 mb-3">
+                <label for="ticket-scopes-new-name">
+                  Seleziona l'Area da associare
+                  <Standard::ToolTip @color="black" @title="Sono mostrati i soli Reparti che hanno almeno un Operatore associato">
+                    <i class="fa fa-question-circle"></i>
+                  </Standard::ToolTip>
+                </label>
+                <Standard::SelectTwo @addEmptyOption="1" @changeCB={{this.selectAreaToAssign}} @options={{this.availableAreas}}/>
+              </div>
+              <div class="col-12 col-md-2 mb-3 d-flex flex-column">
+                <button {{on 'click' this.saveAssociation}} type="button" class="btn btn-primary btn-hover-shine btn-block align-bottom mt-auto mb-0">
+                  <i class="fa {{if this.saveAssociationConfirmed.isRunning 'fa-spinner fa-spin' 'fa-plus-circle'}}"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

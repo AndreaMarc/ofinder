@@ -1,0 +1,22 @@
+<div class="slider-light" id="{{this.sliderId}}" data-numberPics="{{this.numberPics}}" {{did-insert this.startSlider}} ...attributes>
+    <div class="slick-slider">
+        {{#each this.sliderPics as |sliderPic|}}
+            <div>
+                <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-plum-plate" tabindex="-1">
+                    <Standard::ShowImage @image="{{sliderPic.url}}" @size="lg" @byUrl={{sliderPic.byUrl}} class="slide-img-bg {{if (and (eq sliderPic.title '') (eq sliderPic.description '') (eq sliderPic.titleKey '') (eq sliderPic.descriptionKey '')) 'opacity-10'}}"/>
+                    {{#if (or (not-eq sliderPic.title '') (not-eq sliderPic.description '') (not-eq sliderPic.titleKey '') (not-eq sliderPic.descriptionKey ''))}}
+                        <div class="slider-content">
+                            <h3>
+                                <Standard::TR @key="{{sliderPic.titleKey}}" @default="{{sliderPic.title}}"/>
+                            </h3>
+                            <p>
+                                <Standard::TR @key="{{sliderPic.descriptionKey}}" @default="{{sliderPic.description}}"/>
+                            </p>
+                        </div>                    
+                    {{/if}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+{{yield}}

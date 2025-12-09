@@ -1,0 +1,19 @@
+<div class="app-container {{this.applicationStyle}}" ...attributes>
+  {{#if (and this.session this.session.isAuthenticated)}}
+      <ArchitectUi::AppHeader::AppHeader/>
+      <div class="app-main">
+        <ArchitectUi::AppSidebar::AppSidebar/>
+        <div class="app-main__outer">
+          <div class="app-main__inner">
+            {{outlet}}
+          </div>
+          <ArchitectUi::AppFooter::AppFooter/>
+        </div>
+      </div>
+  {{else}}
+      {{outlet}}
+  {{/if}}
+</div>
+{{#if (and this.session this.session.isAuthenticated)}}
+  <ArchitectUi::AppDrawer::AppDrawer/>
+{{/if}}

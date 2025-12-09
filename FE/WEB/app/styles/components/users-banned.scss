@@ -1,0 +1,18 @@
+.users-banned {
+  .all-tenants-users {
+    accent-color: #b81f44;
+    scale: 1.3;
+  }
+  .history-users {
+    scale: 1.3;
+  }
+
+  .line-record.unactive{
+    background-color: #fbfbfb;
+    color: #aaaaaa;
+
+    .show-btn {
+      display: none;
+    }
+  }
+}

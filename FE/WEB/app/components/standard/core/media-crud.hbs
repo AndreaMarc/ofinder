@@ -1,0 +1,414 @@
+{{!-- template-lint-disable no-inline-styles --}}
+{{!-- template-lint-disable require-input-label --}}
+<div class="media-crud" {{did-insert this.afterRenderHook}} ...attributes>
+  {{#if (has-permissions 'MediaFile.read')}}
+
+    {{!-- WAITING --}}
+    {{#if (eq this.serviceAvailable 'waiting')}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <p>
+            <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+          </p>
+        </div>
+      </div>
+    {{/if}}
+
+    {{!-- UNAVAILABLE --}}
+    {{#if (eq this.serviceAvailable 'unavailable')}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <p>
+            <em class="text-danger mb-3">Il servizio non è al momento disponibile.</em>
+          </p>
+          <p>
+            <button class="mb-2 me-2 btn-transition btn btn-outline-danger" type="button" {{on 'click' (perform this.fetchMedia)}}>Riprova</button>
+          </p>
+        </div>
+      </div>
+    {{/if}}
+
+    {{!-- AVAILABLE --}}
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div id="media-crud-container" class="row">
+        {{!-- Selezione Tab (Elenco/Caricamento) --}}
+        {{#if (has-permissions 'MediaFile.create')}}
+          <div class="col-12">
+            <div class="main-card card">
+              <div class="card-body">
+                  <ul class="tabs-animated-shadow tabs-animated nav">
+                    <li class="nav-item">
+                      <a test-mediaList data-toggle="tab" href="#media-crud-tab-0" class="active nav-link">
+                        <span>ELENCO FILE</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a test-mediaupload data-toggle="tab" href="#media-crud-tab-1" class="nav-link">
+                        <span>CARICAMENTO</span>
+                      </a>
+                    </li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+        {{/if}}
+
+        <div class="col-md-12 text-center pt-4">
+          <div class="main-card mb-3 card">
+
+              <div class="tab-content pt-3">
+                {{!-- ELENCO FILE --}}
+                <div class="tab-pane active" id="media-crud-tab-0" role="tabpanel">
+
+                  <div class="card-header">
+                    FILTRI
+                  </div>
+                  <div class="card-body pt-1 pb-1">
+                    <div class="row mb-1">
+                      {{!-- Area filtri di ricerca file --}}
+                      <div class="col-md-12">
+                        <table class="media-table mb-2">
+                          <thead>
+                            <tr style="border: none;">
+                              <th style="width: 116px;">
+                                VISUALIZZA
+                                <select class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'pageSize')}}>
+                                  {{#each this.availablePageSize as | size |}}
+                                    <option value="{{size}}" selected={{eq size this.filter.pageSize}}>{{size}} record</option>
+                                  {{/each}}
+                                </select>
+                              </th>
+                              <th style="width: 94px;">
+                                DIMENSIONE
+                                <select class="form-control form-control-sm text-primary" {{on 'change' (fn this.changeFilter 'imageSize')}}>
+                                  <option value="sm" selected={{eq this.filter.imageSize 'sm'}}>piccola</option>
+                                  <option value="md" selected={{eq this.filter.imageSize 'md'}}>media</option>
+                                  <option value="lg" selected={{eq this.filter.imageSize 'lg'}}>grande</option>
+                                </select>
+                              </th>
+                              <th>
+                                CONTENT-TYPE
+                                <select class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'primaryContentType')}}>
+                                  <option value="" selected>--</option>
+                                  {{#each this.availableContentType as | ct |}}
+                                    <option value="{{ct}}">{{ct}}</option>
+                                  {{/each}}
+                                </select>
+                              </th>
+                              <th>
+                                TIPOLOGIA
+                                <div class="input-group">
+                                  <select id="imageTypology" class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'imageType')}}>
+                                    <option value="" selected={{(eq this.filter.imageType '')}}>--</option>
+                                    {{#each this.availableTypologies as | typology |}}
+                                      <option value={{typology.id}} selected={{(eq typology.id this.filter.imageType)}}>{{typology.name}}</option>
+                                    {{/each}}
+                                  </select>
+                                  <div class="input-group-append">
+                                    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#imageTypology" {{on 'click' (fn this.changeFilter 'imageType')}}>
+                                      <i class="fas fa-times"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </th>
+                              <th>
+                                CATEGORIA
+                                <div class="input-group">
+                                  <select id="imageCategory" class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'imageCategory')}}>
+                                    <option value="" selected={{(eq this.filter.imageCategory '')}}>--</option>
+                                    {{#each this.availableCategories as | category |}}
+                                      <option value={{category.id}} selected={{(eq category.id this.filter.imageCategory)}}>{{category.name}}</option>
+                                    {{/each}}
+                                  </select>
+                                  <div class="input-group-append">
+                                    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#imageCategory" {{on 'click' (fn this.changeFilter 'imageCategory')}}>
+                                      <i class="fas fa-times"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </th>
+                              <th>
+                                ALBUM
+                                <div class="input-group">
+                                  <select id="imageAlbum" class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'imageAlbum')}}>
+                                    <option value="" selected>--</option>
+                                    {{#each this.availableAlbums as | album |}}
+                                      <option value={{album.id}} selected={{(eq album.id this.filter.imageAlbum)}}>{{album.name}}</option>
+                                    {{/each}}
+                                  </select>
+                                  <div class="input-group-append">
+                                    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#imageAlbum" {{on 'click' (fn this.changeFilter 'imageAlbum')}}>
+                                      <i class="fas fa-times"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </th>
+                              <th style="width: 190px;">
+                                DATA DI CARICAMENTO
+                                <div class="input-group">
+                                  <input id="imageDate" type="month" class="form-control form-control-sm" {{on 'change' (fn this.changeFilter 'imageDate')}}>
+                                  <div class="input-group-append">
+                                    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#imageDate" {{on 'click' (fn this.changeFilter 'imageDate')}}>
+                                      <i class="fas fa-times"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </th>
+                            </tr>
+                            <tr style="border: none;">
+                              <th colspan="3">
+                                GUID
+                                <div class="input-group">
+                                  <input id="imageGuid" type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeFilter 'imageGuid')}}>
+                                  <div class="input-group-append">
+                                    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#imageGuid" {{on 'click' (fn this.changeFilter 'imageGuid')}}>
+                                      <i class="fas fa-times"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </th>
+                              <th colspan="3">
+                                TAG
+                                <div class="input-group">
+                                  <input id="imageTags" type="text" class="form-control form-control-sm" {{on 'input' (fn this.changeFilter 'imageTags')}}>
+                                  <div class="input-group-append">
+                                    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#imageTags" {{on 'click' (fn this.changeFilter 'imageTags')}}>
+                                      <i class="fas fa-times"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </th>
+                              <th class="pt-3 text-right">
+                                <button class="btn btn-sm btn-hover-shine {{if this.fetchMedia.isRunning 'btn-info' 'btn-light'}}" type="button" {{on 'click' (perform this.fetchMedia)}}>
+                                  <i class="fa mr-2 {{if this.fetchMedia.isRunning 'fa-spinner fa-spin' 'fa-refresh'}}"></i> RICARICA
+                                </button>
+                              </th>
+                            </tr>
+                          </thead>
+                        </table>
+                      </div>
+
+                      {{!-- Tabella con elenco file --}}
+                      <div class="col-md-12">
+                        <h6 class="text-left mt-4 mb-3" style="color: rgba(13,27,62,.7); font-weight: 700; font-size: .88rem;">
+                          ELENCO FILE
+                        </h6>
+                        <table class="media-table mt-3 mb-2">
+                          <thead>
+                            <tr>
+                              <th class="col-image">PREVIEW</th>
+                              <th class="col-name">NAME</th>
+                              <th class="col-alt">ALT</th>
+                              <th class="col-tag">TAG</th>
+                              <th class="col-url">URL / BASE64</th>
+                              <th class="col-type">TIPOLOGIA / CATEGORIA / ALBUM</th>
+                              <th class="col-data">DATA</th>
+                              <th class="col-btn"> </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {{#if (eq (length this.medias) 0)}}
+                              <tr>
+                                <td colspan="8"><p class="p-5"><em>Nessun file corrisponde ai criteri di ricerca specificati.</em></p></td>
+                              </tr>
+                            {{else}}
+                              {{#each this.medias as | media |}}
+                              <tr>
+                                <td class="text-center">
+                                  {{#if (or (eq media.extension 'jpeg') (eq media.extension 'jpg') (eq media.extension 'png'))}}
+                                    {{!-- template-lint-disable no-invalid-interactive --}}
+                                    <div class="avatar-icon-wrapper avatar-icon-xl cell-bg-gradient" {{on 'click' (fn this.preview media.id)}}>
+                                        <div class="avatar-icon rounded">
+                                            <img src="{{media.base64}}" alt="" role="none">
+                                        </div>
+                                    </div>
+                                  {{else}}
+                                    <div class="swatch-holder swatch-holder-lg bg-info text-center text-white" id="TooltipC-2">
+                                      {{media.extension}}
+                                    </div>
+                                  {{/if}}
+                                </td>
+                                <td>
+                                  <p class="mb-1">{{media.originalFileName}}.{{media.extension}}</p>
+                                  <a href="#" class="btn-transition btn btn-outline-light copy-guid-media-crud small-btn" data-clipboard-text="{{media.id}}">Copia GUID</a>
+                                </td>
+                                <td>
+                                  {{#if (eq this.editingMediaId media.id)}}
+                                    <textarea rows="1" {{on "input" (fn this.updateMediaField media "alt")}}>{{media.alt}}</textarea>
+                                  {{else}}
+                                    <textarea rows="1" disabled>{{media.alt}}</textarea>
+                                  {{/if}}
+                                </td>
+                                <td>
+                                  {{#if (eq this.editingMediaId media.id)}}
+                                    <textarea rows="1" {{on "input" (fn this.updateMediaField media "tag")}}>{{media.tag}}</textarea>
+                                  {{else}}
+                                    <textarea rows="1" disabled>{{media.tag}}</textarea>
+                                  {{/if}}
+                                </td>
+                                <td>
+                                  {{#if this.setup.siteSetup.useUrlStaticFiles}}
+                                    <a href="#" class="btn-transition btn btn-outline-light small-btn mb-1" disabled {{on 'click' this.noUrlAvailable}}>Copia URL</a>
+                                  {{else}}
+                                    <a href="#" class="btn-transition btn btn-outline-light copy-guid-media-crud small-btn mb-1" data-clipboard-text="{{this.baseEndpoint media.fileUrl media.id media.extension}}">Copia URL</a>
+                                  {{/if}}
+                                    <a href="#" class="btn-transition btn btn-outline-light copy-guid-media-crud small-btn" data-clipboard-text="{{media.base64}}">Copia Base64</a>
+                                </td>
+                                <td class="light-text">
+                                  <p class="mb-0"><small>{{media.typologyAreaRel.name}} /<br />{{media.categoryRel.name}} /<br />{{media.albumRel.name}}</small></p>
+                                </td>
+                                <td class="light-text">
+                                  <p class="mb-0"><small>{{(this.uploadDate media.uploadDate)}}</small></p>
+                                </td>
+                                <td>
+                                  {{#if (eq this.editingMediaId media.id)}}
+                                    <button test-cancelEdit class="btn-del-field btn-hover-shine btn btn-sm btn-info mb-1" type="button" {{on "click" (fn this.cancelEditMedia media)}}>
+                                        <i class="fa fa-undo"></i>
+                                    </button>
+                                    <button test-save class="btn-del-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on "click" (fn this.saveMedia media)}}>
+                                        <i class="fa fa-save"></i>
+                                    </button>
+                                  {{else}}
+                                    {{#if (eq this.editingMediaId null)}}
+                                      {{#if (has-permissions 'MediaFile.update')}}
+                                      <button test-edit class="btn-edit-field btn-hover-shine btn btn-sm btn-warning mr-1 mb-1" type="button" {{on "click" (fn this.editMedia media)}}>
+                                          <i class="fa fa-pencil"></i>
+                                      </button>
+                                      {{/if}}
+                                      {{#if (has-permissions 'MediaFile.delete')}}
+                                      <button test-delete class="btn-del-field btn-hover-shine btn btn-sm btn-danger" type="button" {{on "click" (fn this.deleteMedia media)}}>
+                                          <i class="fa fa-trash"></i>
+                                      </button>
+                                      {{/if}}
+                                    {{/if}}
+                                  {{/if}}
+                                </td>
+                              </tr>
+                              {{/each}}
+                            {{/if}}
+                            </tbody>
+                        </table>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                  {{!-- paginazione dei file --}}
+                  {{#if (gt this.totalPages 2)}}
+                    <div class="card-footer pt-4">
+                      <nav class="m-auto" aria-label="Page navigation example">
+                        <ul class="pagination">
+                          <li class="page-item {{if (eq this.currentPage 1) 'disabled' ''}}">
+                              <a href="#" class="page-link text-secondary" aria-label="Previous" {{on 'click' (fn this.goToPage 'previous')}}>
+                                  <span aria-hidden="true">«</span>
+                                  {{!--<span class="visually-hidden">Previous</span>--}}
+                              </a>
+                          </li>
+                          <li class="page-item disabled">
+                              <a href="#" class="page-link text-secondary">
+                                {{this.currentPage}} / {{this.totalPages}}
+                              </a>
+                          </li>
+                          <li class="page-item {{if (eq this.currentPage this.totalPages) 'disabled' ''}}">
+                              <a href="#" class="page-link text-secondary" aria-label="Next" {{on 'click' (fn this.goToPage 'next')}}>
+                                  {{!--<span class="visually-hidden">Next</span>--}}
+                                  <span aria-hidden="true">»</span>
+                              </a>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                  {{/if}}
+                </div>
+
+
+
+
+                {{!-- CARICAMENTO FILE --}}
+                {{#if (has-permissions 'MediaFile.create')}}
+                  <div class="tab-pane" id="media-crud-tab-1" role="tabpanel">
+                    <div class="card-body pt-1 pb-1">
+                      <div class="row mb-1">
+
+                        <div class="col-md-4">
+                          <label>Tipologia</label>
+                          <select class="uploadType form-control form-control-sm" {{on 'change' (fn this.changeUpload 'imageTypology')}}>
+                            <option value="" selected>--</option>
+                            {{#each this.availableTypologies as | typology |}}
+                              <option value="{{typology.id}}">{{typology.name}}</option>
+                            {{/each}}
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Categoria</label>
+                          <select class="uploadCategory form-control form-control-sm" {{on 'change' (fn this.changeUpload 'imageCategory')}}>
+                            <option value="" selected>--</option>
+                            {{#each this.availableCategories as | category |}}
+                              <option value="{{category.id}}">{{category.name}}</option>
+                            {{/each}}
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label>Album</label>
+                          <select class="uploadAlbum form-control form-control-sm" {{on 'change' (fn this.changeUpload 'imageAlbum')}}>
+                            <option value="" selected>--</option>
+                            {{#each this.availableAlbums as | album |}}
+                              <option value="{{album.id}}">{{album.name}}</option>
+                            {{/each}}
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Alt</label>
+                          <textarea id="uploadAlt" rows="1" class="form-control" value={{this.uploadParams.imageAlt}} {{on 'input' (fn this.changeUpload 'imageAlt')}}></textarea>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Tag</label>
+                          <textarea id="uploadTag" rows="1" class="form-control" value={{this.uploadParams.imageTag}} {{on 'input' (fn this.changeUpload 'imageTag')}}></textarea>
+                        </div>
+
+                        <div class="col-md-12 pt-5 mb-3">
+                          {{#if this.showUploadArea}}
+                            {{#let (file-queue name="uploader" onFileAdded=this.uploadPhoto onUploadSucceeded=this.uploadSucceeded onUploadFailed=this.uploadFailed) as |queue|}}
+                              <div class="upload_area pt-3">
+                                <FileDropzone @queue={{queue}} @filter={{this.validateFile}} as |dropzone|>
+                                  {{#if dropzone.active}}
+                                    <p class="text-success pt-4">Rilascia il file per avviare il caricamento</p>
+                                  {{else if queue.files.length}}
+                                    Caricamento in corso: ({{queue.progress}}%)
+                                  {{else if dropzone.supported}}
+                                    <label>
+                                      <input type="file" {{queue.selectFile filter=this.validateFile }} class="btn btn-light">
+                                      </label>
+                                    <br /><br />
+                                    o trascina il file qui!
+                                  {{/if}}
+                                </FileDropzone>
+                              </div>
+                            {{/let}}
+                          {{else}}
+                            <p class="text-warning text-center opacity-10 pt-3"><em>Scegli la Tipologia, la Categoria e l'Album</em></p>
+                          {{/if}}
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {{/if}}
+              </div>
+          </div>
+        </div>
+
+      </div>
+    {{/if}}
+
+  {{else}}
+    {{!-- Utente non autorizzato --}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p><em class="text-danger mb-3">Non sei autorizzato a visualizzare questa sezione.</em></p>
+      </div>
+    </div>
+  {{/if}}
+</div>

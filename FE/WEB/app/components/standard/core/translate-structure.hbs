@@ -1,0 +1,273 @@
+{{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="p-2">
+      <div class="alert alert-info fade show" role="alert">
+          <i class="fa fa-spinner fa-spin mr-2"></i> <Standard::TR @key="component.translateStructure.wait" @default="Recupero dati in corso, attendere prego..."/>
+      </div>
+  </div>
+{{/if}}
+{{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="p-2">
+      <div class="alert alert-danger fade show" role="alert">
+          <i class="fa fa-exclamation-triangle mr-2"></i> <Standard::TR @key="component.translateStructure.errorGettingData" @default="Errore nel recupero dei dati."/>
+          <a href="#" class="alert-link" {{on 'click' this.start}}>
+            <Standard::TR @key="component.translateStructure.retry" @default="Riprova"/>
+          </a>
+      </div>
+  </div>
+{{/if}}
+{{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div class="mb-3 translate-structure" ...attributes>
+
+      <div class="main-card mb-3 card">
+        <div class="card-header text-success">
+          <i class="header-icon lnr-layers"> </i> <Standard::TR @key="component.translateStructure.defaultStructure" @default="STRUTTURA DI DEFAULT"/>
+        </div>
+        <div class="card-body p-0">
+          {{!-- contenitore principale APP --}}
+          <div>
+
+
+            {{#if this.languageVoiceExists}}
+                {{#each-in this.languageSetup as |key value|}}
+                    <div class="card-header text-primary p-3 pl-4">
+                    {{!-- nome della macrovoce --}}
+                    {{key}}
+                    <div class="btn-actions-pane-right">
+                        <div style="display: flex;">
+                        {{!-- campo di ricerca sulla macrovoce --}}
+                        <div class="input-group mr-1">
+                            <input type="text" placeholder="..." data-ref="{{this.encode key}}" value={{if (eq (this.encode key) this.currentRow) this.currentFilter}} class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                            <div class="input-group-append">
+                            <button class="btn btn-light btn-sm" disabled type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            </div>
+                        </div>
+                        {{!-- pulsante di espansione macrovoce --}}
+                        <button type="button" class="btn btn-sm btn-light collapsed" aria-expanded="false" {{on 'click' (fn this.openRow (this.encode key))}}>
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="collapse {{if (eq (this.encode key) this.currentRow) 'show'}}" id="app_cont_{{this.encode key}}">
+                            <table id="table_app_app" class="json-table mb-3 mt-3 col-md-12">
+                            <thead>
+                                <tr>
+                                    <th class="col-md-2 text-"><Standard::TR @key="component.translateStructure.name" @default="NOME"/> {{uppercase key}}</th>
+                                    <th class="col-md-9"><Standard::TR @key="component.translateStructure.defaultValue" @default="VALORE PREDEFINITO"/></th>
+                                    <th class="col-md-1"> </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {{#each-in value as |subKey subValue|}}
+                                <tr class="primary-filterable" data-ref="{{this.encode key}}" data-value="{{this.encode subKey}}" {{did-insert this.triggerFilter}}>
+                                    <td class="primary_row">{{subKey}}</td>
+                                    <td>
+                                    {{#if (eq (typeof subValue) 'object')}}
+                                    {{!-- #region RIGA CONTENENTE OGGETTO --}}
+                                        <div class="bg-light">
+                                            <table id="table_app_app2" class="json-sub-table mb-3 mt-5 col-md-12">
+                                                <thead>
+                                                    <tr>
+                                                    <th class="col-md-3 text-"><Standard::TR @key="component.translateStructure.key" @default="CHIAVE"/></th>
+                                                    <th class="col-md-7"><Standard::TR @key="component.translateStructure.defaultValue" @default="VALORE PREDEFINITO"/></th>
+                                                    <th class="col-md-2"> </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {{#each-in subValue as |finalKey finalValue|}}
+                                                        <tr>
+                                                            <td>
+                                                                <input value="{{finalKey}}" class="form-control form-control-sm" disabled>
+                                                            </td>
+                                                            <td>
+                                                                <textarea rows="1" class="edit-field form-control form-control-sm" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" disabled {{on 'keyup' this.changeValue}} {{on 'change' this.changeValue}}>{{finalValue}}</textarea>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button class="btn-edit-field btn-hover-shine btn btn-sm btn-warning" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.editVoice key subKey finalKey)}}>
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </button>
+                                                                <button class="btn-del-field btn-hover-shine btn btn-sm btn-danger" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.delVoice key subKey finalKey)}}>
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                                <button class="btn-undo-field d-none btn-hover-shine btn btn-sm btn-info" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.undoVoice key subKey finalKey finalValue)}}>
+                                                                    <i class="fa fa-history"></i>
+                                                                </button>
+                                                                <button class="btn-save-field d-none btn-hover-shine btn btn-sm btn-alternate" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.saveVoice key subKey finalKey)}}>
+                                                                    <i class="fa fa-save"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    {{/each-in}}
+                                                </tbody>
+                                            </table>
+
+                                            <button class="btn btn-alternate btn-hover-shine btn-sm mb-2 ml-2" type="button" {{on 'click' (fn this.toggleAddObj key subKey 'substr')}}>
+                                                <i class="header-icon ion-android-add"> </i>
+                                            </button>
+
+                                            <div class="row p-2 collapse toggleAdd" data-key="{{this.encode key}}" data-subKey="{{this.encode subKey}}" data-type="substr">
+                                                <div class="col-md-4">
+                                                    <Standard::TR @key="component.translateStructure.name" @default="CHIAVE"/>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <Standard::TR @key="component.translateStructure.value" @default="VALORE"/>
+                                                </div>
+                                                <div class="col-md-1"></div>
+
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control form-control-sm toggleAddField" {{on 'keyup' this.changeLabel}} {{on 'change' this.changeLabel}}>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <textarea rows="1" class="form-control form-control-sm toggleAddField" {{on 'keyup' this.changeValue}} {{on 'change' this.changeValue}}></textarea>
+                                                </div>
+                                                <div class="col-md-1 text-left">
+                                                    <button class="btn-hover-shine btn btn-sm btn-primary" type="button" {{on 'click' (fn this.createObj key subKey null null)}}>
+                                                        <i class="fa fa-save"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{!-- #endregion --}}
+                                    {{else}}
+                                    {{!-- #region RIGA CONTENENTE VOCE --}}
+                                        <textarea rows="1" class="edit-field form-control form-control-sm" data-key="{{this.encode key}}_{{this.encode subKey}}" disabled {{on 'keyup' this.changeValue}} {{on 'change' this.changeValue}}>{{subValue}}</textarea>
+                                    {{!-- #endregion --}}
+                                    {{/if}}
+                                    </td>
+                                    <td class="text-right">
+                                        {{#if (not-eq (typeof subValue) 'object')}}
+                                        <button class="btn-edit-field btn-hover-shine btn btn-sm btn-warning" data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn this.editVoice key subKey null)}}>
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        {{/if}}
+                                        <button class="btn-del-field btn-hover-shine btn btn-sm btn-danger" data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn this.delVoice key subKey null)}}>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                        {{#if (not-eq (typeof subValue) 'object')}}
+                                        <button class="btn-undo-field d-none btn-hover-shine btn btn-sm btn-info" data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn this.undoVoice key subKey null subValue)}}>
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                        <button class="btn-save-field d-none btn-hover-shine btn btn-sm btn-alternate" data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn this.saveVoice key subKey null)}}>
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                            {{/each-in}}
+                            </tbody>
+                            </table>
+
+                            {{!-- area inserimento voce/oggetto (all'interno della macroarea) --}}
+                            <div class="container underline mb-2">
+                                <button class="btn-transition btn btn-outline-success btn-hover-shine btn-sm mb-2 ml-2" type="button" {{on 'click' (fn this.toggleAddObj key '' 'obj')}}>
+                                    <i class="header-icon ion-android-add"> </i> <Standard::TR @key="component.translateStructure.addObject" @default="AGGIUNGI OGGETTO"/>
+                                </button>
+                                <button class="btn-transition btn btn-outline-alternate btn-hover-shine btn-sm mb-2 ml-2" type="button" {{on 'click' (fn this.toggleAddObj key '' 'str')}}>
+                                    <i class="header-icon ion-android-add"> </i> <Standard::TR @key="component.translateStructure.addVoice" @default="AGGIUNGI VOCE"/>
+                                </button>
+                                {{!-- #region area inserimento nuovo oggetto --}}
+                                <div class="row p-2 bg-light collapse toggleAdd" data-key="{{this.encode key}}" data-subKey="" data-type="obj">
+                                    <div class="col-md-4">
+                                        <Standard::TR @key="component.translateStructure.nameLower" @default="Nome"/> {{key}}
+                                    </div>
+                                    <div class="col-md-8"> </div>
+
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control form-control-sm toggleAddField" {{on 'keyup' this.changePrimaryRow}} {{on 'change' this.changePrimaryRow}}>
+                                    </div>
+                                    <div class="col-md-8 text-left">
+                                        <button class="btn-hover-shine btn btn-sm btn-success" type="button" {{on 'click' (fn this.createObj key null '{}' '')}}>
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {{!-- #endregion --}}
+                                {{!-- #region area inserimento nuova voce --}}
+                                <div class="row p-2 bg-light collapse toggleAdd" data-key="{{this.encode key}}" data-subKey="" data-type="str">
+                                    <div class="col-md-4">
+                                        <Standard::TR @key="component.translateStructure.stringKey" @default="Chiave della stringa"/> ({{key}})
+                                    </div>
+                                    <div class="col-md-5">
+                                        <Standard::TR @key="component.translateStructure.valueLower" @default="Valore"/>
+                                    </div>
+                                    <div class="col-md-1"></div>
+
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control form-control-sm toggleAddField" {{on 'keyup' this.changePrimaryRow}} {{on 'change' this.changePrimaryRow}}>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <textarea rows="1" class="form-control form-control-sm toggleAddField" {{on 'keyup' this.changeLabel}} {{on 'change' this.changeLabel}}></textarea>
+                                    </div>
+                                    <div class="col-md-1 text-right">
+                                        <button class="btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (fn this.createObj key null null '')}}>
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {{!-- #endregion --}}
+                            </div>
+
+                        </div>
+                    </div>
+                    {{!-- --}}
+                {{/each-in}}
+            {{else}}
+                <div class="p-2">
+                    <div class="alert alert-secondary fade show" role="alert">
+                        <Standard::TR @key="component.translateStructure.notAvailableValue" @default="Non sono ancora presenti valori!"/>
+                    </div>
+                </div>
+            {{/if}}
+
+          </div>
+        </div>
+    </div>
+
+    {{!-- #region area inserimento nuova macroarea --}}
+    <div class="main-card card mb-3">
+        <div class="card-header text-success">
+          <i class="header-icon ion-android-add"> </i> <Standard::TR @key="component.translateStructure.addMacro" @default="AGGIUNGI MACRO-AREA"/>
+        </div>
+        <div class="card-body p-4">
+            <div class="row mb-1">
+
+                <div class="col-md-2">
+                    <label><Standard::TR @key="component.translateStructure.type" @default="Tipologia"/>: </label>
+                </div>
+                <div class="col-md-3">
+                    <select value={{this.objectType}} {{on 'change' this.changeObjType}} class="form-control form-control-sm">
+                        <option value="">--</option>
+                        <option value="adapter">Adapter</option>
+                        <option value="authenticator">Authenticator</option>
+                        <option value="component">Component</option>
+                        <option value="controller">Controller</option>
+                        <option value="general">General</option>
+                        <option value="helper">Helper</option>
+                        <option value="initializer">Initializer</option>
+                        <option value="istance Initializer">Istance Initializer</option>
+                        <option value="model">Model</option>
+                        <option value="other">Other</option>
+                        <option value="route">Route</option>
+                        <option value="serializer">Serializer</option>
+                        <option value="service">Service</option>
+                        <option value="template">Template</option>
+                        <option value="transform">Transform</option>
+                        <option value="utility">Utility</option>
+                    </select>
+                </div>
+                <div class="col-md-7">
+                    <button type="button" class="btn btn-sm btn-success btn-hover-shine" {{on 'click' (fn this.createObj null '' '{}' '')}}>
+                        <Standard::TR @key="component.translateStructure.add" @default="AGGIUNGI"/>
+                    </button>
+                </div>
+              </div>
+        </div>
+    </div>
+    {{!-- #endregion --}}
+  </div>
+{{/if}}
+
+{{yield}}

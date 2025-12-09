@@ -1,0 +1,248 @@
+<div class="setup-social" {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+    {{!-- #region Menù di Navigazione --}}
+    <div class="container">
+      <div class="col-md-12">
+        <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+          <li class="nav-item">
+            <a role="tab" class="nav-link active" data-toggle="tab" href="#tab-setup-social-0">
+              <Standard::TR @key="template.setupSocial.google" @default="GOOGLE"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-social-5">
+              <Standard::TR @key="template.setupSocial.facebook" @default="FACEBOOK"/>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-social-10">
+              <Standard::TR @key="template.setupSocial.thirdParts" @default="TERZE PARTI"/>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    {{!-- #endregion --}}
+
+    {{!-- #region Tab di Navigazione--}}
+    <div class="tab-content">
+      {{!-- #region Google --}}
+      <div class="tab-pane active" id="tab-setup-social-0" role="tabpanel">
+        <div>
+          <div class="row underline">
+            <div class="col-md-4 p-3"></div>
+            <div class="col-md-4 p-3">
+              <b>APP</b>
+            </div>
+            <div class="col-md-4 p-3">
+              <b>WEB</b>
+            </div>
+          </div>
+        </div>
+        {{!-- google --}}
+        <div class="row underline">
+          <div class="col-md-4 p-3">
+            <label>Attivare il login Google?</label>
+          </div>
+          <div class="col-md-4 p-3">
+            <select {{on 'change' (fn this.changeValue 'googleEnabledApp')}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.googleEnabledApp true)}}>Sì</option>
+              <option value="" selected={{(eq this.googleEnabledApp false)}}>No</option>
+            </select>
+          </div>
+          <div class="col-md-4 p-3 left-border">
+            <select {{on 'change' (fn this.changeValue 'googleEnabledWeb')}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.googleEnabledWeb true)}}>Sì</option>
+              <option value="" selected={{(eq this.googleEnabledWeb false)}}>No</option>
+            </select>
+          </div>
+        </div>
+
+        {{#if (or this.googleEnabledApp this.googleEnabledWeb)}}
+          {{!-- applicationName --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Google App Name</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'googleAppName')}} value={{this.googleAppName}} class="form-control form-control-sm">
+              <small class="form-text text-muted">Nome dell'app api console google</small>
+            </div>
+          </div>
+
+          {{!-- googleIdSite --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Google Id Site</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'googleIdSite')}} value={{this.googleIdSite}} class="form-control form-control-sm">
+              <small class="form-text text-muted">id dell'app api console google</small>
+            </div>
+          </div>
+
+          {{!-- GoogleAPIKey --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Google API Key</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'googleAPIKey')}} value={{this.googleAPIKey}} class="form-control form-control-sm">
+              <small class="form-text text-muted">chiave api generata nella google api console</small>
+            </div>
+          </div>
+
+          {{!-- GoogleSecret --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Google Secret</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'googleSecret')}} value={{this.googleSecret}} class="form-control form-control-sm">
+              <small class="form-text text-muted">secret dell'app google generata nell'api console</small>
+            </div>
+          </div>
+
+          {{!-- GoogleAPPId --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Google APP Id</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'googleAPPId')}} value={{this.googleAPPId}} class="form-control form-control-sm">
+              <small class="form-text text-muted">id numerico a monte del GoogleIdSite</small>
+            </div>
+          </div>
+
+          {{!-- GoogleScopes --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Google Scopes</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'googleScopes')}} value={{this.googleScopes}} class="form-control form-control-sm">
+              <small class="form-text text-muted">lista degli scopes google separati da uno spazio</small>
+            </div>
+          </div>
+
+          {{!-- redirectUriLogin --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Redirect Uri Login</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'redirectUriLogin')}} value={{this.redirectUriLogin}} class="form-control form-control-sm">
+              <small class="form-text text-muted">url dell'api esposta per accogliere la risposta dopo la scelta dell'account</small>
+            </div>
+          </div>
+
+          {{!-- redirectAfterGoogleLogin --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Redirect After Google Login</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'redirectAfterGoogleLogin')}} value={{this.redirectAfterGoogleLogin}} class="form-control form-control-sm">
+              <small class="form-text text-muted">url a cui reindirizzare google se l'utente esisteva già</small>
+            </div>
+          </div>
+
+          {{!-- redirectAfterGoogleRegister --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Redirect After Google Register</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'redirectAfterGoogleRegister')}} value={{this.redirectAfterGoogleRegister}} class="form-control form-control-sm">
+              <small class="form-text text-muted">url a cui reindirizzare google per registrare l'utente</small>
+            </div>
+          </div>
+
+          {{!-- redirectAfterGoogleError --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>Redirect After Google Error</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <input type="text" {{on 'input' (fn this.changeValue 'redirectAfterGoogleError')}} value={{this.redirectAfterGoogleError}} class="form-control form-control-sm">
+              <small class="form-text text-muted">url a cui reindirizzare google in caso di errore</small>
+            </div>
+          </div>
+        {{/if}}
+
+        <div class="pt-5 text-right">
+          <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+            <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+            SALVA
+          </button>
+        </div>
+      </div>
+      {{!-- #endregion --}}
+      {{!-- #region Facebook --}}
+      <div class="tab-pane" id="tab-setup-social-5" role="tabpanel">
+        <div>
+          <div class="row underline">
+            <div class="col-md-4 p-3"></div>
+            <div class="col-md-4 p-3">
+              <b>APP</b>
+            </div>
+            <div class="col-md-4 p-3">
+              <b>WEB</b>
+            </div>
+          </div>
+        </div>
+        {{!-- facebook --}}
+        <div class="row underline">
+          <div class="col-md-4 p-3">
+            <label>Attivare il login Facebook?</label>
+          </div>
+          <div class="col-md-4 p-3">
+            <select {{on 'change' (fn this.changeValue 'facebookEnabledApp')}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.facebookEnabledApp true)}}>Sì</option>
+              <option value="" selected={{(eq this.facebookEnabledApp false)}}>No</option>
+            </select>
+          </div>
+          <div class="col-md-4 p-3 left-border">
+            <select {{on 'change' (fn this.changeValue 'facebookEnabledWeb')}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.facebookEnabledWeb true)}}>Sì</option>
+              <option value="" selected={{(eq this.facebookEnabledWeb false)}}>No</option>
+            </select>
+          </div>
+        </div>
+
+        {{#if (or this.facebookEnabledApp this.facebookEnabledWeb)}}
+          {{!-- parametri facebook --}}
+          <div class="row underline unable-box">
+            <div class="col-md-4 p-3 pl-4">
+              <label>--</label>
+            </div>
+            <div class="col-md-8 p-3">
+              <small class="form-text text-muted">in costruzione</small>
+            </div>
+          </div>
+        {{/if}}
+
+        <div class="pt-5 text-right">
+          <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+            <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+            SALVA
+          </button>
+        </div>
+      </div>
+      {{!-- #endregion --}}
+      {{!-- #region thirdParts --}}
+      <div class="tab-pane" id="tab-setup-social-10" role="tabpanel">
+        <Standard::Core::ExternalIntegrations/>
+      </div>
+      {{!-- #endregion --}}
+    </div>
+    {{!-- #endregion --}}
+  {{else}}
+    <div class="row">
+      <div class="col-md-12">
+        <p>Non hai l'autorizzazione per accedere a questa sezione del portale.</p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

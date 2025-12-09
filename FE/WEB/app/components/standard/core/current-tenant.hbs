@@ -1,0 +1,31 @@
+<div class="current-tenant" ...attributes {{did-update this.start this.stp.siteSetup.canChangeTenants}}>
+  {{#if this.serviceAvailable}}
+  <ul class="nav flex-column">
+    {{#if this.withDividers}}
+    <li class="nav-item-divider nav-item"></li>
+    {{/if}}
+
+    {{#if this.inHeader}}
+      <div class="current-tenant-container {{this.getTextColor}} {{this.this.headerStyle}}" {{on 'click' this.tryChangeTenant}}>
+        {{this.currentTenantName}}
+        {{#if (gt this.numberTenants 1)}}
+        <i class="fa fa-angle-down ml-2 opacity-8 float-right pt-2"></i>
+        {{/if}}
+      </div>
+    {{else}}
+      <li class="nav-item-btn text-center nav-item">
+        <div class="current-tenant-container {{this.getTextColor}} {{this.this.headerStyle}}" {{on 'click' this.tryChangeTenant}}>
+          {{this.currentTenantName}}
+          {{#if (gt this.numberTenants 1)}}
+          <i class="fa fa-angle-down ml-2 opacity-8 float-right pt-2"></i>
+          {{/if}}
+        </div>
+      </li>
+    {{/if}}
+    {{#if this.withDividers}}
+    <li class="nav-item-divider nav-item"></li>
+    {{/if}}
+  </ul>
+  {{/if}}
+</div>
+{{yield}}

@@ -1,0 +1,245 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div>
+
+    <div class="row">
+      <div class="col-md-12 mb-3">
+        <div class="alert alert-primary fade show" role="alert">
+            <b>NOTA:</b> le modifiche avranno effetto solo dopo la pressione del pulsante di salvataggio a fondo pagina.
+        </div>
+      </div>
+    </div>
+
+    <div id="accordion" class="accordion-wrapper mb-3">
+      <div class="card">
+        <div id="headingOne" class="card-header bg-light">
+          <button type="button" data-toggle="collapse" data-target="#setupSliderAccordion1" aria-expanded="false" aria-controls="setupSliderAccordion1" class="text-left m-0 p-0 btn btn-link btn-block">
+            <h5 class="m-0 p-0 text-dark">Impostazioni degli slider</h5>
+          </button>
+        </div>
+        <div data-parent="#accordion" id="setupSliderAccordion1" aria-labelledby="headingOne" class="collapse">
+          <div class="card-body">
+
+            <div class="row underline">
+              <div class="col-md-3 p-3"></div>
+              <div class="col-md-4 p-3">
+                <b>APP</b>
+              </div>
+              <div class="col-md-4 p-3">
+                <b>WEB</b>
+              </div>
+              <div class="col-md-1 p-3 text-center">
+                <small>N° foto</small>
+              </div>
+            </div>
+
+            {{!-- mostrare lo slide di benvenuto --}}
+            <div class="row underline">
+              <div class="col-md-3 p-3">
+                <label>Mostrare lo slider di benvenuto?</label>
+              </div>
+              <div class="col-md-4 p-3">
+                  <select class="form-control" {{on 'change' (fn this.changeValue 'string' 'app' 'sliderPosition')}}>
+                      <option value="" selected={{if (eq this.sliderPositionApp "") "selected"}}>No</option>
+                      <option value="left" selected={{if (eq this.sliderPositionApp "left") "selected"}}>Sì</option>
+                  </select>
+                  <small class="form-text text-muted">Se attiva, l'accesso all'App per utenti non loggati mostra uno slider con i pulsanti di accesso. In caso contrario l'utente è rediretto alla pagina di login</small>
+              </div>
+              <div class="col-md-4 p-3 left-border">
+                  <select class="form-control" {{on 'change' (fn this.changeValue 'string' 'web' 'sliderPosition')}}>
+                      <option value="" selected={{if (eq this.sliderPositionWeb "") "selected"}}>No</option>
+                      <option value="left" selected={{if (eq this.sliderPositionWeb "left") "selected"}}>Sì, a sinistra</option>
+                      <option value="right" selected={{if (eq this.sliderPositionWeb "right") "selected"}}>Sì, a destra</option>
+                  </select>
+                  <small class="form-text text-muted">Se attiva, viene mostrato uno slider nella pagina di Login (nella posizione scelta)</small>
+              </div>
+              <div class="col-md-1 p-3 left-border text-center">
+                <label>{{this.numberPicsLogin}}</label>
+              </div>
+            </div>
+
+            {{!-- mostrare lo slide di registrazione --}}
+            <div class="row underline">
+              <div class="col-md-3 p-3">
+                <label>Mostrare lo slider di registrazione?</label>
+              </div>
+              <div class="col-md-4 p-3 unable-box"></div>
+              <div class="col-md-4 p-3 left-border">
+                  <select class="form-control" {{on 'change' (fn this.changeValue 'string' 'web' 'sliderRegistrationPosition')}}>
+                      <option value="" selected={{if (eq this.sliderRegistrationPositionWeb "") "selected"}}>No</option>
+                      <option value="left" selected={{if (eq this.sliderRegistrationPositionWeb "left") "selected"}}>Sì, a sinistra</option>
+                      <option value="right" selected={{if (eq this.sliderRegistrationPositionWeb "right") "selected"}}>Sì, a destra</option>
+                  </select>
+                  <small class="form-text text-muted">Se attiva, viene mostrato uno slider nella pagina di Registrazione (nella posizione scelta)</small>
+              </div>
+              <div class="col-md-1 p-3 left-border text-center">
+                <label>{{this.numberPicsRegistration}}</label>
+              </div>
+            </div>
+
+            {{!-- mostrare lo slide in pagina termini e condizioni --}}
+            <div class="row underline">
+              <div class="col-md-3 p-3">
+                <label>Mostrare lo slider di Termini-Condizioni?</label>
+              </div>
+              <div class="col-md-4 p-3 unable-box"></div>
+              <div class="col-md-4 p-3 left-border">
+                  <select class="form-control" {{on 'change' (fn this.changeValue 'string' 'web' 'sliderTermsPosition')}}>
+                      <option value="" selected={{if (eq this.sliderTermsPositionWeb "") "selected"}}>No</option>
+                      <option value="left" selected={{if (eq this.sliderTermsPositionWeb "left") "selected"}}>Sì, a sinistra</option>
+                      <option value="right" selected={{if (eq this.sliderTermsPositionWeb "right") "selected"}}>Sì, a destra</option>
+                  </select>
+                  <small class="form-text text-muted">Se attiva, viene mostrato uno slider nella pagina di Termini e Condizioni (nella posizione scelta)</small>
+              </div>
+              <div class="col-md-1 p-3 left-border text-center">
+                <label>{{this.numberPicsTerms}}</label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4 p-3"></div>
+            </div>
+
+            <div class="row">
+              {{!-- salvataggio --}}
+              <div class="col-md-12 pt-5 text-right">
+                <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+                  <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                  SALVA
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="headingTwo" class="b-radius-0 card-header bg-light">
+          <button type="button" data-toggle="collapse" data-target="#setupSliderAccordion2" aria-expanded="false" aria-controls="setupSliderAccordion2" class="text-left m-0 p-0 btn btn-link btn-block">
+            <h5 class="m-0 p-0 text-dark">Gestione delle foto</h5>
+          </button>
+        </div>
+        <div data-parent="#accordion" id="setupSliderAccordion2" class="collapse">
+
+          <div class="card-body">
+
+            <div class="col-md-12 pl-0">
+              <label>Scegli lo slider di cui gestire le foto</label>
+              <select class="form-control col-md-6 mb-5" {{on 'change' this.updateMonitored}}>
+                <option value="login" selected>Login</option>
+                <option value="registration">Registrazione</option>
+                <option value="terms">Termini e Condizioni</option>
+              </select>
+            </div>
+
+            {{#each this.sliderPics as |pic index|}}
+              <div class="slider-pic-area row pb-2 pt-2 underline {{if (eq this.monitoredSlider pic.page) '' 'd-none'}}" data-page="{{pic.page}}" data-index="{{index}}">
+                <div class="col-md-2 p-1">
+                    <Standard::ShowImage data-index="{{index}}" @image="{{pic.url}}" @size="md" @byUrl={{pic.byUrl}} class="slider-image-preview"/>
+                </div>
+                <div class="col-md-10 p-1">
+                  <div class="col-md-12">
+                    <label>Titolo (di default)</label>
+                    <input type="text" value="{{pic.title}}" data-index="{{index}}" class="slider-title form-control form-control-sm mb-2">
+                  </div>
+                  <div class="col-md-12">
+                    <label>Chiave di traduzione del titolo</label>
+                    <input type="text" value="{{pic.titleKey}}" data-index="{{index}}" class="slider-title-key form-control form-control-sm mb-2">
+                  </div>
+                  <div class="col-md-12">
+                    <label>Descrizione (di default)</label>
+                    <textarea type="text" data-index="{{index}}" class="slider-description form-control form-control-sm mb-2">{{pic.description}}</textarea>
+                  </div>
+                  <div class="col-md-12">
+                    <label>Chiave di traduzione della descrizione</label>
+                    <input type="text" value="{{pic.descriptionKey}}" data-index="{{index}}" class="slider-description-key form-control form-control-sm mb-2">
+                  </div>
+                  <div class="col-md-12 mb-4">
+                    <label>Url/Guid</label>
+                      <div class="row m-0 p-0">
+                          <input type="checkbox" checked={{pic.byUrl}} class="slider-byguid-pic form-check-input" data-width="70px" data-size="sm" data-on="Url" data-off="Guid" data-onstyle="secondary" data-offstyle="secondary" data-index="{{index}}" data-toggle="toggle">
+                          <input type="text" value={{pic.url}} data-index={{index}} {{on 'keyup' (fn this.changeUrl index)}} {{on 'change' (fn this.changeUrl index)}} class="slider-url form-control form-control-sm mb-2">
+                      </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-check pl-0">
+                      <input checked={{pic.active}} class="slider-active-pic form-check-input mr-3" data-index="{{index}}" type="checkbox" data-toggle="toggle" data-size="sm">
+
+                      <button class="slider-delete-pic btn-hover-shine btn btn-sm btn-danger float-right" data-index="{{index}}" type="button" {{on 'click' (fn this.deletePic index)}}>
+                        <i class="fa fa-trash mr-2"></i> Cancella la foto
+                      </button>
+                      <button class="slider-move-up btn-hover-shine btn btn-sm btn-primary mr-3 float-right" data-index="{{index}}" data-page="{{pic.page}}" {{on 'click' (fn this.moveUp index pic.page)}} type="button">
+                        <i class="fa fa-angle-double-up mr-2"></i> Anteponi
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+
+            <div class="row mb-5">
+              {{!-- nuova slide vuota --}}
+              <div class="col-md-6 pt-5 text-left">
+                <button class="btn btn-shadow btn-hover-shine btn-light btn-lg" {{on "click" this.newPic}} type="submit">Aggiungi nuova slide vuota</button>
+              </div>
+              {{!-- salvataggio --}}
+              <div class="col-md-6 pt-5 text-right">
+                <button class="btn btn-shadow btn-hover-shine btn-primary btn-lg" {{on "click" (perform this.savePics)}} type="submit">
+                  <i class="fa mr-2 {{if this.savePics.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                  SALVA
+                </button>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-12">
+
+                {{#let (file-queue name="sliders" onFileAdded=this.uploadPhoto onUploadSucceeded=this.uploadSucceeded onUploadFailed=this.uploadFailed) as |queue|}}
+                  <div class="upload_area">
+                    <FileDropzone @queue={{queue}} @filter={{this.validateFile}} as |dropzone|>
+                      {{#if dropzone.active}}
+                        Rilascia il file<br />per avviare<br />il caricamento
+                      {{else if queue.files.length}}
+                        Caricamento in corso: ({{queue.progress}}%)
+                      {{else if dropzone.supported}}
+                        <label>
+                          <input type="file" {{queue.selectFile filter=this.validateFile }} class="btn btn-light">
+                          </label>
+                        <br /><br />
+                        o trascina una foto qui per aggiungerla allo slider
+                      {{/if}}
+                    </FileDropzone>
+                  </div>
+                {{/let}}
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{yield}}
+</div>

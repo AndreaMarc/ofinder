@@ -1,0 +1,55 @@
+.ticket-management {
+  .cursor-pointer {
+    cursor:pointer;
+  }
+
+  .tickets-table {
+    thead tr:last-of-type th {
+      border-bottom: 3px solid #c9cfd6;
+    }
+  }
+
+  .col-new {
+    width: 48px;
+  }
+  .col-number {
+    width: 90px;
+  }
+  .col-customer {
+    width: 200px;
+  }
+  .col-project {
+    width: 140px;
+  }
+  .col-operator {
+    width: 215px;
+  }
+  .col-message {
+    min-width: 100px;
+  }
+  .col-tag {
+    width: 100px;
+  }
+  .col-data {
+    width: 155px;
+  }
+
+  #ticket-management-define-tag {
+    white-space: normal;
+    margin-bottom: 0;
+    margin-top: 5px;
+  }
+
+  .search-btn-width {
+    width: 28px;
+
+    .input-group-text {
+      background: #ffffff;
+      color: #b0b3b6;
+    }
+  }
+
+  .small-tag {
+    padding: 2px 5px;
+  }
+}

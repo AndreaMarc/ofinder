@@ -1,0 +1,52 @@
+<div class="pagination-button" {{did-update this.start @currentPageNumber @totalRecords @recordsPerPage}} ...attributes>
+  {{#if (and (gt this.totalRecords 0) (gt this.totalPagesNumber 1))}}
+    <nav class="d-inline-block" aria-label="Page navigation example">
+      <ul class="pagination mb-0">
+        {{#if (gt this.totalPagesNumber 2)}}
+          {{#if (not-eq this.currentPageNumber 1)}}
+            <li class="page-item">
+              <a href="#" class="page-link" aria-label="Previous" {{on 'click' (fn this.changePageNumber 1)}}>
+                <span aria-hidden="true">«</span>
+                <span class="visually-hidden d-none d-md-inline-block">Inizio</span>
+              </a>
+            </li>
+          {{/if}}
+          {{#if (not-eq this.currentPageNumber 1)}}
+            <li class="page-item">
+              <a href="#" class="page-link" aria-label="Previous" {{on 'click' (fn this.changePageNumber this.previousPageNumber)}}>
+                <span aria-hidden="true">‹</span>
+                <span class="visually-hidden d-none d-md-inline-block">Precedente</span>
+              </a>
+            </li>
+          {{/if}}
+        {{/if}}
+
+        {{#each this.arrayPages as | page |}}
+          <li class="page-item {{if (eq this.currentPageNumber page) 'active'}}">
+            <a href="#" class="page-link" {{on 'click' (fn this.changePageNumber page)}}>{{page}}</a>
+          </li>
+        {{/each}}
+
+        {{#if (gt this.totalPagesNumber 2)}}
+          {{#if (not-eq this.currentPageNumber this.totalPagesNumber)}}
+            <li class="page-item">
+              <a disabled href="#" class="page-link" aria-label="Next" {{on 'click' (fn this.changePageNumber this.nextPageNumber)}}>
+                <span class="visually-hidden d-none d-md-inline-block">Successiva</span>
+                <span aria-hidden="true">›</span>
+              </a>
+            </li>
+          {{/if}}
+          {{#if (not-eq this.currentPageNumber this.totalPagesNumber)}}
+            <li class="page-item">
+              <a disabled href="#" class="page-link" aria-label="Next" {{on 'click' (fn this.changePageNumber this.totalPagesNumber)}}>
+                <span class="visually-hidden d-none d-md-inline-block">Ultima</span>
+                <span aria-hidden="true">»</span>
+              </a>
+            </li>
+          {{/if}}
+        {{/if}}
+      </ul>
+    </nav>
+  {{/if}}
+</div>
+{{yield}}

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(ember serve:*)",
+      "Bash(ember generate:*)",
+      "Bash(npm run lint:js:*)",
+      "Bash(npx eslint:*)",
+      "Bash(tree:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

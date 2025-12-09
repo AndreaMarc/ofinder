@@ -1,0 +1,312 @@
+/*
+Il Css qui contenuto,
+SOVRASCRIVE GLI STILI DEL TEMA
+*/
+
+
+
+/* ACCORDION */
+.accordion-wrapper:not(.no-icon) .btn:before {
+  font-family: var(--fa-style-family,"Font Awesome 6 Free");
+  font-weight: var(--fa-style,900);
+  float: right;
+  font-size: 18px;
+}
+.accordion-wrapper:not(.no-icon) .btn[aria-expanded="false"]:before {
+  content: "\f107";
+}
+.accordion-wrapper:not(.no-icon) .btn[aria-expanded="true"]:before {
+  /* symbol for "collapsed" panels */
+  content: "\f106";
+}
+
+/* LIST GROUP */
+.list-group li {
+  margin-bottom: 1px;
+}
+.list-group-item {
+  margin-bottom: 0;
+}
+
+/* #region ELEMENTI CON COLORI CUSTOM */
+.bg-custom1 {
+  background-color: $custom-bg-color1 !important;
+}
+a.bg-custom1:hover, a.bg-custom1:focus,
+button.bg-custom1:hover,
+button.bg-custom1:focus {
+  background-color: darken($custom-bg-color1, 10%) !important;
+}
+
+/* COLORE SFONDO PERSONALIZZATO 2 */
+.bg-custom2 {
+  background-color: $custom-bg-color2 !important;
+}
+a.bg-custom1:hover, a.bg-custom1:focus,
+button.bg-custom1:hover,
+button.bg-custom1:focus {
+  background-color: darken($custom-bg-color2, 10%) !important;
+}
+
+/* BUTTON PERSONALIZZATO 1 */
+@function adjusted-shadow-color($color) {
+  // Aumenta la luminosità del colore del 10%
+  @return lighten($color, 10%);
+}
+
+.btn-custom1 {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+  border-color: darken($custom-bg-color1, 10%);
+}
+
+.btn-custom1:hover {
+  color: $custom-text-color1;
+  background-color: darken($custom-bg-color1, 10%);
+  border-color: darken(darken($custom-bg-color1, 10%), 10%);
+}
+
+.btn-custom1:focus, .btn-custom1.focus {
+  color: $custom-text-color1;
+  background-color: darken($custom-bg-color1, 10%);
+  border-color: darken(darken($custom-bg-color1, 10%), 10%);
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+.btn-custom1.disabled, .btn-custom1:disabled {
+  color: $custom-text-color1;
+  background-color: lighten($custom-bg-color1, 10%);
+  border-color: lighten($custom-bg-color1, 10%);
+}
+
+.btn-custom1:not(:disabled):not(.disabled):active, .btn-custom1:not(:disabled):not(.disabled).active,
+.show > .btn-custom1.dropdown-toggle {
+  color: $custom-text-color1;
+  background-color: darken($custom-bg-color1, 10%);
+  border-color: darken(darken($custom-bg-color1, 10%), 10%);
+}
+
+.btn-custom1:not(:disabled):not(.disabled):active:focus, .btn-custom1:not(:disabled):not(.disabled).active:focus,
+.show > .btn-custom1.dropdown-toggle:focus {
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+/**/
+.btn-outline-custom1 {
+  color: $custom-bg-color1;
+  border-color: $custom-bg-color1;
+}
+
+.btn-outline-custom1:hover {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+  border-color: $custom-bg-color1;
+}
+
+.btn-outline-custom1:focus, .btn-outline-custom1.focus {
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+.btn-outline-custom1.disabled, .btn-outline-custom1:disabled {
+  color: $custom-bg-color1;
+  background-color: transparent;
+}
+
+.btn-outline-custom1:not(:disabled):not(.disabled):active, .btn-outline-custom1:not(:disabled):not(.disabled).active,
+.show > .btn-outline-custom2.dropdown-toggle {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+  border-color: $custom-bg-color1;
+}
+
+.btn-outline-custom1:not(:disabled):not(.disabled):active:focus, .btn-outline-custom1:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-custom1.dropdown-toggle:focus {
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+/* BUTTON PERSONALIZZATO 2 */
+.btn-custom2 {
+  color: $custom-text-color2;
+  background-color: $custom-bg-color2;
+  border-color: darken($custom-bg-color2, 10%);
+}
+
+.btn-custom2:hover {
+  color: $custom-text-color2;
+  background-color: darken($custom-bg-color2, 10%);
+  border-color: darken(darken($custom-bg-color2, 10%), 10%);
+}
+
+.btn-custom2:focus, .btn-custom2.focus {
+  color: $custom-text-color2;
+  background-color: darken($custom-bg-color2, 10%);
+  border-color: darken(darken($custom-bg-color2, 10%), 10%);
+  $shadow-color: adjusted-shadow-color($custom-bg-color2);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+.btn-custom2.disabled, .btn-custom2:disabled {
+  color: $custom-text-color2;
+  background-color: lighten($custom-bg-color2, 10%);
+  border-color: lighten($custom-bg-color2, 10%);
+}
+
+.btn-custom2:not(:disabled):not(.disabled):active, .btn-custom2:not(:disabled):not(.disabled).active,
+.show > .btn-custom1.dropdown-toggle {
+  color: $custom-text-color2;
+  background-color: darken($custom-bg-color2, 10%);
+  border-color: darken(darken($custom-bg-color2, 10%), 10%);
+}
+
+.btn-custom2:not(:disabled):not(.disabled):active:focus, .btn-custom2:not(:disabled):not(.disabled).active:focus,
+.show > .btn-custom2.dropdown-toggle:focus {
+  $shadow-color: adjusted-shadow-color($custom-bg-color2);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+/**/
+.btn-outline-custom2 {
+  color: $custom-bg-color1;
+  border-color: $custom-bg-color1;
+}
+
+.btn-outline-custom2:hover {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+  border-color: $custom-bg-color1;
+}
+
+.btn-outline-custom2:focus, .btn-outline-custom2.focus {
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+.btn-outline-custom2.disabled, .btn-outline-custom2:disabled {
+  color: $custom-bg-color1;
+  background-color: transparent;
+}
+
+.btn-outline-custom2:not(:disabled):not(.disabled):active, .btn-outline-custom2:not(:disabled):not(.disabled).active,
+.show > .btn-outline-custom2.dropdown-toggle {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+  border-color: $custom-bg-color1;
+}
+
+.btn-outline-custom2:not(:disabled):not(.disabled):active:focus, .btn-outline-custom2:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-custom2.dropdown-toggle:focus {
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+/* COLORE TESTO PERSONALIZZATO 1 */
+.text-custom1 {
+  color: $custom-bg-color1 !important;
+}
+
+a.text-custom1:hover, a.text-custom1:focus {
+  color: darken($custom-bg-color1, 10%) !important;
+}
+
+/* COLORE TESTO PERSONALIZZATO 2 */
+.text-custom2 {
+  color: $custom-bg-color2 !important;
+}
+
+a.text-custom2:hover, a.text-custom2:focus {
+  color: darken($custom-bg-color2, 10%) !important;
+}
+
+/* ALERT CUSTOM 1 */
+.alert-custom1 {
+  color: $custom-bg-color1;
+  background-color: lighten($custom-bg-color1, 30%);
+  border-color: lighten($custom-bg-color1, 20%);
+}
+
+.alert-custom1 hr {
+  border-top-color: lighten($custom-bg-color1, 10%);
+}
+
+.alert-custom1 .alert-link {
+  color: darken($custom-bg-color1, 5%);
+}
+
+/* ALERT CUSTOM 2 */
+.alert-custom2 {
+  color: $custom-bg-color2;
+  background-color: lighten($custom-bg-color2, 30%);
+  border-color: lighten($custom-bg-color2, 20%);
+}
+
+.alert-custom2 hr {
+  border-top-color: lighten($custom-bg-color2, 10%);
+}
+
+.alert-custom2 .alert-link {
+  color: darken($custom-bg-color2, 5%);
+}
+
+/* BADGE CUSTOM 1 */
+.badge-custom1 {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+}
+
+a.badge-custom1:hover, a.badge-custom1:focus {
+  color: $custom-text-color1;
+  background-color: $custom-bg-color1;
+}
+
+a.badge-custom1:focus, a.badge-custom1.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+  $shadow-color: adjusted-shadow-color($custom-bg-color1);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+/* BADGE CUSTOM 2 */
+.badge-custom2 {
+  color: $custom-text-color2;
+  background-color: $custom-bg-color2;
+}
+
+a.badge-custom2:hover, a.badge-custom2:focus {
+  color: $custom-text-color2;
+  background-color: $custom-bg-color2;
+}
+
+a.badge-custom2:focus, a.badge-custom2.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+  $shadow-color: adjusted-shadow-color($custom-bg-color2);
+  // creo un'ombra che rispetto al colore di partenza rispecchi le stesse proporzioni tipiche degli altri pulsanti del tema
+  box-shadow: 0 0 0 0.2rem rgba(red($shadow-color), green($shadow-color), blue($shadow-color), 0.5);
+}
+
+/* DOT CUSTOM 1 */
+.dot-custom1 .vertical-timeline-element-icon {
+  background: $custom-bg-color1;
+}
+
+/* DOT CUSTOM 2 */
+.dot-custom2 .vertical-timeline-element-icon {
+  background: $custom-bg-color2;
+}
+/* #endregion */
+
+
+

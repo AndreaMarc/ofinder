@@ -1,0 +1,32 @@
+.unlogged-wrapper-footer {
+  display: block;
+
+  .unlogged-footer {
+    border-top: $footer-top-border;
+    background: $footer-bg-color;
+    color: $footer-text-color;
+    position: fixed;
+    width: 100vw;
+    bottom: 0;
+    left: 0;
+    z-index: 11;
+    box-sizing: border-box;
+    margin: 0;
+
+    .unlogged-footer-btn {
+      text-align: center;
+      font-size: $footer-font-size;
+      padding: $footer-padding;
+      box-sizing: border-box;
+
+      a {
+        text-decoration: none;
+        color: $footer-text-color;
+      }
+    }
+
+    .unlogged-footer-btn:not(:first-of-type) {
+      border-left: $footer-divider;
+    }
+  }
+}

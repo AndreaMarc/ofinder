@@ -1,0 +1,48 @@
+<div {{did-insert this.start}} ...attributes>
+    {{#if this.showSearch}}
+    <div class="search-wrapper">
+        <div class="input-holder">
+            <input type="text" class="search-input" placeholder="Type to search">
+            <button class="search-icon" type="button"><span></span></button>
+        </div>
+        <button class="close" type="button"></button>
+    </div>
+    {{/if}}
+
+    <Standard::Core::CurrentTenant @withDividers="" @inHeader="true" class="d-inline-block"/>
+
+    <ul class="d-inline pl-0">
+      {{#if (and this.showCustomMenu this.hasPerms)}}
+        <li class="btn-group nav-item">
+              {{!-- template-lint-disable link-href-attributes --}}
+              <a class="nav-link {{this.styleHeaderClass}}" data-toggle="dropdown" aria-expanded="false">
+                <i class="{{this.customIcon}} mr-2"></i>
+                  {{this.customLabel}}
+              </a>
+
+              <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu dropdown-menu-xl">
+                <div class="dropdown-menu-header">
+                  <div class="dropdown-menu-header-inner pt-4 pb-4 {{this.popupBg}}">
+                    {{!-- template-lint-disable no-inline-styles --}}
+                    <div class="menu-header-image opacity-2" style="background-image: url('assets/images/dropdown-header/abstract2.jpg');"></div>
+                    <div class="menu-header-content text-center {{this.styleHeaderClass}}">
+                      {{#if (not-eq this.customLabel '')}}
+                        <h5 class="menu-header-title">{{this.customLabel}}</h5>
+                      {{/if}}
+                      {{#if (not-eq this.customSubLabel '')}}
+                        <h6 class="menu-header-subtitle mt-0">
+                          {{this.customSubLabel}}
+                        </h6>
+                      {{/if}}
+                    </div>
+                  </div>
+                </div>
+
+                <Standard::CustomMenu/>
+              </div>
+          </li>
+      {{/if}}
+
+    </ul>
+</div>
+{{yield}}

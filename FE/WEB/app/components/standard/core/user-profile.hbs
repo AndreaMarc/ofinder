@@ -1,0 +1,559 @@
+<div class="row user-profile">
+  <div class="col-md-4 col-sm-12">
+    {{!-- #region IMMAGINE PROFILO --}}
+    {{#if (eq this.profileImageAvailable 'waiting')}}
+      <div class="alert alert-info fade show m-0" role="alert">
+          <i class="fa fa-spin fa-spinner"></i> Recupero della foto profilo, attendere prego...
+      </div>
+    {{/if}}
+    {{#if (eq this.profileImageAvailable 'unavailable')}}
+      <div class="alert alert-danger fade show m-0" role="alert">
+          <i class="fa fa-exclamation-triangle"></i> Errore nel recupero delle foto profilo. <a href="#" {{on 'click' this.fetchMedia}}>Riprova!</a>
+      </div>
+    {{/if}}
+    <div class="card-hover-shadow card-border mb-3 card">
+      {{#if (eq this.profileImageAvailable 'available')}}
+
+        <div class="dropdown-menu-header">
+          <div class="dropdown-menu-header-inner {{this.getBgColor}}">
+            <div class="menu-header-content">
+              <div class="mb-2">
+                <a href="#" class="avatar-icon-wrapper btn-hover-shine avatar-icon-xl">
+                  <div class="avatar-icon rounded">
+                    {{!--<img src="{{this.currentPic}}" alt="Immagine profilo corrente">--}}
+                    <Standard::ShowImage @image={{this.currentPic}} @size="sm" @byUrl={{this.currentPicByUrl}}/>
+                  </div>
+                </a>
+              </div>
+              <div>
+                <h5 class="menu-header-title mb-3 {{this.getTextColor}}">{{this.lastName}} {{this.firstName}}</h5>
+              </div>
+              <div class="menu-header-btn-pane">
+                <button class="btn btn-primary btn-hover-shine btn-sm" type="button" style={{this.logoutStyle}} {{on 'click' this.enableUpload}}>
+                  <i class="fa {{if this.showUploadArea 'fa-angle-up' 'fa-angle-down'}} mr-2"></i>
+                  Carica foto
+                </button>
+                {{!-- area caricamento file --}}
+                {{#if this.showUploadArea}}
+                  {{#let (file-queue name="userProfile" onFileAdded=(perform this.uploadPhoto) onUploadSucceeded=this.uploadSucceeded onUploadFailed=this.uploadFailed) as |queue|}}
+                    <div class="upload-area">
+                      <FileDropzone @queue={{queue}} @filter={{this.validateFile}} as |dropzone|>
+                        {{#if dropzone.active}}
+                          <p class="{{this.getTextColor}} pt-4">Rilascia il file per avviare il caricamento</p>
+                        {{else if queue.files.length}}
+                          Caricamento in corso: ({{queue.progress}}%)
+                        {{else if dropzone.supported}}
+                          <input type="file" id="user-profile-input" {{queue.selectFile filter=this.validateFile }} class="d-none">
+                          <button class="btn btn-dark btn-hover-shine btn-sm" type="button" style={{this.logoutStyle}} {{on 'click' this.triggerFileInput}}>
+                            Scegli il file
+                          </button>
+                          <br /><br />
+                          <span class="{{this.getTextColor}}">o trascina il file qui!</span>
+                        {{/if}}
+                      </FileDropzone>
+                    </div>
+                  {{/let}}
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+        {{!-- storico foto profilo --}}
+        {{#if (gte this.numberPics 1)}}
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase font-size-md opacity-5 font-weight-normal">Storico delle foto profilo</h6>
+            <ul class="rm-list-borders list-group list-group-flush">
+              {{#each this.medias as | media |}}
+                <li class="list-group-item">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                      <div class="widget-content-left mr-3">
+                        <img width="42" class="rounded" src="{{media.base64}}" alt="" role="none">
+                      </div>
+                      <div class="widget-content-right">
+                        {{#if (not-eq media.id this.profileImageId)}}
+                          <button class="btn btn-secondary btn-hover-shine btn-sm mr-2 mb-1" type="button" {{on 'click' (perform this.choicePic media.id media.base64)}}>
+                            {{#if (or this.choicePic.isIdle (not-eq media.id this.selectedPic))}}
+                            <i class="fa fa-check mr-2"></i>
+                            {{/if}}
+                            {{#if (and this.choicePic.isRunning (eq media.id this.selectedPic))}}
+                            <i class="fa fa-spinner fa-spin mr-2"></i>
+                            {{/if}}
+                            Scegli
+                          </button>
+                        {{else}}
+                          <button class="btn btn-primary btn-wide btn-sm mr-2 mb-1" type="button" disabled>Attuale</button>
+                        {{/if}}
+                        <button class="btn-icon btn-icon-only btn btn-danger btn-hover-shine btn-sm mb-1" type="button" {{on 'click' (perform this.delPic media.id)}}>
+                          {{#if (or this.delPic.isIdle (not-eq media.id this.selectedPic))}}
+                            <i class="fa fa-trash mr-2"></i>
+                          {{/if}}
+                          {{#if (and this.delPic.isRunning (eq media.id this.selectedPic))}}
+                            <i class="fa fa-spinner fa-spin mr-2"></i>
+                          {{/if}}
+                          Elimina
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {{/each}}
+            </ul>
+          </div>
+        {{/if}}
+      {{/if}}
+      <div class="d-block text-center card-footer">
+        <button {{on 'click' this.requestDeleteProfile}} class="btn btn-light btn-sm btn-hover-shone" type="button">Richiedi la cancellazione del profilo</button>
+      </div>
+    </div>
+    {{!-- #endregion --}}
+  </div>
+
+
+  <div class="col-md-8 col-sm-12">
+    {{!-- #region DATI ANAGRAFICI --}}
+    <div class="main-card mb-3 card">
+
+      <div class="card-body">
+      {{#if (eq this.profileDataAvailable 'waiting')}}
+        <div class="alert alert-info fade show m-0" role="alert">
+            <i class="fa fa-spin fa-spinner"></i> Recupero dati personali in corso, attendere prego...
+        </div>
+      {{/if}}
+      {{#if (eq this.profileDataAvailable 'unavailable')}}
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Errore nel recupero dei dati personali. <a href="#" {{on 'click' this.editRecord}}>Riprova!</a>
+        </div>
+      {{/if}}
+      {{#if (eq this.profileDataAvailable 'available')}}
+        <form class="">
+          <div class="form-row">
+            {{!-- email --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  <span class="user-crud-mandatory text-success">*</span> E-mail
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.editingRecord.email}} type="email" class="form-control form-control-sm" disabled>
+              </div>
+            </div>
+            {{!-- cognome --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.lastName '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.lastName) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Cognome
+                </label>
+                {{#if (or (has-permissions "isSuperAdmin") (has-permissions "isMarketing"))}}
+                  {{!-- template-lint-disable require-input-label --}}
+                  <input value={{this.oldValue.lastName}} {{on 'input' (fn this.storeNewValue 'lastName')}} type="text" class="form-control form-control-sm">
+                  <small class="form-text text-muted text-right font-italic opacity-5">Hai i permessi necessari alla modifica di questo campo!</small>
+                {{else}}
+                  {{!-- template-lint-disable require-input-label --}}
+                  <input value={{this.oldValue.lastName}} type="text" class="form-control form-control-sm">
+                {{/if}}
+              </div>
+            </div>
+            {{!-- nome --}}
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.firstName '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.firstName) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Nome
+                </label>
+                {{#if (or (has-permissions "isSuperAdmin") (has-permissions "isMarketing"))}}
+                  {{!-- template-lint-disable require-input-label --}}
+                  <input value={{this.oldValue.firstName}} {{on 'input' (fn this.storeNewValue 'firstName')}} type="text" class="form-control form-control-sm">
+                  <small class="form-text text-muted text-right font-italic opacity-5">Hai i permessi necessari alla modifica di questo campo!</small>
+                {{else}}
+                  {{!-- template-lint-disable require-input-label --}}
+                  <input disabled value={{this.oldValue.firstName}} type="text" class="form-control form-control-sm">
+                {{/if}}
+              </div>
+            </div>
+            {{!-- email di contatto --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.contactEmail '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.contactEmail '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.contactEmail) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  E-mail di contatto
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.contactEmail}} {{on 'input' (fn this.storeNewValue 'contactEmail')}} type="email" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- nickName --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.nickName '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.nickName '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.nickName) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Nickname
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.nickName}} {{on 'input' (fn this.storeNewValue 'nickName')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- telefono fisso --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.fixedPhone '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.fixedPhone '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.fixedPhone) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Telefono fisso
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.fixedPhone}} {{on 'input' (fn this.storeNewValue 'fixedPhone')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- telefono cellulare --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.mobilePhone '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.mobilePhone '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.mobilePhone) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Telefono cellulare
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.mobilePhone}} {{on 'input' (fn this.storeNewValue 'mobilePhone')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- sesso --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.sex '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.sex '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.sex) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Sesso
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <select value={{this.oldValue.sex}} {{on 'change' (fn this.storeNewValue 'sex')}} class="form-control form-control-sm">
+                  <option value="">--</option>
+                  <option value="M">Uomo</option>
+                  <option value="W">Donna</option>
+                </select>
+              </div>
+            </div>
+            {{!-- codice fiscale --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.taxId '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.taxId '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.taxId) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Codice Fiscale
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.taxId}} {{on 'input' (fn this.storeNewValue 'taxId')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- data di nascita --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.birthDate '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthDate '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthDate) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Data di nascita
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{if this.oldValue.birthDate (convertdate this.oldValue.birthDate) ''}} {{on 'input' (fn this.storeNewValue 'birthDate')}} type="date" class="form-control form-control-sm"/>
+              </div>
+            </div>
+
+            {{!-- città di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthCity '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthCity '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthCity) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Città di nascita
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.birthCity}} {{on 'input' (fn this.storeNewValue 'birthCity')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- provincia di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthProvince '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthProvince '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthProvince) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Provincia di nascita
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.birthProvince}} {{on 'input' (fn this.storeNewValue 'birthProvince')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- cap di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthZIP '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthZIP '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthZIP) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  CAP di nascita
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.birthZIP}} {{on 'input' (fn this.storeNewValue 'birthZIP')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- stato di nascita --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.birthState '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.birthState '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.birthState) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Stato di nascita
+                </label>
+                <select id="usersCrudBirthState" data-field="birthState" value={{this.oldValue.birthState}} class="select-nations form-control form-control-sm">
+                  <option value="">--</option>
+                  {{#each this.nations as |nation|}}
+                  <option value={{nation.code}}>{{nation.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+
+            {{!-- città di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceCity '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceCity '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceCity) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Città di residenza
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.residenceCity}} {{on 'input' (fn this.storeNewValue 'residenceCity')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- provincia di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceProvince '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceProvince '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceProvince) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Provincia di residenza
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.residenceProvince}} {{on 'input' (fn this.storeNewValue 'residenceProvince')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- cap di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceZIP '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceZIP '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceZIP) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  CAP di residenza
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.residenceZIP}} {{on 'input' (fn this.storeNewValue 'residenceZIP')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- stato di residenza --}}
+            <div class="col-md-6 {{if (eq this.registrationFields.residenceState '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceState '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceState) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Stato di residenza
+                </label>
+                <select id="usersCrudResidenceState" data-field="residenceState" value={{this.oldValue.residenceState}} {{on 'change' (fn this.storeNewValue 'residenceState')}} class="select-nations form-control form-control-sm">
+                  <option value="">--</option>
+                  {{#each this.nations as |nation|}}
+                  <option value={{nation.code}}>{{nation.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+            {{!-- indirizzo di residenza --}}
+            <div class="col-md-10 {{if (eq this.registrationFields.residenceAddress '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceAddress '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceAddress) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Indirizzo di residenza
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.residenceAddress}} {{on 'input' (fn this.storeNewValue 'residenceAddress')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- numero civico --}}
+            <div class="col-md-2 {{if (eq this.registrationFields.residenceHouseNumber '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.residenceHouseNumber '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.residenceHouseNumber) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  N° civico
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.residenceHouseNumber}} {{on 'input' (fn this.storeNewValue 'residenceHouseNumber')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- professione --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.occupation '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.occupation '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.occupation) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Professione
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.occupation}} {{on 'input' (fn this.storeNewValue 'occupation')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- descrizione --}}
+            <div class="col-md-12 {{if (eq this.registrationFields.description '0') 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.description '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.description) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  Descrizione
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <textarea class="form-control form-control-sm" {{on 'input' (fn this.storeNewValue 'description')}} value={{this.oldValue.description}}></textarea>
+              </div>
+            </div>
+
+            {{!-- profileFreeFieldString1 --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldString1.field '0') (not this.registrationFields.profileFreeFieldString1.label)) 'd-none' ''}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldString1.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldString1) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldString1.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldString1}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldString1')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- profileFreeFieldString2 --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldString2.field '0') (not this.registrationFields.profileFreeFieldString2.label)) 'd-none' ''}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldString2.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldString2) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldString2.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldString2}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldString2')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- profileFreeFieldString3 --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldString3.field '0') (eq this.registrationFields.profileFreeFieldString3.label '')) 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldString3.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldString3) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldString3.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldString3}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldString3')}} type="text" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- profileFreeFieldDateTime --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldDateTime.field '0') (not this.registrationFields.profileFreeFieldDateTime.label)) 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldDateTime.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldString3) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldDateTime.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldDateTime}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldDateTime')}} type="date" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- profileFreeFieldInt1 --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldInt1.field '0') (not this.registrationFields.profileFreeFieldInt1.label)) 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldInt1.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldString3) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldInt1.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldInt1}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldInt1')}} type="number" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- profileFreeFieldInt2 --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldInt2.field '0') (not this.registrationFields.profileFreeFieldInt2.label)) 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldInt2.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldInt2) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldInt2.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldInt2}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldInt2')}} type="number" class="form-control form-control-sm">
+              </div>
+            </div>
+            {{!-- profileFreeFieldBoolean --}}
+            <div class="col-md-12 {{if (or (eq this.registrationFields.profileFreeFieldBoolean.field '0') (not this.registrationFields.profileFreeFieldBoolean.label)) 'd-none'}}">
+              <div class="position-relative form-group">
+                <label>
+                  {{#if (eq this.registrationFields.profileFreeFieldBoolean.field '2')}}
+                  <span class="user-crud-mandatory {{if (is-empty this.newValue.profileFreeFieldBoolean) "text-danger" "text-success"}}">*</span>
+                  {{/if}}
+                  {{this.registrationFields.profileFreeFieldBoolean.label}}
+                </label>
+                {{!-- template-lint-disable require-input-label --}}
+                <input value={{this.oldValue.profileFreeFieldBoolean}} {{on 'input' (fn this.storeNewValue 'profileFreeFieldBoolean')}} type="number" class="form-control form-control-sm">
+              </div>
+            </div>
+
+            {{#if (or (gt this.activeFieldsNumber 3) (has-permissions "isSuperAdmin") (has-permissions "isMarketing"))}}
+              <div class="col-md-12">
+                <div class="position-relative form-group">
+                  <label><small><em>* i campi contrassegnati dall'asterisco sono obbligatori</em></small></label>
+                </div>
+              </div>
+
+              <div class="col-md-12 text-right mb-3">
+                <div class="position-relative form-group">
+                  <button class="btn btn-secondary btn-hover-shine btn-sm mr-2" {{on 'click' this.editRecord}} type="button">
+                    <i class="fa fa-undo mr-2"></i> ANNULLA
+                  </button>
+                  <button class="btn btn-info btn-hover-shine btn-sm" {{on 'click' this.saveVoice}} type="button">
+                    <i class="fa {{if this.updateUser.isRunning 'fa-spinner fa-spin' 'fa-save'}} mr-2"></i> SALVA
+                  </button>
+                </div>
+              </div>
+            {{/if}}
+          </div>
+        </form>
+        {{/if}}
+      </div>
+    </div>
+    {{!-- #endregion --}}
+  </div>
+</div>
+{{yield}}

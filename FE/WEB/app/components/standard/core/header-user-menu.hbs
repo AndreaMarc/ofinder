@@ -1,0 +1,76 @@
+<div class="header-user-menu">
+    <div class="widget-content p-0">
+        <div class="widget-content-wrapper">
+            <div class="widget-content-left">
+                <div class="btn-group dropdown">
+                    <a test-userMenu data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="image-toggle p-0 btn" href="#">
+                        <div class="logo-container">
+                          <Standard::ShowImage @image={{this.userPic}} @size="sm" @byUrl={{this.byUrl}} class="rounded-circle"/>
+                        </div>
+                        <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                    </a>
+
+                    <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-xl rm-pointers dropdown-menu-right">
+                        <div class="dropdown-menu-header">
+                            <div class="dropdown-menu-header-inner {{this.getBgColor}}">
+                                <div class="menu-header-image opacity-2"></div>
+                                <div class="menu-header-content text-left">
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-wrapper">
+                                            {{#if this.session.isAuthenticated}}
+                                            <div class="widget-content-left mr-3">
+                                              <div class="logo-container">
+                                                <Standard::ShowImage @image={{this.userPic}} @size="sm" @byUrl={{this.byUrl}} class="rounded-circle"/>
+                                              </div>
+                                            </div>
+                                                <div class="widget-content-left">
+                                                    <div class="widget-heading {{this.getTextColor}}">{{this.lastName}} {{this.firstName}}</div>
+                                                    <div class="widget-subheading opacity-8 {{this.getTextColor}}">{{this.tenantName}}</div>
+                                                </div>
+                                                <div class="widget-content-right mr-2">
+                                                    <a href="#" test-logout {{on "click" (stop-propagation this.invalidateSession)}} style={{this.logoutStyle}} class="btn-pill btn-shadow btn-hover-shine btn btn-focus">Logout</a>
+                                                </div>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-menu grid-menu-xl grid-menu-2col">
+                            <div class="no-gutters row">
+
+                                <div class="col-sm-6">
+                                    <LinkTo @route="user-profile" class="btn-icon-vertical btn-square btn-transition btn btn-outline-link">
+                                        <i class="lnr-user btn-icon-wrapper btn-icon-lg mb-3"></i>Il tuo profilo
+                                    </LinkTo>
+                                </div>
+                                <div class="col-sm-6">
+                                    <LinkTo @route="devices" class="btn-icon-vertical btn-square btn-transition btn btn-outline-link">
+                                        <i class="lnr-laptop-phone btn-icon-wrapper btn-icon-lg mb-3"></i>I tuoi dispositivi
+                                    </LinkTo>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <Standard::Core::CurrentTenant @withDividers="true" class="mb-3"/>
+
+                        <div class="p-1 text-center">La tua sessione scadrà il {{convertdate this.sessionExpiration 'DD/MM/YYYY HH:mm'}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-content-left ml-3 header-user-info">
+                <div class="widget-heading">{{this.lastName}} {{this.firstName}}</div>
+                <div class="widget-subheading">{{this.tenantName}}</div>
+            </div>
+            {{!--
+            <div class="widget-content-right header-user-info ml-3">
+                <button type="button" class="btn-shadow p-1 btn btn-primary btn-sm show-toastr-example">
+                    <i class="fa text-white fa-calendar pr-1 pl-1"></i>
+                </button>
+            </div>
+            --}}
+        </div>
+    </div>
+</div>
+{{yield}}

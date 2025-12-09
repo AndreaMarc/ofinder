@@ -1,0 +1,24 @@
+.ckeditor-component{
+  .ckeditor-fullscreen {
+    position: fixed !important;
+    top: 60px;
+    left: 280px;
+    width: calc(100% - 280px) !important;
+    height: calc(100vh - 120px) !important;
+    z-index: 9000;
+    background-color: white !important;
+
+    .ck-editor__main {
+      overflow-y: hidden;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+    }
+  }
+  .ck-toolbar {
+    z-index: 999999991 !important; /* Usa un valore più alto se necessario */
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}

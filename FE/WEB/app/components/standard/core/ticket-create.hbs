@@ -1,0 +1,151 @@
+<div class="ticket-create" ...attributes>
+  <div class="row">
+    <div class="col-12">
+      <div class="main-card mb-3 card {{if this.unlogged this.classUnlogged this.classLogged}}">
+
+        {{!-- WAITING --}}
+        {{#if (eq this.serviceAvailable 'waiting')}}
+          <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+        {{/if}}
+
+        {{!-- UNAVAILABLE --}}
+        {{#if (eq this.serviceAvailable 'unavailable')}}
+          <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+            {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+          </Standard::LoadingSpinner>
+        {{/if}}
+
+        {{!-- AVAILABLE --}}
+        {{#if (eq this.serviceAvailable 'available')}}
+          <div class="card-body mb-3">
+            <div class="text-center mb-3">
+              <small class="opacity-6">I TICKET SONO DESTINATI ALL'AZIENDA:</small>
+              <h4 class="mb-3 mt-0">{{this.tenantInfo.name}}</h4>
+            </div>
+
+            {{#unless this.unlogged}}
+              {{!-- UTENTE OGGATO --}}
+              <div role="group" class="btn-group-lg nav btn-group mb-4">
+                <a data-toggle="tab" href="#ticket-create-tab-1" class="btn-shadow btn {{this.classTab}} active">CREA UN NUOVO TICKET</a>
+                <a data-toggle="tab" href="#ticket-create-tab-2" class="btn-shadow btn {{this.classTab}}">I MIEI TICKET</a>
+              </div>
+            {{/unless}}
+
+            <div class="tab-content pt-3">
+              {{!-- CREAZIONE TICKET --}}
+
+              <div class="tab-pane active" id="ticket-create-tab-1" role="tabpanel">
+                <h6 class="mb-5">Descrivici il tuo problema. Il nostro staff ti contatterà nel più breve tempo possibile per fornirti assistenza.</h6>
+                <form class="text-center">
+
+                  <div class="form">
+                    {{#if this.unlogged}}
+                      <div class="row underline border-secondary mb-3">
+                        {{!-- Utente non loggato --}}
+                        {{#if (eq this.canChoiseUnlogged 2)}}
+                          <div class="col-12 col-md-6">
+                            {{!-- ragione sociale --}}
+                            <div class="position-relative form-group">
+                              <label for="help-desk-organization">Ragione Sociale</label>
+                              <input {{on 'input' (fn this.changeValue 'organizationToBeConfirmed')}} value={{this.newRecord.organizationToBeConfirmed}} maxlength="200" id="help-desk-organization" type="text" class="form-control form-control-sm">
+                              <small class="form-text opacity-5">Dell'azienda per la quale lavori o di cui sei titolare.</small>
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-6">
+                            {{!-- partita iva --}}
+                            <div class="position-relative form-group">
+                              <label for="help-desk-vat">Partita IVA</label>
+                              <input {{on 'input' (fn this.changeValue 'vat')}} value={{this.newRecord.vat}} id="help-desk-vat" type="number" class="form-control form-control-sm">
+                              <small class="form-text opacity-5">Dell'azienda per la quale lavori o di cui sei titolare.</small>
+                            </div>
+                          </div>
+                        {{/if}}
+                      </div>
+                    {{else}}
+                      {{!-- Utente loggato --}}
+                      {{#if (gt (length this.userTenants) 1)}}
+                        <div class="row underline border-secondary mb-3">
+                          <div class="col-12 text-center">
+                            <label>Seleziona la tua Azienda:</label>
+                            <Standard::SelectTwo @addEmptyOption="1" @changeCB="" @options={{this.sel2Tenants}}/>
+                          </div>
+                        </div>
+                      {{/if}}
+                    {{/if}}
+
+
+                    {{#if this.unlogged}}
+                      <div class="row">
+                        <div class="col-12 col-md-6">
+                          {{!-- cognome --}}
+                          <div class="position-relative form-group">
+                            <label for="help-desk-lastname">Cognome</label>
+                            <input {{on 'input' (fn this.changeValue 'lastName')}} value={{this.newRecord.lastName}} id="help-desk-lastname" type="text" class="form-control form-control-sm">
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          {{!-- nome --}}
+                          <div class="position-relative form-group">
+                            <label for="help-desk-firstname">Nome</label>
+                            <input {{on 'input' (fn this.changeValue 'firstName')}} value={{this.newRecord.firstName}} id="help-desk-firstname" type="text" class="form-control form-control-sm">
+                          </div>
+                        </div>
+                      </div>
+                    {{/if}}
+
+                    <div class="row">
+                      <div class="col-12 col-md-6">
+                        {{!-- e-mail --}}
+                        <div class="position-relative form-group">
+                            <label for="help-desk-email">E-mail</label>
+                            <input {{on 'input' (fn this.changeValue 'email')}} id="help-desk-email" value={{this.newRecord.email}} type="email" class="form-control form-control-sm">
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        {{!-- telefono --}}
+                        <div class="position-relative form-group">
+                            <label for="help-desk-phone">Telefono</label>
+                            <input {{on 'input' (fn this.changeValue 'phone')}} id="help-desk-phone" value={{this.newRecord.phone}} type="text" class="form-control form-control-sm">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12">
+                          {{!-- messaggio --}}
+                          <div class="position-relative form-group">
+                              <label for="help-desk-message">Segnalazione</label>
+                              <Standard::TextareaAutosize @cb={{(fn this.changeValue 'message')}} @value={{this.newRecord.message}} id="help-desk-message" @rows="5" @autosize="fixed"/>
+                          </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-12 col-md-6">
+                      {{this.error}}
+                    </div>
+                    <div class="col-12 col-md-6 text-right">
+                      <button test-segnalazione {{on 'click' this.send}} class="mt-2 btn btn-secondary btn-hover-shine" type="submit">Invia la segnalazione</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              {{!-- I MIEI TICKET --}}
+              {{#unless this.unlogged}}
+                <div class="tab-pane" id="ticket-create-tab-2" role="tabpanel">
+                  BBB
+                </div>
+              {{/unless}}
+            </div>
+
+
+
+
+          </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+  {{yield}}
+</div>

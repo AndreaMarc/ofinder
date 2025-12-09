@@ -1,0 +1,139 @@
+<div class="external-integrations" {{did-update (perform this.start) @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+    <div class="row">
+      <div class="col-md-11">
+        <p class="mb-4">Definisci gli applicativi esterni con i quali è prevista un'integrazione.</p>
+      </div>
+      <div class="col-md-1 text-right">
+        <button class="btn btn-sm btn-hover-shone btn-light btn.icon-only" type="button" {{on 'click' (perform this.start)}}>
+          <i class="fa fa-refresh {{if this.start.isRunning 'fa-spin'}}"></i>
+        </button>
+      </div>
+      <div class="col-md-12">
+        <table class="mae-table">
+          <thead>
+            <tr>
+              <th class="pt-2 pb-2">NOME</th>
+              <th class="pt-2 pb-2">CODE</th>
+              <th class="pt-2 pb-2">URL</th>
+              <th class="pt-2 pb-2 text-center">ATTIVO</th>
+              <th class="pt-2 pb-2">ENCRIPTION KEY</th>
+              <th></th>
+            </tr>
+            {{#if (has-permissions 'Integration.create')}}
+              <tr>
+                <th colspan="6" class="new">AGGIUNGI</th>
+              </tr>
+              <tr class="new underline">
+                <td>
+                  <input {{on 'input' (fn this.changeNew 'name')}} value={{this.newRecord.name}} class="form-control form-control-sm">
+                </td>
+                <td>
+                  <input {{on 'input' (fn this.changeNew 'code')}} value={{this.newRecord.code}} class="form-control form-control-sm">
+                </td>
+                <td>
+                  <input {{on 'input' (fn this.changeNew 'url')}} value={{this.newRecord.url}} class="form-control form-control-sm">
+                </td>
+                <td class="text-center">
+                  <Standard::FlipSwitch @checked={{this.newRecord.active}} @size="sm" @onstyle="primary" @offstyle="danger" @ontext="Sì" @offtext="No" @cb={{this.changeNewActive}}/>
+                </td>
+                <td>
+                  <input value={{this.newRecord.encryptionKey}} class="form-control form-control-sm" disabled>
+                </td>
+                <td class="text-center">
+                  <button {{on 'click' (perform this.saveNew)}} class="btn btn-sm btn-success btn-hover-shine btn-icon-only" type="button">
+                    <i class="fa {{if this.saveNew.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                  </button>
+                </td>
+              </tr>
+            {{/if}}
+          </thead>
+          <tbody>
+            {{#if (eq this.totalRecords 0)}}
+              <tr>
+                <td colspan="6">
+                  <p class="m-4"><em>Non ci sono integrazioni</em></p>
+                </td>
+              </tr>
+            {{else}}
+              {{#each this.records as | record |}}
+                <tr>
+                  <td>
+                    <input {{on 'input' (fn this.changeOld 'name')}} value={{record.name}} disabled={{(not-eq this.editingRecord.id record.id)}} class="form-control form-control-sm">
+                  </td>
+                  <td>
+                    <input {{on 'input' (fn this.changeOld 'code')}} value={{record.code}} disabled={{(not-eq this.editingRecord.id record.id)}} class="form-control form-control-sm">
+                  </td>
+                  <td>
+                    <input {{on 'input' (fn this.changeOld 'url')}} value={{record.url}} disabled={{(not-eq this.editingRecord.id record.id)}} class="form-control form-control-sm">
+                  </td>
+                  <td class="text-center">
+                    <Standard::FlipSwitch @checked={{record.active}} @disabled={{(not-eq this.editingRecord.id record.id)}} @size="sm" @onstyle="primary" @offstyle="danger" @ontext="Sì" @offtext="No" @cb={{this.changeOldActive}}/>
+                  </td>
+                  <td>
+                    <input value={{record.encryptionKey}} class="form-control form-control-sm" disabled>
+                  </td>
+                  <td class="text-center">
+                    {{#if (not-eq this.editingRecord.id record.id)}}
+                      {{#if (has-permissions 'Integration.update')}}
+                        <button class="btn btn-sm btn-hover-shone btn-alternate btn.icon-only" type="button" {{on 'click' (fn this.editRecord record)}}>
+                          <i class="fa fa-edit"></i>
+                        </button>
+                      {{/if}}
+                      {{#if (has-permissions 'Integration.delete')}}
+                        <button class="btn btn-sm btn-hover-shone btn-danger btn.icon-only" type="button" {{on 'click' (fn this.delOld record)}}>
+                          <i class="fa fa-trash {{if this.delOldConfirmed.isRunning 'fa-spin'}}"></i>
+                        </button>
+                      {{/if}}
+                    {{else}}
+                      <button class="btn btn-sm btn-hover-shone btn-secondary btn.icon-only" type="button" {{on 'click' (fn this.undoRecord record)}}>
+                        <i class="fa fa-undo"></i>
+                      </button>
+                      {{#if (has-permissions 'Integration.update')}}
+                        <button class="btn btn-sm btn-hover-shone btn-warning btn.icon-only" type="button" {{on 'click' (fn this.updateOld record)}}>
+                          <i class="fa {{if this.updateOldConfirmed.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                        </button>
+                      {{/if}}
+                    {{/if}}
+                  </td>
+                </tr>
+              {{/each}}            
+            {{/if}}
+        </tbody>
+      </table>
+
+      {{#if (gt this.totalRecords 0)}}
+        <div class="d-block">
+          <p class="pt-5 text-center"><bold>Verifica il funzionamento delle integrazioni</bold></p>
+        </div>
+        <div class="d-block">
+          <div class="input-group">
+            <select {{on 'change' this.saveIntegrationForTest}} class="form-control form-control-sm">
+              <option value="" selected>--</option>
+              {{#each this.records as | int |}}
+                {{#if int.active}}
+                  <option value={{int.id}}>{{int.name}}</option>
+                {{/if}}
+              {{/each}}
+            </select>
+            <div class="input-group-append">
+              <button {{on 'click' (perform this.testIntegration)}} class="btn btn-sm btn-hover-shine btn-success mr-2" type="button"><i class="fa mr-2 {{if this.testIntegration.isRunning 'fa-spinner fa-spin' 'fa-check'}}"></i> VERIFICA</button>
+            </div>
+          </div>
+          <div class="d-block pt-3 text-center">
+            {{this.integrationResult}}
+          </div>
+        </div>
+      {{/if}}
+
+      </div>
+    </div>
+  {{else}}
+    <div class="row">
+      <div class="col-md-12">
+        <p>Non hai l'autorizzazione per accedere a questa sezione del portale.</p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

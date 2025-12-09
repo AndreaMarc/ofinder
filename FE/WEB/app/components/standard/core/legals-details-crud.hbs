@@ -1,0 +1,117 @@
+<div class="template-details" {{did-update this.start @model}} ...attributes>
+  {{#if (eq this.available 'waiting')}}
+  <div class="main-card card">
+    <div class="p-2">
+      <div class="alert alert-info fade show" role="alert">
+          <i class="fa fa-spinner fa-spin mr-2"></i> Recupero dati in corso, attendere prego...
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if (eq this.available 'unavailable')}}
+  <div class="main-card card">
+    <div class="p-2">
+      <div class="alert alert-danger fade show m-0" role="alert">
+        <i class="fa fa-exclamation-triangle mr-2"></i> Servizio non disponibile.
+        <a href="#" class="alert-link" {{on 'click' this.start}}>
+          Riprova
+        </a>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if (eq this.available 'available')}}
+    {{#if (and this.showLangArea (has-permissions 'LegalTerm.create') (has-permissions 'LegalTerm.update'))}}
+      <div class="main-card card mb-3">
+        <div class="card-body p-2">
+          <div class="row m-0">
+            {{#each this.langToShow as | lang |}}
+            <div {{on 'click' (fn this.createOpenTemplate lang.templateExists lang.templateCode lang.langCode lang.templateName lang.templateVersion)}} class="lang-card {{if (eq lang.langCode this.template.language) 'bordered'}} col-md-2 text-center">
+              <span class="flag large {{lang.flagCode}} d-block m-auto"></span> {{this.code}}
+              {{#if lang.complete}}
+              <div class="mb-2 me-2 badge rounded-pill bg-success text-white">COMPLETO</div>
+              {{else}}
+              <div class="mb-2 me-2 badge rounded-pill bg-warning text-white">INCOMPLETO</div>
+              {{/if}}
+            </div>
+            {{/each}}
+            <div class="col-md-12">
+              <small class="form-text text-muted opacity-4"><em>Sono considerati Completi i documenti che abbiano il Contenuto non vuoto.</em></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+
+    <div class="main-card card mb-3">
+      <div class="card-body underline">
+        <form class="">
+          <div class="form-row">
+            <div class="col-md-8">
+              <div class="position-relative form-group">
+                <label class="">Titolo</label>
+                <input type="text" class="form-control" value={{this.template.title}} {{on 'input' (fn this.storeNewValue 'title')}}>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="position-relative form-group">
+                <label class="">Versione</label>
+                <input value={{this.template.version}} class="form-control" type="text" disabled>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="position-relative form-group text-right">
+                <label class="">Lingua</label>
+                <br />
+                <span class="flag large {{convertLangCode this.template.language}} d-inline-block mr-2"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label class="">Note (ad uso interno)</label>
+                <textarea rows="2" class="form-control" value={{this.template.note}} {{on 'input' (fn this.storeNewValue 'note')}} disabled={{(not (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-12">
+              <div class="position-relative form-group">
+                <label class="">Contenuto HTML</label>
+                <Standard::CkEditor @defaultValue={{this.template.content}} @reload={{this.ckReload}} @changeCallback={{this.changeHtml}}/>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row pt-3 mb-2">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center">
+              <br />
+              {{#if this.localState}}
+              <div class="mb-2 me-2 badge bg-success text-white">STATO:<br />COMPLETO</div>
+              {{else}}
+              <div class="mb-2 me-2 badge bg-warning text-white">STATO:<br />INCOMPLETO</div>
+              {{/if}}
+            </div>
+            <div class="col-md-4 text-right">
+              <br />
+              {{#if (and (has-permissions 'LegalTerm.create') (has-permissions 'LegalTerm.update'))}}
+              <button disabled={{this.savedChanges}} {{on 'click' (perform this.save)}} class="btn-hover-shine btn btn-primary" type="button">
+                {{#if this.save.isRunning}}
+                  <i class="fa fa-spinner fa-spin mr-2"></i>
+                {{/if}}
+                SALVA
+              </button>
+              {{/if}}
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

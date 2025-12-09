@@ -1,0 +1,64 @@
+@import "ember-cli-bootstrap-4/bootstrap";
+//@import 'bootstrap';
+
+// tema architect
+@import 'architectUi/base.scss';
+
+// componenti custom
+@import 'custom/custom.scss'; /////////
+@import 'components/loading-block.scss';
+@import 'components/header-user-menu.scss';
+@import 'components/t-r.scss';
+@import 'components/dev-grid.scss';
+@import 'components/startup-history.scss';
+@import 'components/startup-registry.scss';
+@import 'components/terms-conditions.scss';
+@import 'components/gdpr.scss';
+@import 'components/choose-language.scss';
+@import 'components/setup-slider.scss';
+@import 'components/show-image.scss';
+@import 'components/setup-multi-language.scss';
+@import 'components/translate-structure.scss';
+@import 'components/media-crud.scss';
+@import 'components/tenant-crud.scss';
+@import 'components/registration-form.scss';
+@import 'components/users-crud.scss';
+@import 'components/users-requests.scss';
+@import 'components/users-banned.scss';
+@import 'components/category-crud.scss';
+@import 'components/templates-crud.scss';
+@import 'components/template-details-crud.scss';
+@import 'components/incomplete-configuration.scss';
+@import 'components/app-header-right.scss';
+@import 'components/current-tenant.scss';
+@import 'components/change-tenant.scss';
+@import 'components/user-devices.scss';
+@import 'components/user-audit.scss';
+@import 'components/general-crud.scss';
+@import 'components/filter-select.scss';
+@import 'components/textarea-autosize.scss';
+@import 'components/notifications.scss';
+@import 'components/messages-notifications.scss';
+@import 'components/setup-operators.scss';
+@import 'components/external-integrations.scss';
+@import 'components/ck-editor.scss';
+@import 'components/media-categories.scss';
+@import 'components/permission-master.scss';
+@import 'components/category-viewer.scss';
+@import 'components/ticket-management.scss';
+@import 'components/ticket-general.scss';
+@import 'components/ticket-operators.scss';
+@import 'components/ticket-details.scss';
+@import 'components/help-desk.scss';
+
+
+// template custom
+@import 'templates/welcome-slider.scss';
+@import 'templates/not-found.scss';
+@import 'templates/user-profile.scss';
+
+// altri stili custom comuni
+//@import 'custom/custom.scss'; -****************************
+@import 'custom/override-theme-style.scss';
+@import 'custom/override-js-library.scss';
+@import 'custom/theme-integrations.scss';

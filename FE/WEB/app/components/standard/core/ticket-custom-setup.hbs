@@ -1,0 +1,431 @@
+<div class="ticket-custom-setup p-3" {{did-update this.start @auth}} ...attributes>
+  {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isOwner') (has-permissions 'isAdmin'))}}
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div class="row">
+        <div class="col-12 mb-3">
+
+
+          <div class="main-card mb-3 card">
+              <div class="card-header">Personalizza il funzionamento dei Ticket.</div>
+              <div class="card-body">
+                {{!-- ANONIMI --}}
+                {{#if this.tickedInfo.settings.unloggedTicket}}
+                  {{#if this.tickedInfo.license.canChoiseUnlogged}}
+                    <div class="row underline">
+                      <div class="col-12 col-md-1 text-center p-3 {{if (gt this.tickedInfo.custom.canChoiseUnlogged 0) 'text-primary' ''}}">
+                        <i class="fa fa-user-secret fa-2x"></i>
+                      </div>
+                      <div class="col-12 col-md-3 p-3">
+                        <label>Gli utenti <em>non-loggati</em> possono inviare ticket?</label>
+                        <small class="form-text text-muted">Le opzioni "Sì" potrebbero comportare la ricezione di Spam. Usale solo se necessario!</small>
+                      </div>
+                      <div class="col-12 col-md-8 p-3">
+                          {{!-- template-lint-disable require-input-label --}}
+                          <select {{on 'change' (fn this.changeValue 'canChoiseUnlogged')}} class="form-control">
+                            <option value="" selected={{(or (eq this.tickedInfo.custom.canChoiseUnlogged 0) (not this.tickedInfo.custom.canChoiseUnlogged))}}>No</option>
+                            <option value="1" selected={{(eq this.tickedInfo.custom.canChoiseUnlogged 1)}}>Sì, specificando l'e-mail</option>
+                            <option value="2" selected={{(eq this.tickedInfo.custom.canChoiseUnlogged 2)}}>Sì, specificando e-mail e P.Iva</option>
+                          </select>
+                      </div>
+                    </div>
+                  {{else}}
+                    <div class="row underline">
+                      <div class="col-12 col-md-1 text-center p-3">
+                        <i class="fa fa-user-secret fa-2x"></i>
+                      </div>
+                      <div class="col-12 col-md-3 p-3">
+                        <label>Gli utenti <em>non-loggati</em> possono inviare ticket?</label>
+                      </div>
+                      <div class="col-12 col-md-8 p-3">
+                          {{!-- template-lint-disable require-input-label --}}
+                          <select class="form-control col-md-4" disabled>
+                            <option value="" selected>No</option>
+                          </select>
+                          <small class="form-text text-danger">La tua Licenza non consente di modificare l'opzione! <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                      </div>
+                    </div>
+                  {{/if}}
+                {{/if}}
+
+                {{!-- PROGETTI --}}
+                {{#if this.tickedInfo.settings.addonProject}}
+                  {{#if this.tickedInfo.license.canManageProjects}}
+                    <div class="row underline">
+                      <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canManageProjects 'text-primary' ''}}">
+                        <i class="fa fa-lightbulb fa-2x"></i>
+                      </div>
+                      <div class="col-12 col-md-3 p-3">
+                        <label>Vuoi abilitare i Progetti?</label>
+                      </div>
+                      <div class="col-12 col-md-8 p-3">
+                          {{!-- template-lint-disable require-input-label --}}
+                          <select {{on 'change' (fn this.changeValue 'canManageProjects')}} class="form-control col-md-4">
+                            <option value="1" selected={{(eq this.tickedInfo.custom.canManageProjects true)}}>Sì</option>
+                            <option value="" selected={{(or (eq this.tickedInfo.custom.canManageProjects false) (not this.tickedInfo.custom.canManageProjects))}}>No</option>
+                          </select>
+                      </div>
+                    </div>
+                  {{else}}
+                    <div class="row underline">
+                      <div class="col-12 col-md-1 text-center p-3">
+                        <i class="fa fa-lightbulb fa-2x"></i>
+                      </div>
+                      <div class="col-12 col-md-3 p-3">
+                        <label>Vuoi abilitare i Progetti?</label>
+                      </div>
+                      <div class="col-12 col-md-8 p-3">
+                          {{!-- template-lint-disable require-input-label --}}
+                          <select class="form-control col-md-4" disabled>
+                            <option value="" selected>No</option>
+                          </select>
+                          <small class="form-text text-danger">La tua Licenza non consente di modificare l'opzione!  <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                      </div>
+                    </div>
+                  {{/if}}
+                {{/if}}
+
+                {{!-- TO-DO --}}
+                {{#if this.tickedInfo.settings.addonToDo}}
+                  {{#if this.tickedInfo.license.canUseToDo}}
+                    <div class="row underline">
+                      <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseToDo 'text-primary' ''}}">
+                        <i class="fa fa-check-circle fa-2x"></i>
+                      </div>
+                      <div class="col-12 col-md-3 p-3">
+                        <label>Vuoi abilitare i ToDo?</label>
+                      </div>
+                      <div class="col-12 col-md-8 p-3">
+                          {{!-- template-lint-disable require-input-label --}}
+                          <select {{on 'change' (fn this.changeValue 'canUseToDo')}} class="form-control col-md-4">
+                            <option value="1" selected={{(eq this.customSetup.ticketSetup.canUseToDo true)}}>Sì</option>
+                            <option value="" selected={{(or (eq this.customSetup.ticketSetup.canUseToDo false) (not this.customSetup.ticketSetup.canUseToDo))}}>No</option>
+                          </select>
+                      </div>
+                    </div>
+                  {{else}}
+                    <div class="row underline">
+                      <div class="col-12 col-md-1 text-center p-3">
+                        <i class="fa fa-check-circle fa-2x"></i>
+                      </div>
+                      <div class="col-12 col-md-3 p-3">
+                        <label>Vuoi abilitare i ToDo?</label>
+                      </div>
+                      <div class="col-12 col-md-8 p-3">
+                          {{!-- template-lint-disable require-input-label --}}
+                          <select class="form-control col-md-4" disabled>
+                            <option value="" selected>No</option>
+                          </select>
+                          <small class="form-text text-danger">La tua Licenza non consente di modificare l'opzione! <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                      </div>
+                    </div>
+                  {{/if}}
+                {{/if}}
+
+                {{!-- TAG --}}
+                {{#if this.tickedInfo.license.canUseTag}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseTag 'text-primary' ''}}">
+                      <i class="fa fa-tags fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Vuoi abilitare i tag?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select {{on 'change' (fn this.changeValue 'canUseTag')}} class="form-control col-md-4">
+                          <option value="1" selected={{(eq this.tickedInfo.custom.canUseTag true)}}>Sì</option>
+                          <option value="" selected={{(or (eq this.tickedInfo.custom.canUseTag false) (not this.tickedInfo.custom.cavnUseTag))}}>No</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-tags fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Vuoi abilitare i tag?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non consente di modificare l'opzione!  <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- SLA --}}
+                {{#if this.tickedInfo.license.canUseSla}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseSla 'text-primary' ''}}">
+                      <i class="fa fa-hourglass-half fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Vuoi abilitare le S.L.A.?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select {{on 'change' (fn this.changeValue 'canUseSla')}} class="form-control col-md-4">
+                          <option value="1" selected={{(eq this.tickedInfo.custom.canUseSla true)}}>Sì</option>
+                          <option value="" selected={{(or (eq this.tickedInfo.custom.canUseSla false) (not this.tickedInfo.custom.canUseSla))}}>No</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-hourglass-half fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Vuoi abilitare i tag?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non consente di modificare l'opzione!  <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- MULTI-AREA (Reparti) --}}
+                {{#if this.tickedInfo.license.multiArea}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.multiArea 'text-primary' ''}}">
+                      <i class="fa fa-th-large fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Multi-Area (Reparti) attiva?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="1" selected>Sì</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-th-large fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Multi-Area (Reparti) attiva?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non prevede questa opzione!  <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- SCOPES (Ambiti) --}}
+                {{#if this.tickedInfo.license.canUseScopes}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseScopes 'text-primary' ''}}">
+                      <i class="fa fa-th-large fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Ambiti attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="1" selected>Sì</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-th-large fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Ambiti attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non prevede questa opzione!  <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- RUOLI --}}
+                {{#if this.tickedInfo.license.canUseRoles}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseRoles 'text-primary' ''}}">
+                      <i class="fa fa-graduation-cap fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Ruoli attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="1" selected>Sì</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-graduation-cap fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Ruoli attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non prevede questa opzione! <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- CAN USE LEADER --}}
+                {{#if this.tickedInfo.license.canUseLeader}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseLeader 'text-primary' ''}}">
+                      <i class="fa fa-podcast fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Leader (Capo-area) attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="1" selected>Sì</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-podcast fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Leader (Capo-area) attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non prevede questa opzione! <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- TICKET RELAZIONABILI --}}
+                {{#if this.tickedInfo.license.canRelateTicket}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canRelateTicket 'text-primary' ''}}">
+                      <i class="fa fa-random fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Ticket relazionabili attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="1" selected>Sì</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row underline">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-random fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Ticket relazionabili attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non prevede questa opzione! <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{!-- WORKFLOW --}}
+                {{#if this.tickedInfo.license.canUseWorkflow}}
+                  <div class="row">
+                    <div class="col-12 col-md-1 text-center p-3 {{if this.tickedInfo.custom.canUseWorkflow 'text-primary' ''}}">
+                      <i class="fa fa-recycle fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Workflow attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="1" selected>Sì</option>
+                        </select>
+                    </div>
+                  </div>
+                {{else}}
+                  <div class="row">
+                    <div class="col-12 col-md-1 text-center p-3">
+                      <i class="fa fa-recycle fa-2x"></i>
+                    </div>
+                    <div class="col-12 col-md-3 p-3">
+                      <label>Workflow attivi?</label>
+                    </div>
+                    <div class="col-12 col-md-8 p-3">
+                        {{!-- template-lint-disable require-input-label --}}
+                        <select class="form-control col-md-4" disabled>
+                          <option value="" selected>No</option>
+                        </select>
+                        <small class="form-text text-danger">La tua Licenza non prevede questa opzione!</small>
+                    </div>
+                  </div>
+                {{/if}}
+
+              </div>
+              <div class="d-block text-right card-footer">
+                <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="button">
+                  <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                  SALVA
+                </button>
+              </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+    {{else if (eq this.serviceAvailable 'waiting')}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <p>
+            <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+          </p>
+        </div>
+      </div>
+    {{else if (eq this.serviceAvailable 'unavailable')}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+            Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+          </Standard::LoadingSpinner>
+        </div>
+      </div>
+    {{/if}}
+  {{/if}}
+</div>
+{{yield}}

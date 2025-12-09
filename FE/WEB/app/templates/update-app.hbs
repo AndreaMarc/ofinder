@@ -1,0 +1,29 @@
+<div class="app-container">
+  <div class="h-100 bg-animation {{this.bgColor}}">
+
+    <div class="d-flex h-100 justify-content-center align-items-center">
+      <div class="mx-auto app-login-box col-md-8">
+
+        <div class="modal-dialog w-100 mx-auto">
+          <div class="modal-content p-3 text-center">
+            {{#if this.show}}
+                <h4>AGGIORNAMENTO DISPONIBILE</h4>
+                <p class="mb-4">{{this.information}}</p>
+                <button {{on 'click' this.goToStore}} class="btn btn-light btn-hover-shine" type="button">
+                  VAI ALLO STORE
+                </button>
+            {{else}}
+              {{!-- template-lint-disable no-inline-styles --}}
+              <div class="modal-body">
+                <button {{on 'click' this.goToHome}} class="btn btn-light btn-hover-shine w-100" type="button">
+                  Torna alla home
+                </button>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{outlet}}

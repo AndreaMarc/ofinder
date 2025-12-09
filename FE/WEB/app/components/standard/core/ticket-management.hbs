@@ -1,0 +1,731 @@
+<div class="ticket-management" {{did-update this.start @lastRefresh}}>
+  {{!-- BODY --}}
+  {{!-- template-lint-disable require-input-label --}}
+  {{!-- template-lint-disable no-invalid-interactive --}}
+  {{#if (eq this.available 'preload')}}
+    <p class="p-3">
+      <Standard::LoadingSpinner @icon='1' @msg="Avvio in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+    </p>
+  {{else if (eq this.available 'preload-error')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger m-5">
+      Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+    </Standard::LoadingSpinner>
+  {{else if (eq this.available 'no-areas')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-warning m-5">
+      <em>
+        Non sono presenti Aree!
+        <br />
+        <small>Definiscine almeno una per attivare la gestione dei Ticket!</small>
+      </em>
+    </Standard::LoadingSpinner>
+  {{else if (eq this.available 'no-operators')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-warning m-5">
+      <em>
+        Non sono stati definiti gli operatori!
+        <br />
+        <small>Apri l'apposita tab per definirli!</small>
+      </em>
+    </Standard::LoadingSpinner>
+  {{else if (eq this.available 'no-pertinences')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-warning m-5">
+      <em>
+        Non sono stati definiti gli Ambiti!
+        <br />
+        <small>Apri l'apposita tab per definirli!</small>
+      </em>
+    </Standard::LoadingSpinner>
+  {{else if (eq this.available 'noAreasForOperator')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-warning m-5">
+      <em>
+        La tua utenza non è associata ad alcuna Area di competenza.
+        <br />
+        <small>Chiedi all'amministratore di associarti ad almeno un'Area per accedere alla gestione dei Ticket!</small>
+      </em>
+    </Standard::LoadingSpinner>
+  {{else}}
+  <div class="card-header">A</div>
+    <div class="app-inner-layout__wrapper">
+      <div class="app-inner-layout__content card">
+        <div>
+          <div class="app-inner-layout__top-pane">
+            {{!-- INTESTAZIONE --}}
+            <div class="pane-left">
+              <div class="mobile-app-menu-btn">
+                  <button type="button" class="hamburger hamburger--elastic">
+                      <span class="hamburger-box">
+                          <span class="hamburger-inner"></span>
+                      </span>
+                  </button>
+              </div>
+              <h4 class="mb-0">Elenco richieste</h4>
+            </div>
+
+            <div class="pane-right">
+              <button {{on 'click' (perform this.findTickets)}} class="btn btn-sm btn-hover-shine btn-light btn-icon-only" type="button">
+                <i class="fa {{if this.findTickets.isRunning 'fa-spinner fa-spin' 'fa-refresh'}}"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white">
+
+            {{!-- FILTRI --}}
+            <div class="row p-0 m-0 opacity-6">
+              <div class="col-12 col-md-3 p-1 pb-2"></div>
+              <div class="col-12 col-md-3 p-1 pb-2">
+                {{!-- paginazione --}}
+                <select {{on 'change' this.setRecordPerPage}} class="form-control form-control-sm">
+                  <option value="20" selected={{eq this.recordPerPage '20'}}>Visualizza 20 ticket</option>
+                  <option value="50" selected={{eq this.recordPerPage '50'}}>Visualizza 50 ticket</option>
+                  <option value="100" selected={{eq this.recordPerPage '100'}}>Visualizza 100 ticket</option>
+                </select>
+              </div>
+
+              <div class="col-12 col-md-3 p-1 pb-2">
+                {{!-- ordinamento --}}
+                <select {{on 'change' this.setSort}} class="form-control form-control-sm">
+                  <option value="date" selected={{eq this.sortType 'date'}}>Ordina per Data</option>
+                  <option value="customer" selected={{eq this.sortType 'customer'}}>Ordina per Cliente</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3 p-1 pb-2 text-right">
+                <Standard::FlipSwitch @checked="" @size="sm" @offstyle="success" @onstyle="warning" @offtext="Anche ticket non assegnati a me" @ontext="Solo ticket assegnati a me" @width="full" @cb={{this.setOnlyMine}}/>
+              </div>
+            </div>
+
+            {{!-- ELENCO DEI TICKETS --}}
+            <div class="table-responsive mb-3">
+              <table class="text-nowrap table-lg mb-0 table table-hover tickets-table">
+                <thead>
+                  {{!-- INTESTAZIONE E FILTRI TESTUALI --}}
+                  <tr>
+                    <th class="text-center col-new"></th>
+                    <th class="text-center col-number">
+                      NUMERO
+                      <input {{on 'input' (fn this.setFilter 'number')}} value={{this.filterSearch.number}} placeholder="..." type="search" class="form-control form-control-sm">
+                    </th>
+                    <th class="border-left pl-2 col-customer">
+                      CLIENTE
+                      {{!-- ricerca per cliente --}}
+                      <input {{on 'input' (fn this.setFilter 'customer')}} value={{this.filterSearch.customer}} placeholder="..." type="search" class="form-control form-control-sm">
+                    </th>
+                    {{#if this.auth.canManageProjects}}
+                      <th class="border-left pl-2 col-project">
+                        PROGETTO
+                        {{!-- ricerca per progetto --}}
+                        <input {{on 'input' (fn this.setFilter 'project')}} value={{this.filterSearch.project}} placeholder="..." type="search" class="form-control form-control-sm">
+                      </th>
+                    {{/if}}
+                    <th class="border-left col-operator">
+                      OPERATORE
+                      {{!-- ricerca per progetto --}}
+                      <input {{on 'input' (fn this.setFilter 'operator')}} value={{this.filterSearch.operator}} placeholder="..." type="search" class="form-control form-control-sm">
+                    </th>
+                    <th class="border-left text-left col-message">
+                      MESSAGGIO
+                      {{!-- ricerca per messaggio --}}
+                      <input {{on 'input' (fn this.setFilter 'message')}} value={{this.filterSearch.message}} placeholder="..." type="search" class="form-control form-control-sm">
+                    </th>
+                    {{#if this.auth.canUseTag}}
+                      <th class="border-left col-tag">
+                        TAG
+                        {{#if (not-eq this.filterTag '')}}
+                          <div {{on 'click' (fn this.setFilterTag '')}} class="ml-auto badge badge-pill badge-danger float-right cursor-pointer small-tag">
+                            <i class="fa fa-times"></i>
+                          </div>
+                        {{/if}}
+                        {{#if (eq this.tagsLength 0)}}
+                          <p id="ticket-management-define-tag">
+                            <small class="d-inline-block"><em>Definisci i tuoi Tag <a href="#" {{on 'click' (fn this.changeTab 'ticket-tag')}}>qui</a></em></small>
+                          </p>
+                        {{else}}
+                          <Standard::SelectTwo @addEmptyOption="1" @changeCB={{this.setFilterTag}} @options={{this.tags}} class="form-control form-control-sm"/>
+                        {{/if}}
+                      </th>
+                    {{/if}}
+                    <th class="border-left col-data">
+                      DATA
+                      {{!-- ricerca per data --}}
+                      <input {{on 'input' (fn this.setFilter 'date')}} value={{this.filterSearch.date}} placeholder="..." type="date" class="form-control form-control-sm">
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#if (or this.findTickets.isRunning (eq this.available 'waiting'))}}
+                    <tr>
+                      <td colspan="6" class="text-center">
+                        <p class="p-5"><i class="fa fa-spinner fa-spin mr-2"></i> <em>Attendere prego...</em></p>
+                      </td>
+                    </tr>
+                  {{else if (eq this.available 'unavailable')}}
+                    <tr>
+                      <td colspan="6" class="text-center text-danger">
+                        <p class="p-5"><em>Si è verificato un errore. <a href="#" class="ml-2 text-danger" {{on 'click' (perform this.findTickets)}}>Riprova.</a></em></p>
+                      </td>
+                    </tr>
+                  {{else if (eq (length this.tickets) 0)}}
+                    <tr>
+                      <td colspan="6" class="text-center">
+                        <p class="p-5"><em>Non sono stati trovati ticket!</em></p>
+                      </td>
+                    </tr>
+                  {{else}}
+                    {{#each this.tickets as | ticket |}}
+                      {{!-- template-lint-disable no-invalid-interactive --}}
+                      <tr {{on 'click' (fn this.toggleDetails ticket.id)}}>
+                          <td class="text-center">
+                            <span class="mb-2 d-block">{{this.getIcon ticket.priority}}</span>
+
+                            {{#if (eq ticket.status 'unprocessed')}}
+                              <div class="ml-auto badge badge-success badge-sm">New</div>
+                            {{/if}}
+                          </td>
+                          {{!-- numero --}}
+                          <td class="text-center">
+                            <small>{{ticket.number}}</small>
+                          </td>
+                          {{!-- cliente --}}
+                          <td class="border-left">
+                            {{#if (eq ticket.tenantId 0)}}
+                              <strong class="text-danger">
+                                Utente anonimo
+                              </strong>
+                              {{#if (not-eq ticket.organizationToBeConfirmed '')}}
+                                <div class="widget-subheading">
+                                  <small class="text-danger opacity-7"><em>{{ticket.organizationToBeConfirmed}} ?</em></small>
+                                </div>
+                              {{/if}}
+                              <div class="widget-subheading">
+                                <small><em>Gestire l'assegnazione al cliente</em></small>
+                              </div>
+                            {{else}}
+                              <div class="widget-content p-0">
+                                <div class="widget-content-wrapper">
+                                  <div class="widget-content-left">
+                                    <div class="widget-heading">{{ticket.tenant.name}}</div>
+                                    <div class="widget-subheading">{{ticket.vat}}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            {{/if}}
+                          </td>
+                          {{!-- progetto --}}
+                          {{#if this.auth.canManageProjects}}
+                            <td class="border-left"></td>
+                          {{/if}}
+                          {{!-- operatore --}}
+                          <td class="border-left">
+                            {{#if (or (eq ticket.assignedId '0') (not ticket.assignedId))}}
+                              <strong class="text-warning">
+                                Non assegnato
+                              </strong>
+                              <div class="widget-subheading">
+                                <small><em>Prendi in carico la richiesta!</em></small>
+                              </div>
+                            {{else}}
+                              <div class="widget-content p-0">
+                                <div class="widget-content-wrapper">
+                                  <div class="widget-content-left">
+                                    <div class="widget-heading">{{ticket.assignedUser.userProfile.lastName}} {{ticket.assignedUser.userProfile.firstName}}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            {{/if}}
+                          </td>
+                          {{!-- messaggio --}}
+                          <td class="border-left text-left">
+                            <div class="div-overflow">{{ticket.message}}</div>
+                          </td>
+                          {{!-- tag --}}
+                          {{#if this.auth.canUseTag}}
+                            <td class="border-left"></td>
+                          {{/if}}
+                          {{!-- data --}}
+                          <td class="border-left text-right">
+                            <i class="fa fa-calendar-alt opacity-4 mr-2"></i>
+                            <small>
+                              {{convertdate2 ticket.creationDate this.hourFormat this.currentLang}}
+                              <br />
+                              {{converttime ticket.creationDate null this.currentLang}}
+                            </small>
+                          </td>
+                      </tr>
+                    {{/each}}
+                  {{/if}}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-center">
+              <Standard::PaginationButtons @currentPageNumber={{this.currentPage}} @totalRecords={{this.totalRecord}} @recordsPerPage={{this.recordPerPage}} @maxButtonsNumber="3" @cb={{this.setCurrentPage}}/>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+
+      {{!-- MENU LATERALE SINISTRO --}}
+      <div class="app-inner-layout__sidebar card">
+        <ul class="nav flex-column">
+          <li class="nav-item-header nav-item">Menù</li>
+          <li class="nav-item">
+              <a href="#" {{on 'click' (fn this.setFilterType '')}} class="nav-link filter-type {{if (eq this.filterType '') 'active' ''}}">
+                  <i class="nav-link-icon pe-7s-network"> </i>
+                  <span>Tutti</span>
+              </a>
+          </li>
+          {{#if this.auth.canChoiseUnlogged}}
+            <li class="nav-item">
+                <a href="#" {{on 'click' (fn this.setFilterType 'anonymous')}} class="nav-link filter-type {{if (eq this.filterType 'anonymous') 'active' ''}}">
+                    <i class="nav-link-icon pe-7s-delete-user"> </i>
+                    <span>Anonimi</span>
+                    <div class="ml-auto badge badge-pill badge-warning">{{this.numberAnonymous}}</div>
+                </a>
+            </li>
+          {{/if}}
+          <li class="nav-item">
+              <a href="#" {{on 'click' (fn this.setFilterType 'unprocessed')}} class="nav-link filter-type {{if (eq this.filterType 'unprocessed') 'active' ''}}">
+                  <i class="nav-link-icon pe-7s-alarm"> </i>
+                  <span>In attesa</span>
+                  <div class="ml-auto badge badge-pill badge-danger">{{this.numberUnprocessed}}</div>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a href="#" {{on 'click' (fn this.setFilterType 'running')}} class="nav-link filter-type {{if (eq this.filterType 'running') 'active' ''}}">
+                  <i class="nav-link-icon pe-7s-hourglass"></i>
+                  <span>In corso</span>
+                  <div class="ml-auto badge badge-pill badge-alternate">{{this.numberRunning}}</div>
+              </a>
+          </li>
+          <li class="nav-item-divider nav-item"></li>
+          <li class="nav-item">
+              <a href="#" {{on 'click' (fn this.setFilterType 'complete')}} class="nav-link filter-type {{if (eq this.filterType 'complete') 'active' ''}}">
+                  <i class="nav-link-icon pe-7s-check"> </i>
+                  <span>Completati</span>
+              </a>
+          </li>
+          <li class="nav-item">
+              <a href="#" {{on 'click' (fn this.setFilterType 'trashed')}} class="nav-link filter-type {{if (eq this.filterType 'trashed') 'active' ''}}">
+                  <i class="nav-link-icon pe-7s-trash"> </i>
+                  <span>Cestino</span>
+              </a>
+          </li>
+          <li class="nav-item-divider nav-item"></li>
+          <li class="nav-item-header nav-item">Priorità</li>
+          <li class="nav-item">
+              <button type="button" tabindex="0" {{on 'click' (fn this.setImportance 3)}} class="{{if (eq this.importance 3) 'active' ''}} d-flex align-items-center dropdown-item">
+                <i class="fa fa-star text-danger mr-3"></i>
+                Massima
+              </button>
+              <button type="button" tabindex="0" {{on 'click' (fn this.setImportance 2)}} class="{{if (eq this.importance 2) 'active' ''}} d-flex align-items-center dropdown-item">
+                <i class="fa fa-star text-warning mr-3"></i>
+                Media
+              </button>
+              <button type="button" tabindex="0" {{on 'click' (fn this.setImportance 1)}} class="{{if (eq this.importance 1) 'active' ''}} d-flex align-items-center dropdown-item">
+                <i class="fa fa-star text-success mr-3"></i>
+                Normale
+              </button>
+              <button type="button" tabindex="0" {{on 'click' (fn this.setImportance 0)}} class="{{if (eq this.importance 0) 'active' ''}} d-flex align-items-center dropdown-item">
+                <i class="fa fa-star text-secondary mr-3"></i>
+                Non assegnata
+              </button>
+              <button type="button" tabindex="0" {{on 'click' (fn this.setImportance '')}} class="{{if (eq this.importance null) 'active' ''}} d-flex align-items-center dropdown-item">
+                <i class="fa fa-star text-light mr-3"></i>
+                Nessun filtro
+              </button>
+          </li>
+
+          <li class="nav-item-divider nav-item"></li>
+        </ul>
+      </div>
+
+      {{!-- AREA DETTAGLI TICKET --}}
+      <div class="ticket-details container {{if this.showDetails 'active animated slideInUp' 'animated slideOutDown'}}">
+        <div class="row">
+          <div class="col-md-12 p-2 pt-3">
+            {{#if this.findTicketDetails.isRunning}}
+              <p class="p-3"><i class="fa fa-spinner fa-spin mr-2"></i> Attendere prego...</p>
+            {{else}}
+              <div class="close-details">
+                <button {{on 'click' (fn this.toggleDetails 0)}} class="btn-icon btn-icon-only btn btn-sm btn-light btn-hover-shine" type="button">
+                  <i class="fa fa-times btn-icon-wrapper"> </i>
+                </button>
+              </div>
+              {{#if (and (eq this.ticketDetails.tenantId 0) (not-eq this.ticketDetails.status 'trashed'))}}
+                {{!-- necessario scegliere il tenant --}}
+                <div class="col-md-12 mb-3 underline p-0">
+                  <h5 class="text-danger">Questa richiesta non è associata ad alcuna azienda (è stata creata da un utente non loggato).</h5>
+                  <p>Verifica se la Partita IVA inserita è riconducibile ad un Cliente esistente.<br />In caso affermativo, associa la richiesta alla sua Azienda. Altrimenti puoi cestinare la richiesta.</p>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <h6 class="mb-3">DATI INSERITI</h6>
+                    <p>
+                      <span class="opacity-6 d-block">Partita IVA:</span>
+                      {{this.ticketDetails.vat}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Ragione Sociale:</span>
+                      {{this.ticketDetails.organizationToBeConfirmed}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Cognome e Nome:</span>
+                      {{this.ticketDetails.lastName}} {{this.ticketDetails.firstName}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">E-mail:</span>
+                      {{this.ticketDetails.email}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Telefono:</span>
+                      {{this.ticketDetails.phone}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Richiesta:</span>
+                      {{this.ticketDetails.message}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-8 text-center">
+                    <h6 class="mb-3">
+                      SELEZIONA L'AZIENDA
+                      {{#if this.findTenants.isRunning}}
+                        <i class="ml-2 fa fa-spinner fa-spin"></i>
+                      {{/if}}
+                    </h6>
+                    <div class="mb-5">
+                      <Standard::SelectTwo @addEmptyOption="1" @options={{this.tenants}} @changeCB={{this.setAssignedTenant}}/>
+                    </div>
+
+                    {{#unless (eq this.selectedTenantId '')}}
+                      <button {{on 'click' this.assignTicket}} class="btn btn-warning btn-hover-shine mb-4 btn-block" type="button">
+                        <i class="fa fa-check mr-2"></i> ASSEGNA A QUESTO CLIENTE
+                      </button>
+                    {{/unless}}
+                    <button {{on 'click' this.trashTicket}} class="btn btn-sm btn-danger btn-hover-shine" type="button">
+                      <i class="fa {{if this.trashTicketConfirmed.isRunning 'fa-spinner fa-spin' 'fa-trash'}} mr-2"></i> CESTINA LA RICHIESTA
+                    </button>
+                  </div>
+                </div>
+              {{else if (and (or (eq this.ticketDetails.assignedId '0') (not this.ticketDetails.assignedId))  (not-eq this.ticketDetails.status 'trashed'))}}
+                {{!-- tenant selezionato - operatore non assegnato --}}
+                <div class="col-md-12 mb-3 underline">
+                  <h5 class="text-warning">Questa richiesta non è stata ancora presa in carico.</h5>
+                  <p>Prendi in carico la richiesta di assistenza!</p>
+                </div>
+                <div class="row container">
+                  <div class="col-md-4">
+                    <h6 class="mb-3">DATI INSERITI</h6>
+                    <p>
+                      <span class="opacity-6 d-block">Azienda:</span>
+                      {{this.ticketDetails.tenant.name}}
+                      {{#if (eq this.ticketDetails.userId '')}}
+                        <br />
+                        <a href="#" {{on 'click' this.removeTenant}}>
+                          <small>Non è l'azienda corretta?</small>
+                        </a>
+                      {{/if}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Partita IVA:</span>
+                      {{this.ticketDetails.vat}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">E-mail:</span>
+                      {{this.ticketDetails.email}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Telefono:</span>
+                      {{this.ticketDetails.phone}}
+                    </p>
+                    <p>
+                      <span class="opacity-6 d-block">Creata il:</span>
+                      {{convertdate2 this.ticketDetails.creationDate null this.currentLang}}
+                    </p>
+                  </div>
+                  <div class="col-md-8 pt-4">
+                    {{#if (and (not-eq this.ticketDetails.userId '') (or (not-eq this.ticketDetails.user.userProfile.lastName '') (not-eq this.ticketDetails.user.userProfile.firstName '')))}}
+                      <div class="widget-content p-0">
+                        <div class="widget-content-wrapper mb-4">
+                          <div class="widget-content-left mr-3">
+                            {{#if (or (not this.ticketDetails.user.userProfile.profileImageId) (eq this.ticketDetails.user.userProfile.profileImageId ''))}}
+                              <img width="42" class="rounded-circle" src="./assets/images/avatars/user-icon.png" alt="" role="none">
+                            {{else}}
+                              <div class="sender-image">
+                                <Standard::ShowImage @image={{this.ticketDetails.user.userProfile.profileImageId}} @size="sm" @byUrl=""/>
+                              </div>
+                            {{/if}}
+                          </div>
+                          <div class="widget-content-left">
+                            <div class="widget-heading">
+                              {{this.ticketDetails.user.userProfile.lastName}} {{this.ticketDetails.user.userProfile.firstName}}
+                            </div>
+                            <div class="widget-subheading">(autore della richiesta)</div>
+                          </div>
+                        </div>
+                      </div>
+                    {{else}}
+                      <div class="widget-content p-0">
+                        <div class="widget-content-wrapper mb-4">
+                          <div class="widget-content-left mr-3">
+                            <img width="42" class="rounded-circle" src="./assets/images/avatars/user-icon.png" alt="" role="none">
+                          </div>
+                          <div class="widget-content-left">
+                            <div class="widget-heading">
+                              {{this.ticketDetails.lastName}} {{this.ticketDetails.firstName}}
+                            </div>
+                            <div class="widget-subheading">(autore della richiesta anonima)</div>
+                          </div>
+                        </div>
+                      </div>
+                    {{/if}}
+                    <p>
+                      <span class="opacity-6 d-block">Richiesta:</span>
+                      {{this.ticketDetails.message}}
+                    </p>
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <button {{on 'click' this.setOperatorTicket}} class="btn btn-sm btn-hover-shine btn-success mb-3" type="button">
+                      PRENDI IN CARICO
+                    </button>
+                  </div>
+                </div>
+              {{else if (or (eq this.ticketDetails.status 'trashed') (eq this.ticketDetails.status 'complete'))}}
+                {{!-- chiuso o cancellato --}}
+                <div class="row">
+                  <div class="col-md-8 mb-3 underline">
+                    <h4 class="mb-0">
+                      {{this.getIcon this.ticketDetails.priority}}
+                      {{this.ticketDetails.tenant.name}}
+                    </h4>
+                    <p class="mb-0">P.I.: {{this.ticketDetails.vat}}</p>
+                    {{#if (eq this.ticketDetails.userId '')}}
+                      <a href="#" {{on 'click' this.removeTenant}}>
+                        <small>Non è l'azienda corretta?</small>
+                      </a>
+                    {{/if}}
+                  </div>
+                  <div class="col-md-4 mb-3 underline">
+                    <p>
+                      <i class="fa fa-calendar-alt opacity-4 mr-2"></i>
+                      <small>
+                        {{convertdate2 this.ticketDetails.creationDate null this.currentLang}}
+                      </small>
+                      <br />
+                      <i class="fa fa-at opacity-4 mr-2"></i> {{this.ticketDetails.email}}
+                      <br />
+                      <i class="fa fa-phone opacity-4 mr-2"></i> {{this.ticketDetails.phone}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-12 text-center mb-4">
+                    {{#if (eq this.ticketDetails.status 'trashed')}}
+                      <h5 class="bg-danger text-white">CESTINATO</h5>
+                    {{else if (eq this.ticketDetails.status 'complete')}}
+                      <h5 class="bg-success text-white">COMPLETATO</h5>
+                    {{/if}}
+                  </div>
+
+                  <div class="col-md-6 mb-2">
+                    {{#if (and (not-eq this.ticketDetails.userId '') (or (not-eq this.ticketDetails.user.userProfile.lastName '') (not-eq this.ticketDetails.user.userProfile.firstName '')))}}
+                      <div class="widget-content p-0">
+                        <div class="widget-content-wrapper mb-4">
+                          <div class="widget-content-left mr-3">
+                            {{#if (or (not this.ticketDetails.user.userProfile.profileImageId) (eq this.ticketDetails.user.userProfile.profileImageId ''))}}
+                              <img width="42" class="rounded-circle" src="./assets/images/avatars/user-icon.png" alt="" role="none">
+                            {{else}}
+                              <div class="sender-image">
+                                <Standard::ShowImage @image={{this.ticketDetails.user.userProfile.profileImageId}} @size="sm" @byUrl=""/>
+                              </div>
+                            {{/if}}
+                          </div>
+                          <div class="widget-content-left">
+                            <div class="widget-heading">
+                              {{this.ticketDetails.user.userProfile.lastName}} {{this.ticketDetails.user.userProfile.firstName}}
+                            </div>
+                            <div class="widget-subheading">(autore della richiesta)</div>
+                          </div>
+                        </div>
+                      </div>
+                    {{else}}
+                      <div class="widget-content p-0">
+                        <div class="widget-content-wrapper mb-4">
+                          <div class="widget-content-left mr-3">
+                            <img width="42" class="rounded-circle" src="./assets/images/avatars/user-icon.png" alt="" role="none">
+                          </div>
+                          <div class="widget-content-left">
+                            <div class="widget-heading">
+                              {{this.ticketDetails.lastName}} {{this.ticketDetails.firstName}}
+                            </div>
+                            <div class="widget-subheading">(autore della richiesta anonima)</div>
+                          </div>
+                        </div>
+                      </div>
+                    {{/if}}
+
+                    <span class="opacity-6 d-block">
+                      Richiesta (<small>{{convertdate2 this.ticketDetails.creationDate null this.currentLang}}</small>):
+                    </span>
+                    {{this.ticketDetails.message}}
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <span class="opacity-6 d-block">Note:</span>
+                    {{this.ticketDetails.note}}
+                  </div>
+                  {{#if (eq this.ticketDetails.status 'complete')}}
+                    <div class="col-md-12 mt-5">
+                      <span class="opacity-6 d-block">
+                        Risposta (<small>{{convertdate2 this.ticketDetails.closedDate null this.currentLang}}</small>):
+                      </span>
+                      {{this.ticketDetails.answer}}
+                    </div>
+                  {{/if}}
+                  {{#if (eq this.ticketDetails.status 'trashed')}}
+                      <div class="col-md-12 text-center pt-5">
+                        <button {{on 'click' this.deleteTicket}} class="btn btn-sm btn-hover-shine btn-danger mb-5" type="button">
+                          <i class="fa fa-trash mr-2"></i> ELIMINA DEFINITIVAMENTE
+                        </button>
+                      </div>
+                  {{/if}}
+                </div>
+              {{else}}
+                {{!-- tenant selezionato ed operatore assegnato --}}
+                <div class="row">
+                  <div class="col-md-8 mb-3 underline">
+                    <h4 class="mb-0">
+                      {{this.getIcon this.ticketDetails.priority}}
+                      {{this.ticketDetails.tenant.name}}
+                    </h4>
+                    <p class="mb-0">P.I.: {{this.ticketDetails.vat}}</p>
+                    {{#if (eq this.ticketDetails.userId '')}}
+                      <a href="#" {{on 'click' this.removeTenant}}>
+                        <small>Non è l'azienda corretta?</small>
+                      </a>
+                    {{/if}}
+                  </div>
+                  <div class="col-md-4 mb-3 underline">
+                    <p>
+                      <i class="fa fa-calendar-alt opacity-4 mr-2"></i>
+                      <small>
+                        {{convertdate2 this.ticketDetails.creationDate null this.currentLang}}
+                      </small>
+                      <br />
+                      <i class="fa fa-at opacity-4 mr-2"></i> {{this.ticketDetails.email}}
+                      <br />
+                      <i class="fa fa-phone opacity-4 mr-2"></i> {{this.ticketDetails.phone}}
+                    </p>
+                  </div>
+
+                  <div class="col-md-12 text-center mb-4">
+                    <h6 class="bg-secondary text-white">IN CORSO</h6>
+                  </div>
+
+                  <div class="col-md-4 mb-2">
+                    {{#if (and (not-eq this.ticketDetails.userId '') (or (not-eq this.ticketDetails.user.userProfile.lastName '') (not-eq this.ticketDetails.user.userProfile.firstName '')))}}
+                      <div class="widget-content p-0">
+                        <div class="widget-content-wrapper mb-4">
+                          <div class="widget-content-left mr-3">
+                            {{#if (or (not this.ticketDetails.user.userProfile.profileImageId) (eq this.ticketDetails.user.userProfile.profileImageId ''))}}
+                              <img width="42" class="rounded-circle" src="./assets/images/avatars/user-icon.png" alt="" role="none">
+                            {{else}}
+                              <div class="sender-image">
+                                <Standard::ShowImage @image={{this.ticketDetails.user.userProfile.profileImageId}} @size="sm" @byUrl=""/>
+                              </div>
+                            {{/if}}
+                          </div>
+                          <div class="widget-content-left">
+                            <div class="widget-heading">
+                              {{this.ticketDetails.user.userProfile.lastName}} {{this.ticketDetails.user.userProfile.firstName}}
+                            </div>
+                            <div class="widget-subheading">(autore della richiesta)</div>
+                          </div>
+                        </div>
+                      </div>
+                    {{else}}
+                      <div class="widget-content p-0">
+                        <div class="widget-content-wrapper mb-4">
+                          <div class="widget-content-left mr-3">
+                            <img width="42" class="rounded-circle" src="./assets/images/avatars/user-icon.png" alt="" role="none">
+                          </div>
+                          <div class="widget-content-left">
+                            <div class="widget-heading">
+                              {{this.ticketDetails.lastName}} {{this.ticketDetails.firstName}}
+                            </div>
+                            <div class="widget-subheading">(autore della richiesta anonima)</div>
+                          </div>
+                        </div>
+                      </div>
+                    {{/if}}
+                    <span class="opacity-6 d-block">Richiesta:</span>
+                    {{this.ticketDetails.message}}
+                  </div>
+                  <div class="col-md-4 mb-2">
+                    <span class="opacity-6 d-block">Note interne (non visibili dal Cliente):</span>
+                    <Standard::TextareaAutosize class="mb-3" @disabled="" @cb={{this.writeNote}} @rows="8" @autosize="fixed" @value={{this.ticketDetails.note}}/>
+                    <button {{on 'click' (perform this.saveNote)}} class="btn btn-sm btn-hover-shone btn-primary" type="button">
+                      <i class="mr-2 fa {{if this.saveNote.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i> Salva le note
+                    </button>
+                  </div>
+                  <div class="col-md-4 text-center border-left mb-2">
+                    {{#if (eq this.ticketDetails.assignedId this.currentUserId)}}
+                      <p class="mb-2">PRIORITÀ:</p>
+                      <div role="group" class="btn-group-sm btn-group btn-group-toggle mb-1" data-toggle="buttons">
+                        <label class="btn btn-sm {{if (eq this.ticketDetails.priority 3) 'btn-primary' 'btn-outline-primary'}}">
+                          <input {{on 'click' (fn this.setPriority 3)}} type="radio" name="options" id="option1" autocomplete="off" checked={{(eq this.ticketDetails.priority 3)}}>
+                          <i class="fa fa-star text-danger d-block"></i>
+                          <small class="small-label">MASSIMA</small>
+                        </label>
+                        <label class="btn btn-sm  {{if (eq this.ticketDetails.priority 2) 'btn-primary' 'btn-outline-primary'}}">
+                          <input {{on 'click' (fn this.setPriority 2)}} type="radio" name="options" id="option2" autocomplete="off" checked={{(eq this.ticketDetails.priority 2)}}>
+                          <i class="fa fa-star text-warning d-block"></i>
+                          <small class="small-label">MEDIA</small>
+                        </label>
+                        <label class="btn btn-sm  {{if (eq this.ticketDetails.priority 1) 'btn-primary' 'btn-outline-primary'}}">
+                          <input {{on 'click' (fn this.setPriority 1)}} type="radio" name="options" id="option3" autocomplete="off" checked={{(eq this.ticketDetails.priority 1)}}>
+                          <i class="fa fa-star text-success d-block"></i>
+                          <small class="small-label">NORMALE</small>
+                        </label>
+                        <label class="btn btn-sm  {{if (or (eq this.ticketDetails.priority 0) (not this.ticketDetails.priority)) 'btn-primary' 'btn-outline-primary'}}">
+                          <input {{on 'click' (fn this.setPriority 0)}} type="radio" name="options" id="option4" autocomplete="off" checked={{(or (eq this.ticketDetails.priority 0) (not this.ticketDetails.priority))}}>
+                          <i class="fa fa-star text-secondary d-block"></i>
+                          <small class="small-label">NESSUNA</small>
+                        </label>
+                      </div>
+
+                      <hr class="mb-4" />
+
+                      <textarea id="help-desk-admin-answer" class="form-control form-control-sm mb-1" rows="8" placeholder="Scrivi la risposta di completamento del ticket..."></textarea>
+                      <button {{on 'click' this.setCompleted}} class="btn btn-sm btn-hover-shine btn-success mb-5" type="button">
+                        <i class="fa fa-check mr-2"></i> IMPOSTA COME COMPLETATO
+                      </button>
+
+                      <button {{on 'click' this.trashTicket}} class="btn btn-sm btn-hover-shine btn-danger mb-5" type="button">
+                        <i class="fa fa-trash mr-2"></i> SPOSTA NEL CESTINO
+                      </button>
+                    {{else}}
+                      <p>
+                        Il ticket è attualmente assegnato a:
+                      </p>
+                      <p class="mb-4">
+                        <span class="text-info">{{this.ticketDetails.assignedUser.userProfile.lastName}} {{this.ticketDetails.assignedUser.userProfile.firstName}}</span>
+                      </p>
+                      <div class="col-md-12 text-center">
+                        <button {{on 'click' this.setOperatorTicket}} class="btn btn-sm btn-hover-shine btn-success mb-3" type="button">
+                          PRENDI IN CARICO
+                        </button>
+                      </div>
+                    {{/if}}
+                  </div>
+                </div>
+              {{/if}}
+
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>
+  {{yield}}

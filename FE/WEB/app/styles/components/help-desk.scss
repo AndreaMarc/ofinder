@@ -1,0 +1,32 @@
+.help-desk {
+  .myTickets {
+    border-radius: 5px;
+  }
+
+  .my-ticket-cont {
+    max-height: 6em; /* approssimativamente l'altezza di tre linee di testo */
+    overflow-y: auto; /* mostra una barra di scorrimento se il contenuto è troppo lungo */
+    line-height: 1.5em;
+    word-wrap: break-word; /* permette la suddivisione delle parole per andare a capo */
+    word-break: break-all;
+    padding: 0 3px 0 0;
+
+    /* Impostazioni barra laterale */
+    scrollbar-width: thin; /* per i browser che supportano questa proprietà, come Firefox */
+    -ms-overflow-style: -ms-autohiding-scrollbar; /* per Microsoft Edge e IE */
+
+    /* per Webkit (Chrome, Safari, ecc.) */
+    &::-webkit-scrollbar {
+      width: 5px; /* o qualsiasi larghezza desideri per la barra di scorrimento */
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1; /* colore dello sfondo della traccia della scrollbar */
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #888; /* colore della scrollbar stessa */
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555; /* colore della scrollbar al passaggio del mouse */
+    }
+  }
+}

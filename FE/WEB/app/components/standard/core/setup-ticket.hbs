@@ -1,0 +1,231 @@
+<div class="setup-operators" {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+    {{#if this.tickedInstalled}}
+      {{#if (eq this.serviceAvailable 'available')}}
+        <div class="row mb-3">
+          <div class="col-md-12 p-3">
+            Definisci l'attivazione e la modalità operativa della sezione Ticket (Help Desk).
+          </div>
+        </div>
+
+        <div class="row underline">
+          <div class="col-2 p-3"></div>
+          <div class="col-5 p-3">
+            <b>APP</b>
+          </div>
+          <div class="col-5 p-3">
+            <b>WEB</b>
+          </div>
+        </div>
+
+        {{!-- ticket attivi --}}
+        <div class="row underline">
+          <div class="col-2 p-3">
+            <label>Il servizio Ticket è attivo?</label>
+          </div>
+          <div class="col-5 p-3">
+              {{!-- template-lint-disable require-input-label --}}
+              <select {{on 'change' (fn this.changeValue 'active' false)}} class="form-control col-md-4">
+                <option value="1" selected={{(eq this.ticketServiceApp.active true)}}>Sì</option>
+                <option value="" selected={{(or (eq this.ticketServiceApp.active false) (not this.ticketServiceApp.active))}}>No</option>
+              </select>
+          </div>
+          <div class="col-5 p-3 left-border">
+              {{!-- template-lint-disable require-input-label --}}
+              <select {{on 'change' (fn this.changeValue 'active' true)}} class="form-control col-md-4">
+                <option value="1" selected={{(eq this.ticketServiceWeb.active true)}}>Sì</option>
+                <option value="" selected={{(or (eq this.ticketServiceWeb.active false) (not this.ticketServiceWeb.active))}}>No</option>
+              </select>
+          </div>
+        </div>
+
+        {{!-- ticket per anonimi --}}
+        <div class="row underline">
+          <div class="col-2 p-3">
+            <label>Gli utenti <em>non-loggati</em> possono inviare ticket?</label>
+          </div>
+          <div class="col-10 p-3">
+              {{!-- template-lint-disable require-input-label --}}
+              <select {{on 'change' (fn this.changeValue 'unloggedTicket' 'both')}} class="form-control col-md-2">
+                <option value="1" selected={{(eq this.ticketServiceWeb.unloggedTicket true)}}>Sì</option>
+                <option value="" selected={{(or (eq this.ticketServiceWeb.unloggedTicket false) (not this.ticketServiceWeb.unloggedTicket))}}>No</option>
+              </select>
+          </div>
+        </div>
+
+        {{!-- ticket funzionamento --}}
+        <div class="row underline">
+          <div class="col-12 col-md-2 p-3">
+            <label>Come funziona il servizio?</label>
+          </div>
+          <div class="col-12 col-md-10 p-3">
+              {{!-- template-lint-disable require-input-label --}}
+              <select {{on 'change' (fn this.changeValue 'mode' 'both')}} class="form-control">
+                <option value="all" selected={{(eq this.ticketServiceWeb.mode 'all')}}>È attivo per tutte le Aziende</option>
+                <option value="selected" selected={{(or (eq this.ticketServiceWeb.mode 'selected') (not this.ticketServiceWeb.mode))}}>È attivo per le sole Aziende selezionate nell'elenco a fondo pagina</option>
+              </select>
+          </div>
+        </div>
+
+        {{!-- ticket avviso scadenza --}}
+        <div class="row underline">
+          <div class="col-12 col-md-2 p-3">
+            <label>Messaggio visualizzato per licenza scaduta</label>
+          </div>
+          <div class="col-12 col-md-10 p-3">
+              <Standard::TextareaAutosize @disabled="" @cb={{this.setMessage}} @value={{this.ticketServiceWeb.message}} id="setup-ticket-message" @rows="4" @autosize="fixed"/>
+              <small class="form-text text-muted">Se lasciato vuoto, verrà visualizzato il seguente messaggio di default: "<em>Il servizio di Assistenza Clienti è momentaneamente disattivato. Riprovare in un secondo momento. (cod. 1)</em>"</small>
+          </div>
+        </div>
+
+        <div class="row underline mb-3">
+          <div class="col-md-12 p-3 pr-0 text-right">
+            <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="button">
+              <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+              SALVA
+            </button>
+          </div>
+        </div>
+
+        {{#if (or (eq this.ticketServiceWeb.mode 'selected') (not this.ticketServiceWeb.mode))}}
+          <div class="row">
+            <div class="col-12 col-md-2 p-3">
+              <strong>LICENZE</strong>
+              <label>(<em>aziende che ricevono e gestiscono Ticket</em>)</label>
+            </div>
+            <div class="col-12 col-md-10 p-3">
+                <table class="mae-table mb-3">
+                  <thead>
+                    <tr>
+                      <th>Rag.Soc/P.Iva</th>
+                      {{#each-in this.fields as |field details|}}
+                        {{#if details.enableByAddons}}
+                          <th class="text-center">{{details.label}}</th>
+                        {{else}}
+                          <th class="text-center unable-box">{{details.label}}</th>
+                        {{/if}}
+                      {{/each-in}}
+                      <th class="text-right"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td class="unable-box">
+                        AGGIUNGI<br />
+                        <Standard::SelectTwo @addEmptyOption="1" @options={{this.tenants}} @changeCB={{this.setNewRecordTenantId}}/>
+                      </td>
+                      {{#each-in this.fields as |field details|}}
+                        <td class="text-center unable-box">
+                          <br />
+                          {{#if (eq details.type "date")}}
+                            {{!-- template-lint-disable require-input-label --}}
+                            {{#if this.newRecord.expirationDate}}
+                              <input disabled={{(not details.enableByAddons)}} {{on 'input' (fn this.changeNewRecordValues field)}} value={{human-date-to-input (get this.newRecord field) "date"}} type="date" class="form-control form-control-sm">
+                            {{else}}
+                              <input disabled={{(not details.enableByAddons)}} {{on 'input' (fn this.changeNewRecordValues field)}} value="" type="date" class="form-control form-control-sm">
+                            {{/if}}
+                          {{else}}
+                            {{!-- template-lint-disable require-input-label --}}
+                            <input disabled={{(not details.enableByAddons)}} {{on 'change' (fn this.changeNewRecordValues field)}} checked={{get this.newRecord field}} type="checkbox" class="form-control form-control-sm">
+                          {{/if}}
+                        </td>
+                      {{/each-in}}
+
+                      <td class="text-right unable-box">
+                        <br />
+                        <button {{on 'click' this.newTenant}} disabled={{this.addTenant.isRunning}} type="button" class="btn btn-sm btn-hover-shine btn-success btn-icon-only">
+                          <i class="fa {{if this.addTenant.isRunning 'fa-spinner fa-spin' 'fa-plus-circle'}}"></i>
+                        </button>
+                      </td>
+                    </tr>
+
+                    {{#each this.license as | license |}}
+                      <tr>
+                        <td>
+                          {{license.tenantDestination.name}}
+                          <br />
+                          <small class="opacity-7">
+                            Attivo dal: {{convertdate2 license.activationDate this.hourFormat this.currentLang}}
+                          </small>
+                        </td>
+
+                        {{#each-in this.fields as |field details|}}
+                          <td class="text-center">
+                            {{#if (eq details.type "date")}}
+                              {{#if (get license field)}}
+                                <input value={{human-date-to-input (get license field) "date"}} {{on 'input' (fn this.updateTenant field license)}} disabled={{(or (eq this.editingTenantId '') (not-eq this.editingTenantId license.tenantDestinationId) license.unlimitedService)}} type="date" class="form-control form-control-sm">
+                              {{else}}
+                                <input value="" {{on 'input' (fn this.updateTenant field license)}} disabled={{(or (eq this.editingTenantId '') (not-eq this.editingTenantId license.tenantDestinationId) license.unlimitedService)}} type="date" class="form-control form-control-sm">
+                              {{/if}}
+                            {{else}}
+                              <input checked={{get license field}} {{on 'change' (fn this.updateTenant field license)}} disabled={{(or (not details.enableByAddons) (eq this.editingTenantId '') (not-eq this.editingTenantId license.tenantDestinationId))}} type="checkbox" class="form-control form-control-sm">
+                            {{/if}}
+                          </td>
+                        {{/each-in}}
+
+                        <td class="text-right">
+                          {{#if (or (eq this.editingTenantId '') (not-eq this.editingTenantId license.tenantDestinationId))}}
+                            <button {{on 'click' (fn this.editRecord license.tenantDestinationId)}} disabled={{(and (not-eq this.editingTenantId '') (not-eq this.editingTenantId license.tenantDestinationId))}} class="btn btn-sm btn-hover-shine btn-warning btn-icon-only mb-1" type="button">
+                              <i class="fa fa-edit"></i>
+                            </button>
+                            <button {{on 'click' (fn this.deleteLicense license)}} disabled={{(and (not-eq this.editingTenantId '') (not-eq this.editingTenantId license.tenantDestinationId))}} class="btn btn-sm btn-hover-shine btn-danger btn-icon-only mb-1" type="button">
+                              <i class="fa {{if (and (this.deleteLicenseConfirmed.isRunning) (eq this.editingTenantId license.tenantDestinationId)) 'fa-spinner fa-spin' 'fa-trash'}}"></i>
+                            </button>
+                          {{else}}
+                            <button {{on 'click' (fn this.undoRecord license)}} class="btn btn-sm btn-hover-shine btn-success btn-icon-only mb-1" type="button">
+                              <i class="fa fa-undo"></i>
+                            </button>
+                            <button {{on 'click' (fn this.saveLicense license)}} class="btn btn-sm btn-hover-shine btn-warning btn-icon-only mb-1" type="button">
+                              <i class="fa {{if (and this.saveLicenseConfirmed.isRunning (eq this.editingTenantId license.tenantDestinationId)) 'fa-spinner fa-spin' 'fa-save'}}"></i>
+                            </button>
+                          {{/if}}
+                        </td>
+                      </tr>
+                    {{/each}}
+
+                  </tbody>
+                </table>
+            </div>
+          </div>
+        {{/if}}
+
+      {{else if (eq this.serviceAvailable 'waiting')}}
+        <div class="row">
+          <div class="col-md-12 text-center pt-4">
+            <p>
+              <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+            </p>
+          </div>
+        </div>
+      {{else if (eq this.serviceAvailable 'unavailable')}}
+        <div class="row">
+          <div class="col-md-12 text-center pt-4">
+            <p>
+              <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+            </p>
+          </div>
+        </div>
+      {{/if}}
+    {{else}}
+      <div class="row">
+        <div class="col-md-12 text-center pt-4">
+          <p>
+            <em class="text-danger">L'Addon dei Ticket non è installato!</em>
+          </p>
+        </div>
+      </div>
+    {{/if}}
+
+
+  {{else}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p>
+          <em class="text-danger">Non hai i permessi necessari per visualizzare questa pagina!</em>
+        </p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

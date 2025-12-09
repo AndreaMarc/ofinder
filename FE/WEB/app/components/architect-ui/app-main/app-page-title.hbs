@@ -1,0 +1,20 @@
+<div class="app-page-title" {{did-update this.start @title @titleKey @description @descriptionKey @icon @iconBg}} ...attributes>
+    <div class="page-title-wrapper">
+        <div class="page-title-heading">
+            {{#if this.showIcon}}
+            <div class="page-title-icon">
+                <i class="{{this.icon}} icon-gradient {{this.getBgColor}}"></i>
+            </div>
+            {{/if}}
+            <div>
+                <Standard::TR @key="{{this.titleKey}}" @default="{{this.title}}"/>
+                <div class="page-title-subheading">
+                    <Standard::TR @key="{{this.descriptionKey}}" @default="{{this.description}}"/>
+                </div>
+            </div>
+        </div>
+        <ArchitectUi::AppMain::AppPageTitleActions>
+            {{yield}}
+        </ArchitectUi::AppMain::AppPageTitleActions>
+    </div>
+</div>

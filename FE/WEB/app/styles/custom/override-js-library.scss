@@ -1,0 +1,68 @@
+/*
+Il Css qui contenuto,
+SOVRASCRIVE GLI STILI DELLE LIBRERIE JS
+*/
+
+
+/* ALERTIFY */
+.alertify .ajs-dimmer, .alertify .ajs-modal {
+  z-index: 10000;
+}
+
+/* SELECT2 - Bootstrap4 */
+.select2-container--bootstrap4 .select2-selection--single {
+  padding: 0rem 1.125rem 0.75rem 0.375rem;
+}
+
+/* #region FANCY TREE */
+span.fancytree-empty,
+span.fancytree-vline,
+span.fancytree-expander,
+span.fancytree-icon,
+span.fancytree-checkbox,
+span.fancytree-drag-helper-img,
+#fancytree-drop-marker {
+  background-image: url(skin-lion/icons.gif);
+}
+/* #endregion */
+
+.fancytree-ext-childcounter span.fancytree-childcounter, .fancytree-ext-filter span.fancytree-childcounter {
+  color: #fff;
+  background: #777777;
+  border: 1px solid gray;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 14px;
+  height: 14px;
+  line-height: 8px;
+  vertical-align: baseline;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+  font-size: 10px;
+}
+
+/* #region SWEETALERT */
+/* Per immagini a tutto schermo in sweetalert */
+.swal2-custom-popup {
+  max-width: 90%;
+  max-height: 90vh; /* Imposta l'altezza massima del popup */
+  display: flex;
+  align-items: center; /* Centra verticalmente l'immagine */
+  justify-content: center;
+  padding: 10px; /* Margine intorno all'immagine */
+}
+
+.swal2-responsive-image {
+  max-width: 100%;
+  max-height: 80vh; /* Imposta l'altezza massima dell'immagine per evitare lo scorrimento */
+  object-fit: contain; /* Mantiene le proporzioni dell'immagine */
+}
+
+.swal2-custom-confirm-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+/* #endregion */

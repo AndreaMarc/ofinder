@@ -1,0 +1,13 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Titolo" @titleKey="template.example.title" 
+  @description="Sottotitolo" @descriptionKey="template.example.subTitle" 
+  @icon="pe-7s-user icon-gradient bg-night-fade">
+  <button class="btn-wide btn btn-primary btn-sm">esempio di html</button>
+</ArchitectUi::AppMain::AppPageTitle>
+<p>Qui inseriamo il contenuto della pagina!</p>
+
+<!-- Se non occorrono i pulsanti di azione alla destra del titolo, possiamo semplificare: -->
+
+<ArchitectUi::AppMain::AppPageTitle @title="Titolo" @titleKey="template.example.title" 
+  @description="Sottotitolo" @descriptionKey="template.example.subTitle" 
+  @icon="pe-7s-user icon-gradient bg-night-fade"/>
+<p>Qui inseriamo il contenuto della pagina!</p>

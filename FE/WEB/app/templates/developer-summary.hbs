@@ -1,0 +1,95 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Bignami per svilupptori" @titleKey="" @description="Frontend ember-based framework" @descriptionKey="" @icon="fa fa-star">
+  {{#if (eq this.environment 'development')}}
+    <button class="mt-1 btn btn-danger" type="button">DEV {{if this.isApp 'APP' ''}} Environment<span class="opacity-4">{{this.appVersion}}</span></button>
+  {{else if (eq this.environment 'test')}}
+    <button class="mt-1 btn btn-warning" type="button">TEST {{if this.isApp 'APP' ''}} Environment<span class="opacity-4">{{this.appVersion}}</span></button>
+  {{else if this.isApp}}
+    <small class="opacity-4"><em>{{this.appVersion}}</em></small>
+  {{/if}}
+</ArchitectUi::AppMain::AppPageTitle>
+
+<div class="row p-4">
+
+    <div class="col-md-6">
+    <h4>Plugin aggiuntivi</h4>
+    <p>Questo fwk contiene i seguenti plugin aggiuntivi:</p>
+    <ul>
+      <li>@ember/render-modifiers <a href="https://github.com/emberjs/ember-render-modifiers" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-truth-helpers <a href="https://github.com/jmurphyau/ember-truth-helpers" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-event-helpers <a href="https://github.com/buschtoens/ember-event-helpers" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-file-upload <a href="https://ember-file-upload.pages.dev/docs" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-concurrency <a href="https://ember-concurrency.com/docs/introduction" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>tracked-built-ins <a href="https://github.com/tracked-tools/tracked-built-ins" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-uuid <a href="https://github.com/ivanvanderbyl/ember-uuid" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-permissions <a href="https://github.com/Bagaar/ember-permissions" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>ember-simple-auth <a href="https://ember-simple-auth.com/" target="_blank" rel="noopener noreferrer">info</a></li>
+    </ul>
+    <small>Si prega di aggiornare questa lista se vengono aggiunte features</small>
+    <br /><br />
+
+    <h4>Link a librerie di uso comune</h4>
+    <ul>
+      <li>Animate.css <a href="https://animate.style/" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>Bootstrap Toggle <a href="https://gitbrent.github.io/bootstrap4-toggle/" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>SweetA2 <a href="https://sweetalert2.github.io/" target="_blank" rel="noopener noreferrer">info</a></li>
+    </ul>
+
+    <h4>Documentazione utile</h4>
+    <ul>
+      <li>Guida Ember <a href="https://guides.emberjs.com/release/" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>Json:api per DotNet <a href="https://www.jsonapi.net/index.html" target="_blank" rel="noopener noreferrer">info</a></li>
+      <li>Ember Observer <a href="https://emberobserver.com/" target="_blank" rel="noopener noreferrer">info</a></li>
+    </ul>
+
+    <h4>CKEditor5</h4>
+    <ul>
+      <li>Documentazione <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/index.html" target="_blank" rel="noopener noreferrer">qui</a></li>
+      <li><small>Per apportare modifiche (es plugin personalizzati) la cartella di riferimento è WEB/vendor/ckeditor5-38.1.0-d5emhsqgf60y all'interno della quale, con terminale, eseguire: <em>yarn run build</em></small></li>
+    </ul>
+
+    <h4>Altro</h4>
+    <ul>
+      <li>Special Char HTML <a href="https://www.whatsmyip.org/html-characters/" target="_blank" rel="noopener noreferrer">qui</a></li>
+    </ul>
+
+    <h4>Comandi comuni Ember-CLI</h4>
+    <ul>
+      <li>ember generate route scientists</li>
+      <li>ember generate controller scientists</li>
+      <li>ember generate component people-list -gc</li>
+      <li>ember generate model person</li>
+      <li>ember generate service shopping-cart</li>
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h4>Promemoria</h4>
+    <p>Per inserire le immagini usare il componente &lt;Standard::ShowImage&gt;</p>
+    <p>Per inserire i testi usare il componente &lt;Standard::TR&gt;</p>
+    <p>
+      Per aggiungere un pulsante di cancellazione agli input, usare:<br />
+      {{#let (get-code-snippet "del-button.markup") as |snippet|}}
+        <CodeBlock @language={{snippet.language}} @code={{snippet.source}}/>
+      {{/let}}
+    </p>
+    <p>Ad oggi i placeholder dei campi input non sono tradotti!</p>
+    <p>Per aggiungere snippet di codice:<br />
+    {{#let (get-code-snippet "prism.markup") as |snippet|}}
+      <CodeBlock @language={{snippet.language}} @code={{snippet.source}} @data-prismjs-copy="Copy"/>
+    {{/let}}
+    </p>
+    <p>Per estrarre i dati dell'utente:<br /><em><s>this.session.data.authenticated.tenantId;</s></em></p>
+    <p><strong>Non utilizzare i localStorage</strong>. Al loro posto, <s>per utenti loggati,</s> usare:<br /><em>this.session.set('nomeVariabile', 'valore');</em> e <br />this.session.get('data.nomeVariabile')</p>
+    <p>Per effettuare chiamate fecth:<br />
+    {{#let (get-code-snippet "fetch.js") as |snippet|}}
+      <CodeBlock @language={{snippet.language}} @code={{snippet.source}} @data-prismjs-copy="Copy"/>
+    {{/let}}
+    </p>
+    <p>Per fare in modo che un link visitato da un utente sloggato effettui un redirect al login e che venga rivisualizzato in automatico post-login:</p>
+    <ul>
+      <li>in routes/application.js aggiungere l'endopoint all'array <em>unloggedEnabledPages</em></li>
+      <li>nel <em>beforeModel</em> del gestore di percorso della pagina (es: routes/page.js) aggiungere <em>await this.session.setAfterLogin(transition);</em></li>
+    </ul>
+
+  </div>
+</div>
+{{outlet}}

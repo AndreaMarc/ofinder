@@ -1,0 +1,165 @@
+<div class="setup-general" {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div>
+    <div class="row underline">
+      <div class="col-md-4 p-3"></div>
+      <div class="col-md-4 p-3">
+        <b>APP</b>
+      </div>
+      <div class="col-md-4 p-3">
+        <b>WEB</b>
+      </div>
+    </div>
+
+    {{!-- nome applicativo --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Nome dell'applicativo</label>
+      </div>
+      <div class="col-md-8 p-3 left-border">
+          <input {{on 'input' (fn this.changeValue 'applicationName' 'both')}} value={{this.recordWeb.applicationName}} type="text" class="form-control">
+          <small class="form-text text-muted">Il nome del tuo sito o App. Verrà utilizzato, ad esempio, nell'invio di comunicazioni e-mail.</small>
+      </div>
+    </div>
+    {{!-- manutenzione --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Manutenzione attiva?</label>
+      </div>
+      <div class="col-md-4 p-3">
+          <select {{on 'change' (fn this.changeValue 'maintenance' false)}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordApp.maintenance true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordApp.maintenance false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Se attiva, l'accesso all'App non è consentito ed avviene un redirect ad un'apposita pagina di "manutenzione in corso"</small>
+      </div>
+      <div class="col-md-4 p-3 left-border">
+          <select {{on 'change' (fn this.changeValue 'maintenance' true)}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordWeb.maintenance true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordWeb.maintenance false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Se attiva, l'accesso al sito web non è consentito ed avviene un redirect ad un'apposita pagina di "manutenzione in corso"</small>
+      </div>
+    </div>
+
+    {{!-- versione minima --}}
+    <div class="row underline">
+        <div class="col-md-4 p-3">
+            <label for="min_version">Versione minima dell'app</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <input type="text" value={{this.recordApp.minAppVersion}} {{on 'input' (fn this.changeValue 'minAppVersion' false)}} placeholder="Es: 1.0.0" class="form-control">
+            <small class="form-text text-muted">Per disattivare il funzionamento di versioni obsolete dell'app. L'eventuale variazione del solo ultimo parametro viene ignorata dall'app. La variazione degli altri parametri impedisce il funzionamento delle app obsolete. Da aggiornare solo previa effettiva pubblicazione negli Store. Usare 0.0.0 per ignorare il controllo di versione</small>
+        </div>
+        <div class="col-md-4 p-3 left-border unable-box"></div>
+    </div>
+
+    {{!-- registrazione pubblica --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Consentire la registrazione pubblica?</label>
+      </div>
+      <div class="col-md-4 p-3">
+          <select {{on 'change' (fn this.changeValue 'publicRegistration' false)}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordApp.publicRegistration true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordApp.publicRegistration false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Abilita il link di registrazione all'interno dell'App</small>
+      </div>
+      <div class="col-md-4 p-3 left-border">
+          <select {{on 'change' (fn this.changeValue 'publicRegistration' true)}}  class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordWeb.publicRegistration true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordWeb.publicRegistration false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Abilita il link di registrazione all'interno del sito web</small>
+      </div>
+    </div>
+
+    {{!-- disattivazione log --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Disattivare i log?</label>
+      </div>
+      <div class="col-md-4 p-3">
+          <select {{on 'change' (fn this.changeValue 'disableLog' false)}}  class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordApp.disableLog true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordApp.disableLog false)}}>No</option>
+          </select>
+      </div>
+      <div class="col-md-4 p-3 left-border">
+          <select {{on 'change' (fn this.changeValue 'disableLog' true)}}  class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordWeb.disableLog true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordWeb.disableLog false)}}>No</option>
+          </select>
+      </div>
+    </div>
+
+    {{!-- campo ricerca --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Attivare il campo di ricerca?</label>
+      </div>
+      <div class="col-md-4 p-3">
+          <select {{on 'change' (fn this.changeValue 'canSearch' false)}}  class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordApp.canSearch true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordApp.canSearch false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Mostra il campo di ricerca nell'header</small>
+      </div>
+      <div class="col-md-4 p-3 left-border">
+          <select {{on 'change' (fn this.changeValue 'canSearch' true)}}  class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordWeb.canSearch true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordWeb.canSearch false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Mostra il campo di ricerca nell'header</small>
+      </div>
+    </div>
+
+    {{!-- Utility --}}
+    <div class="row underline">
+      <div class="col-md-4 p-3">
+        <label>Collegamenti utili</label>
+      </div>
+      <div class="col-md-8 p-3">
+        <div class="row">
+          <div class="col-md-4">
+            <a href="{{this.apiHostDev}}/swagger/index.html" target="_blank" rel="noopener noreferrer"><small class="form-text text-muted">Swagger DEV</small></a>
+          </div>
+          <div class="col-md-4">
+            <a href="{{this.apiHostTest}}/swagger/index.html" target="_blank" rel="noopener noreferrer"><small class="form-text text-muted">Swagger TEST</small></a>
+          </div>
+          <div class="col-md-4">
+            <a href="{{this.apiHostProd}}/swagger/index.html" target="_blank" rel="noopener noreferrer"><small class="form-text text-muted">Swagger PROD</small></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-5 text-right">
+      <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+        <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+        SALVA
+      </button>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+</div>
+{{yield}}

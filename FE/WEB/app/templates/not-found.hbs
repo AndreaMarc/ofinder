@@ -1,0 +1,51 @@
+<div class="not-found-template">
+{{#if this.isAuthenticated}}
+    {{!-- PAGINA 404 PER UTENTI LOGGATI --}}
+    <div class="not-found-logged d-flex justify-content-center align-items-center col-md-12 col-lg-12">
+        <div class="mx-auto app-login-box col-sm-12 col-md-12 col-lg-12 text-center p-3 pt-5">
+            <h4 class="mb-0">
+                <div class="d-block mb-5">Pagina non trovata!</div>
+                <span>
+                    L'indirizzo inserito non corrisponde a nessuna pagina del nostro sito.
+                </span>
+            </h4>
+        </div>
+    </div>
+{{else}}
+    {{!-- PAGINA 404 PER UTENTI NON LOGGATI --}}
+    <div class="app-container">
+        <div class="h-100">
+            <div class="h-100 no-gutters row">
+                <div class="d-none d-lg-block col-lg-4">
+                    <div class="slick-slider slider-light">
+                        <div>
+                            <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-royal" tabindex="-1">
+
+                                <div class="show-image slide-img-bg" style="background-image: url('/assets/images/originals/abstract.jpg');"></div>
+                                <div class="slider-content">
+                                    <h3 class="not-found-h3">404</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-100 d-flex bg-white justify-content-center align-items-center col-md-12 col-lg-8">
+                    <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-9">
+                        <div class="app-logo"></div>
+                        <h4 class="mb-0">
+                            <div class="d-block mb-2">Pagina non trovata!</div>
+                            <span class="d-block mb-5">
+                                L'indirizzo inserito non corrisponde a nessuna pagina del nostro sito.
+                            </span>
+                            <span>
+                                Torna alla 
+                                <a href="/" class="text-primary">pagina principale</a> 
+                            </span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/if}}
+</div>

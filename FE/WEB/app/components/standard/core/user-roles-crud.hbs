@@ -1,0 +1,270 @@
+<div ...attributes {{did-update this.start @currentTenant}} {{did-update this.start @lastUpdateRoles}}>
+{{#if (eq this.serviceUpperAvailable 'waiting')}}
+  {{!-- WAITING --}}
+  <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+{{else}}
+  {{#if (and this.available (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+    <div class="card-header text-success">
+      <i class="header-icon lnr-users"></i> ASSOCIAZIONI UTENTI÷RUOLI
+      <div class="btn-actions-pane-right">
+
+        <div class="btn-toolbar" role="toolbar">
+          <div role="group" class="btn-group btn-group-sm nav mr-2">
+            <a data-toggle="tab" href="#user-role-tab-0" class="btn btn-success btn-hover-shine active">
+              <i class="fa fa-search"></i> PER UTENTI
+            </a>
+            <a data-toggle="tab" href="#user-role-tab-1" class="btn btn-success btn-hover-shine">
+              <i class="fa fa-search"></i> PER RUOLI
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body underline p-1">
+      <div class="tab-content">
+        {{!-- #region RICERCA PER UTENTI --}}
+        <div class="tab-pane active show" id="user-role-tab-0" role="tabpanel">
+          <div class="row m-0 mb-4">
+            <div class="col-12 col-md-6 p-3 underline">
+              <p class="text-success">RICERCA PER UTENTI</p>
+            </div>
+            <div class="col-12 col-md-6 p-3 underline">
+              {{!-- campo di ricerca per utenti  --}}
+              <div class="input-group float-right">
+                {{!-- template-lint-disable require-input-label --}}
+                <input type="search" placeholder="cerca per nome, cognome o e-mail..." value={{this.findUser.searchedWord}} {{on 'input' (fn this.changeUserFilter 'searchedWord')}} class="form-control form-control-sm">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary btn-sm" disabled type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <select {{on 'change' (fn this.changeUserFilter 'usersPerPage')}} class="form-control form-control-sm ml-2">
+                  <option value="20" selected={{eq this.findUser.usersPerPage 20}}>20 utenti</option>
+                  <option value="50" selected={{eq this.findUser.usersPerPage 50}}>50 utenti</option>
+                  <option value="100" selected={{eq this.findUser.usersPerPage 100}}>100 utenti</option>
+                </select>
+                <button class="btn btn-sm {{if (or this.findUsers.isRunning this.delUserRoleConfirmed.isRunning) 'btn-warning' 'btn-secondary'}} ml-2" type="button" {{on 'click' (perform this.findUsers)}}>
+                  <i class="fa fa-refresh {{if (or this.findUsers.isRunning this.delUserRoleConfirmed.isRunning) 'fa-spin'}}"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-12 p-2 text-center">
+              <Standard::PaginationButtons @currentPageNumber={{this.findUser.currentUserPageNumber}} @totalRecords={{this.findUser.totalUsers}} @recordsPerPage={{this.findUser.usersPerPage}} @maxButtonsNumber="3" @cb=""/>
+            </div>
+          </div>
+
+          {{#if this.findUsers.isRunning}}
+            <Standard::LoadingSpinner @icon='1' @msg="Caricamento dati in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+
+          {{#if this.findUsers.isIdle}}
+            {{#if (eq (length this.usersTenant1) 0)}}
+              <p class="m-3"><em>Non ci sono utenti da mostrare</em></p>
+            {{else}}
+              <table class="mae-table mb-3">
+                <thead>
+                  <tr>
+                    <th>NOME</th>
+                    <th>COGNOME</th>
+                    <th>E-MAIL</th>
+                    <th>RUOLI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each this.usersTenant1 as | userTenant |}}
+                    {{#let userTenant.user as | user |}}
+
+                      <tr class={{if (eq (length user.userRoles) 0) 'text-danger'}}>
+                        <td class="col-md-3">
+                          {{#let user.userProfile as | profile |}}
+                            {{profile.firstName}}
+                          {{/let}}
+                        </td>
+                        <td class="col-md-3">
+                          {{#let user.userProfile as | profile |}}
+                            {{profile.lastName}}
+                          {{/let}}
+                        </td>
+                        <td class="col-md-3">
+                          {{user.email}}
+                        </td>
+                        <td class="col-md-3">
+                          <div class="row">
+                            {{#each user.userRoles as | ur |}}
+                              {{#if (eq (to-string ur.tenantId) (to-string this.currentTenant.id))}}
+                                {{#let ur.role as | role |}}
+                                  <div class="col-md-12 mb-2">
+                                    <div class="input-group">
+                                      {{!-- template-lint-disable require-input-label --}}
+                                      <input type="text" value={{role.name}} disabled class="form-control form-control-sm">
+                                      <div class="input-group-append">
+                                        {{#if (or (has-permissions "isSuperAdmin") (include this.myRoles role.id))}}
+                                          <button class="btn btn-danger btn-sm" type="button" {{on 'click' (fn this.delUserRole ur)}}>
+                                            <i class="fa fa-trash"></i>
+                                          </button>
+                                        {{else}}
+                                          <button class="btn btn-danger btn-sm" disabled type="button">
+                                            <i class="fa fa-trash"></i>
+                                          </button>
+                                        {{/if}}
+                                      </div>
+                                    </div>
+                                  </div>
+                                {{/let}}
+                              {{/if}}
+                            {{/each}}
+
+                            <div class="col-md-12 p-0 pl-3 pr-3 text-right">
+                              {{#if (eq this.userToAdd null)}}
+                                <button class="btn btn-warning btn-sm float-right" type="button" {{on 'click' (fn this.addRole user)}}>
+                                  <i class="header-icon ion-android-add"></i>
+                                </button>
+                              {{else}}
+                                {{#if (eq this.userToAdd user)}}
+                                  {{!-- template-lint-disable require-input-label --}}
+                                  <select class="form-control form-control-sm mt-2 mb-3" {{on 'change' this.newUserRoleChoice}}>
+                                    <option value="">Scegli il ruolo...</option>
+                                    {{#each this.rolesToAdd as |role|}}
+                                      <option value="{{role.id}}">{{role.name}}</option>
+                                    {{/each}}
+                                  </select>
+                                  <button class="btn btn-secondary btn-sm" type="button" {{on 'click' (fn this.addRole null)}}>
+                                    <i class="header-icon ion-android-close"></i> ANNULLA
+                                  </button>
+                                  <button class="btn btn-warning btn-sm" type="button" {{on 'click' this.saveUserRole}}>
+                                    <i class="fa fa-save"></i> SALVA
+                                  </button>
+                                {{/if}}
+                              {{/if}}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    {{/let}}
+                  {{/each}}
+                </tbody>
+              </table>
+            {{/if}}
+          {{/if}}
+        </div>
+        {{!-- #endregion --}}
+
+        {{!-- #region RICERCA PER RUOLI --}}
+        <div class="tab-pane" id="user-role-tab-1" role="tabpanel">
+          <div class="row m-0 mb-3 underline">
+            <div class="col-md-4 p-3">
+              <p class="text-success">RICERCA PER RUOLI</p>
+            </div>
+            {{!-- filtro ruolo --}}
+            <div class="col-md-8 pt-3 pb-3 pr-2">
+              <div class="btn-toolbar float-right" role="toolbar">
+                <div class="input-group mr-2">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-sm btn-success" disabled={{this.findRoles.isRunning}} {{on 'click' (perform this.findRoles)}} type="button">
+                      <i class="fa fa-refresh {{if this.findRoles.isRunning 'fa-spin'}} mr-2"></i> RUOLO
+                    </button>
+                  </div>
+                  <select class="form-control form-control-sm" disabled={{this.findRoles.isRunning}} {{on 'change' this.updateRole}} aria-describedby="btnGroup1">
+                    <option value="">--</option>
+                    {{#each this.roles as | role |}}
+                      <option value={{role.id}}>{{role.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="input-group mr-2">
+                  <button class="btn {{if this.findRecords.isRunning 'btn-warning' 'btn-secondary'}} btn-sm" type="button" {{on 'click' (perform this.findRecords)}}>
+                    <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{#if this.findRecords.isRunning}}
+          <Standard::LoadingSpinner @icon='1' @msg="Caricamento dati in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+          {{#if this.findRecords.isIdle}}
+          <table class="mae-table mb-3">
+            <thead>
+              <tr>
+                <th>UTENTI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#if (and (eq (length this.records) 0) (eq this.currentRole ''))}}
+                <p class="mt-3 pl-2 text-danger">
+                  <em>Scegli il ruolo</em>
+                </p>
+              {{else}}
+                {{#if (eq (length this.records) 0)}}
+                  <p class="mt-3 pl-2 text-danger">
+                    <em>Non ci sono utenti associati al ruolo selezionato!</em>
+                  </p>
+                {{else}}
+                  {{#each this.records as | record |}}
+                    <tr>
+                      <td>
+                        <div class="row">
+                          <div class="col-md-12 mb-2">
+                            <div class="input-group">
+                              {{!-- template-lint-disable require-input-label --}}
+                              <input type="text" value="{{record.user.userProfile.lastName}} {{record.user.userProfile.firstName}} - {{record.user.email}}" disabled class="form-control form-control-sm">
+                              <div class="input-group-append">
+                                <button class="btn btn-danger btn-sm" type="button" {{on 'click' (fn this.delUserRole record)}}>
+                                  <i class="fa fa-trash"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  {{/each}}
+                {{/if}}
+
+                <tr>
+                  <td>
+                    <div class="row">
+                      <div class="col-12 pt-4 pl-3 pr-3">
+                        <label>AGGIUNGI UN UTENTE A QUESTO RUOLO...</label>
+                      </div>
+                      <div class="col-12 col-md-11 mb-2">
+                        <Standard::SelectTwo @addEmptyOption="1" @changeCB={{this.this.newUserRoleChoice}} @options={{this.listUserToAddRole}}/>
+                      </div>
+                      <div class="col-12 col-md-1 mb-2 text-center">
+                        <button class="btn btn-warning btn-sm" type="button" {{on 'click' this.saveUserRole2}}>
+                          <i class="fa fa-save"></i> SALVA
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {{/if}}
+
+
+
+            </tbody>
+          </table>
+          {{/if}}
+
+        </div>
+        {{!-- #endregion --}}
+      </div>
+
+    </div>
+  {{else}}
+    <div class="card">
+      <div class="card-body">
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+            <a href="#" class="alert-link" {{on 'click' this.start}}>Riprova</a>.
+        </div>
+      </div>
+    </div>
+  {{/if}}
+{{/if}}
+</div>
+
+{{yield}}

@@ -1,0 +1,144 @@
+<div class="help-desk">
+  <div class="row">
+    <div class="col-12">
+      <div class="main-card mb-3 card {{if this.unlogged 'bg-transparent text-white' ''}}">
+
+        <div class="card-body">
+          {{#unless this.unlogged}}
+          <ul class="nav nav-tabs">
+            <li class="nav-item"><a data-toggle="tab" href="#help-desk-tab-0" class="active nav-link">CREA UN NUOVO TICKET</a></li>
+            <li class="nav-item"><a data-toggle="tab" href="#help-desk-tab-1" class="nav-link">I MIEI TICKET</a></li>
+          </ul>
+          {{/unless}}
+
+          <div class="tab-content pt-3">
+            {{!-- CREAZIONE TICKET --}}
+            <div class="tab-pane active" id="help-desk-tab-0" role="tabpanel">
+              <h6 class="mb-5">Descrivici il tuo problema. Il nostro staff ti contatterà nel più breve tempo possibile per fornirti assistenza.</h6>
+              <form class="">
+                <div class="form-row">
+                    <div class="col-12 col-md-6">
+                      {{#if this.unlogged}}
+                        {{!-- ragione sociale --}}
+                        <div class="position-relative form-group">
+                          <label for="help-desk-organization">Ragione Sociale</label>
+                          <input {{on 'input' (fn this.changeValue 'organizationToBeConfirmed')}} value={{this.newRecord.organizationToBeConfirmed}} maxlength="200" id="help-desk-organization" type="text" class="form-control form-control-sm">
+                          <small class="form-text text-white opacity-5">Dell'azienda per la quale lavori o di cui sei titolare.</small>
+                        </div>
+                        {{!-- partita iva --}}
+                        <div class="position-relative form-group">
+                          <label for="help-desk-vat">Partita IVA</label>
+                          <input {{on 'input' (fn this.changeValue 'vat')}} value={{this.newRecord.vat}} id="help-desk-vat" type="number" class="form-control form-control-sm">
+                        </div>
+                      {{/if}}
+                      {{!-- e-mail --}}
+                      <div class="position-relative form-group">
+                          <label for="help-desk-email">E-mail</label>
+                          <input {{on 'input' (fn this.changeValue 'email')}} id="help-desk-email" value={{this.newRecord.email}} type="email" class="form-control form-control-sm">
+                      </div>
+                      {{!-- telefono --}}
+                      <div class="position-relative form-group">
+                          <label for="help-desk-phone">Telefono</label>
+                          <input {{on 'input' (fn this.changeValue 'phone')}} id="help-desk-phone" value={{this.newRecord.phone}} type="text" class="form-control form-control-sm">
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{#if this.unlogged}}
+                          {{!-- cognome --}}
+                          <div class="position-relative form-group">
+                            <label for="help-desk-lastname">Cognome</label>
+                            <input {{on 'input' (fn this.changeValue 'lastName')}} value={{this.newRecord.lastName}} id="help-desk-lastname" type="text" class="form-control form-control-sm">
+                          </div>
+                          {{!-- nome --}}
+                          <div class="position-relative form-group">
+                            <label for="help-desk-firstname">Nome</label>
+                            <input {{on 'input' (fn this.changeValue 'firstName')}} value={{this.newRecord.firstName}} id="help-desk-firstname" type="text" class="form-control form-control-sm">
+                          </div>
+                        {{/if}}
+                        {{!-- messaggio --}}
+                        <div class="position-relative form-group">
+                            <label for="help-desk-message">Segnalazione</label>
+                            <Standard::TextareaAutosize @cb={{(fn this.changeValue 'message')}} @value={{this.newRecord.message}} id="help-desk-message" @rows="6" @autosize="fixed"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      {{this.error}}
+                    </div>
+                    <div class="col-12 col-md-6 text-right">
+                      <button test-segnalazione {{on 'click' this.send}} class="mt-2 btn btn-secondary btn-hover-shine" type="submit">Invia la segnalazione</button>
+                    </div>
+                </div>
+              </form>
+
+            </div>
+
+
+            {{!-- I MIEI TICKET --}}
+            {{#unless this.unlogged}}
+              <div class="tab-pane" id="help-desk-tab-1" role="tabpanel">
+
+                  {{#if (or (has-permissions  'isCustomerAdmin') (has-permissions  'isSuperAdmin') (has-permissions  'isDeveloper') (has-permissions  'isOwner'))}}
+                    <div class="text-center">
+                      <button test-aziendali {{on 'click' (fn this.changeFilter true)}} class="mb-2 btn-transition btn btn-sm  {{if this.filterByUser 'btn-info' 'btn-outline-info'}}" type="button">Personali</button>
+                      <button test-personali {{on 'click' (fn this.changeFilter false)}} class="mb-2 mr-2 btn-transition btn btn-sm {{if this.filterByUser 'btn-outline-info' 'btn-info'}}" type="button">Aziendali</button>
+                    </div>
+                  {{/if}}
+
+                  <div class="scroll-area-lg">
+                    <div id="termScroll" class="scrollbar-container ps--active-y">
+                      <ul class="list-group">
+                        {{#if (eq (length this.myTickets) 0)}}
+                          <li class="list-group-item pl-1 pr-1">
+                            <p class="m-2">Non ci sono ticket da mostrare!</p>
+                          </li>
+                        {{else}}
+                          {{#each this.myTickets as | ticket |}}
+                            <li class="list-group-item pl-1 pr-1">
+                              <div class="widget-content p-0">
+                                <div class="widget-content-wrapper">
+                                  <div class="widget-content-left text-center mr-3">
+                                    {{this.getStatus ticket.status}}
+                                  </div>
+                                  <div class="widget-content-left flex2 mr-2">
+                                    <div class="widget-subheading opacity-10">
+                                      {{#if (not-eq ticket.userId '')}}
+                                        <div class="widget-heading text-info">
+                                          {{ticket.user.userProfile.lastName}} {{ticket.user.userProfile.firstName}}
+                                          <small> - {{convertdate2 ticket.creationDate null this.currentLang}}</small>
+                                        </div>
+                                      {{else}}
+                                        <div class="widget-heading text-info">
+                                        Richiesta <small>(<em>anonima</em>)</small>
+                                        <small> - {{convertdate2 ticket.creationDate null this.currentLang}}</small>:
+                                        </div>
+                                      {{/if}}
+                                      <div class="my-ticket-cont">{{ticket.message}}</div>
+
+                                      {{#if (and (not-eq ticket.userId '') (eq ticket.status 'complete'))}}
+                                        <div class="widget-heading text-success mt-2">
+                                          Risposta del centro di assistenza:
+                                          <small> - {{convertdate2 ticket.closedDate null this.currentLang}}</small>
+                                        </div>
+                                        <div class="my-ticket-cont">{{ticket.answer}}</div>
+                                      {{/if}}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          {{/each}}
+                        {{/if}}
+
+                      </ul>
+                    </div>
+                  </div>
+              </div>
+            {{/unless}}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{yield}}

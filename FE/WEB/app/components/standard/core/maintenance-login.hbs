@@ -1,0 +1,71 @@
+<div class="app-container">
+  <div class="h-100 bg-animation {{this.bgColor}}">
+    <div class="d-flex h-100 justify-content-center align-items-center">
+      <div class="mx-auto app-login-box col-md-8">
+        <div class="{{this.logoStyle}} mx-auto mb-3"></div>
+        <div class="modal-dialog w-100 mx-auto">
+          <div class="modal-content">
+
+            <div id="maintenance-smartwizard">
+              <ul class="nav d-none">
+                <li class="nav-item">
+                  <a class="nav-link" href="#maintenance-step-1">
+                    <div class="num">1</div>
+                    Step 1
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#maintenance-step-2">
+                    <span class="num">2</span>
+                    Step 2
+                  </a>
+                </li>
+              </ul>
+
+              <div class="tab-content">
+                {{!-- STEP 1: mostro messaggio di manutenzione in corso --}}
+                <div id="maintenance-step-1" class="tab-pane p-0" role="tabpanel" aria-labelledby="maintenance-step-1">
+                  <div class="modal-body">
+                    <div class="h5 modal-title text-center">
+                      <h2 class="mt-2 mb-3">
+                        <div>MANUTENZIONE IN CORSO</div>
+                      </h2>
+                      <h4 class="mt-2">
+                        <div>Torneremo on-line il prima possibile,</div>
+                        <span>ci scusiamo per il disservizio.</span>
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="modal-footer clearfix">
+                    <div class="w-100 text-center">
+                      <a href="/" class="btn btn-hover-shine btn-primary btn-lg">Riprova</a>
+                    </div>
+                  </div>                  
+                </div>
+                {{!-- STEP 2: Login box --}}
+                <div id="maintenance-step-2" class="tab-pane p-0" role="tabpanel" aria-labelledby="maintenance-step-2">
+                  <div class="modal-body">
+                    <h6 class="mb-5">Se hai i permessi di accesso durante la manutenzione, puoi effettuare il <span class="text-primary">login</span></h6>
+
+                    <Standard::Core::LoginForm @disableSocialLogin="true" @dialogsError="true"/>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="text-center text-white opacity-8 mt-3">
+          {{#if this.showLogin}}
+          <small><a href="#" class="text-white" {{on 'click' (fn this.changeStep 2)}}>Annulla</a></small>
+          {{else}}
+          <small>Hai i permessi di accesso durante la manutenzione? <a href="#" class="text-white" {{on 'click' (fn this.changeStep 1)}}>Clicca qui</a></small>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{yield}}

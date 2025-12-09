@@ -1,0 +1,261 @@
+<div ...attributes>
+  <div class="mbg-3 alert alert-light alert-dismissible fade show" role="alert">
+    <span class="pe-2">
+        <i class="fa fa-info-circle"></i>
+    </span>
+    <strong>Nota</strong>: se scegli l'ambiente "Web" puoi salvare le modifiche anche per l'ambiente "App". In tal caso tutte le traduzioni dell'ambiente "App" verranno sovrascritte con quelle dell'ambiente "Web".
+  </div>
+
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="p-2">
+    <div class="alert alert-info fade show" role="alert">
+      <i class="fa fa-spinner fa-spin mr-2"></i> Recupero dati in corso, attendere prego...
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="p-2">
+    <div class="alert alert-danger fade show" role="alert">
+      <i class="fa fa-exclamation-triangle mr-2"></i> Errore nel recupero dei dati. <a href="#"
+        class="alert-link" {{on 'click' this.start}}>Riprova</a>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isMarketing') (has-permissions 'isTranslator')))}}
+  <div class="mb-3 translate-structure">
+
+    <div class="main-card mb-3 card">
+      <div class="card-body text-success underline">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-0 font-weight-bold">SCEGLI LA LINGUA</p>
+            {{!-- template-lint-disable require-input-label --}}
+            <select class="form-control form-control-sm" value={{this.selectedLanguage}} {{on 'change'
+              this.changeLanguage}}>
+              <option value="" selected>--</option>
+              {{#each this.availableLanguages as |al|}}
+              <option value="{{al.code}}">{{al.label}} ({{uppercase al.code}})</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <p class="mb-0 font-weight-bold">SCEGLI L'AMBIENTE</p>
+            {{!-- template-lint-disable require-input-label --}}
+            <select class="form-control form-control-sm" value={{this.selectedEnvironment}} {{on 'change'
+              this.changeEnvironment}}>
+              <option value="" selected>--</option>
+              <option value="web">Web</option>
+              <option value="app">App</option>
+            </select>
+          </div>
+
+          <div class="col-md-3 text-right pt-3">
+            {{#if (gt this.changedValue 0)}}
+            <div class="dropdown d-inline-block">
+                <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn btn-alternate">
+                    SALVA
+                </button>
+                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <div class="dropdown-menu-header">
+                        <div class="dropdown-menu-header-inner bg-secondary">
+                            <div class="menu-header-image opacity-2" style="background-image: url('assets/images/dropdown-header/abstract2.jpg');"></div>
+                            <div class="menu-header-content">
+                                <h5 class="menu-header-title">Salva la traduzione</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 p-4 text-center">
+                      {{#if (eq this.selectedEnvironment 'web')}}
+                      <button class="btn-save-field btn-hover-shine btn btn-lg btn-alternate w-100 mb-3" type="button" {{on 'click' (fn this.saveVoices 'web')}}>
+                        <i class="fa fa-save mr-2"></i> SALVA PER WEB
+                      </button>
+                      <button class="btn-save-field btn-hover-shine btn btn-lg btn-danger w-100" type="button" {{on 'click' (fn this.saveVoices 'both')}}>
+                        <i class="fa fa-save mr-2"></i> SALVA PER WEB + APP
+                      </button>
+                      {{else}}
+                      <button class="btn-save-field btn-hover-shine btn btn-lg btn-alternate w-100 mb-3" type="button" {{on 'click' (fn this.saveVoices 'app')}}>
+                        <i class="fa fa-save mr-2"></i> SALVA PER APP
+                      </button>
+                      {{/if}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body p-0">
+        <div>
+          {{#if (or (eq this.selectedLanguage '') (eq this.selectedEnvironment ''))}}
+          <div class="p-2">
+            <div class="alert alert-info fade show mt-3" role="alert">
+              <i class="fa fa-exclamation-triangle mr-2"></i> Scegli la lingua e l'ambiente!
+            </div>
+          </div>
+          {{else}}
+          {{#if this.languageVoiceExists}}
+          {{#each-in this.languageSetup as |key value|}}
+          <div class="translation-key card-header text-primary p-3 pl-4" data-key="{{this.encode key}}">
+            {{!-- nome della macrovoce --}}
+            {{key}}
+            <div class="btn-actions-pane-right">
+              <div style="display: flex;">
+                {{!-- campo di ricerca sulla macrovoce --}}
+                <div class="input-group mr-1">
+                  <input type="text" placeholder="cerca..." data-ref="{{this.encode key}}" value={{if (eq (this.encode key) this.currentRow) this.currentFilter}} class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                  <div class="input-group-append">
+                    <button class="btn btn-light btn-sm" disabled type="button">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+                {{!-- pulsante di espansione macrovoce --}}
+                <button type="button" class="btn btn-sm btn-light collapsed" aria-expanded="false" {{on 'click' (fn this.openRow (this.encode key))}}>
+                  <i class="fa fa-eye"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="collapse {{if (eq (this.encode key) this.currentRow) 'show'}}" id="app_cont_{{this.encode key}}">
+              <table id="table_app_app" class="json-table mb-3 mt-3 col-md-12">
+                <thead>
+                  <tr>
+                    <th style="width: 17%">NOME {{uppercase key}}</th>
+                    <th style="width: 75%">VALORE PREDEFINITO</th>
+                    <th> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each-in value as |subKey subValue|}}
+                  <tr class="primary-filterable" data-ref="{{this.encode key}}" data-value="{{this.encode subKey}}" {{did-insert this.triggerFilter}}>
+                    <td class="primary_row translation-primary-row" data-parent-key="{{this.encode key}}" data-subkey="{{this.encode subKey}}">{{subKey}}</td>
+
+                    {{#if (eq (typeof subValue) 'object')}}
+                    {{!-- OGGETTO --}}
+                    <td colspan="2">
+                      <div class="bg-light">
+                        <table id="table_app_app2" class="json-sub-table mb-3 col-md-12">
+                          <thead>
+                            <tr>
+                              <th style="width: 25%;">CHIAVE</th>
+                              <th style="width: 68%;">VALORE PREDEFINITO</th>
+                              <th> </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {{#each-in subValue as |finalKey finalValue|}}
+                            <tr>
+                              <td>
+                                <p>{{finalKey}}</p>
+                              </td>
+                              <td>
+                                <textarea rows="1" class="translation-label edit-field form-control form-control-sm" data-parent-key="{{this.encode key}}" data-parent-pr="{{this.encode subKey}}" data-type="obj" data-label="{{this.encode finalKey}}" disabled data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}">{{this.getTranslationValue key subKey finalKey}}</textarea>
+                                <textarea rows="1" class="old-value form-control form-control-sm" disabled>{{finalValue}}</textarea>
+                              </td>
+                              <td class="text-right">
+                                <button class="btn-edit-field btn-hover-shine btn btn-sm btn-warning" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.editVoice key subKey finalKey)}}>
+                                  <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="btn-undo-field d-none btn-hover-shine btn btn-sm btn-info" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.undoVoice key subKey finalKey (fn this.getTranslationValue key subKey finalKey))}}>
+                                  <i class="fa fa-history"></i>
+                                </button>
+                                {{!--
+                                <button class="btn-save-field d-none btn-hover-shine btn btn-sm btn-alternate" data-key="{{this.encode key}}_{{this.encode subKey}}_{{this.encode finalKey}}" type="button" {{on 'click' (fn this.saveVoice key subKey finalKey)}}>
+                                  <i class="fa fa-save"></i>
+                                </button>
+                                --}}
+                              </td>
+                            </tr>
+                            {{/each-in}}
+                          </tbody>
+                        </table>
+
+                      </div>
+                    </td>
+                    {{else}}
+                    <td>
+                      {{!-- STRINGA --}}
+                      <textarea rows="1" class="translation-label edit-field form-control form-control-sm" data-parent-key="{{this.encode key}}" data-parent-pr="{{this.encode subKey}}" data-type="str" data-key="{{this.encode key}}_{{this.encode subKey}}" disabled>{{this.getTranslationValue key subKey null}}</textarea>
+                      <textarea rows="1" class="old-value form-control form-control-sm" disabled>{{subValue}}</textarea>
+                    </td>
+                    {{/if}}
+
+
+                    {{#if (eq (typeof subValue) 'string')}}
+                    <td class="text-right">
+                      <button class="btn-edit-field btn-hover-shine btn btn-sm btn-warning" data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn this.editVoice key subKey null)}}>
+                        <i class="fa fa-pencil"></i>
+                      </button>
+                      <button class="btn-undo-field d-none btn-hover-shine btn btn-sm btn-info" data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn this.undoVoice key subKey null (fn this.getTranslationValue key subKey null))}}>
+                        <i class="fa fa-history"></i>
+                      </button>
+                      {{!--
+                      <button class="btn-save-field d-none btn-hover-shine btn btn-sm btn-alternate"
+                        data-key="{{this.encode key}}_{{this.encode subKey}}" type="button" {{on 'click' (fn
+                        this.saveVoice key subKey null)}}>
+                        <i class="fa fa-save"></i>
+                      </button>
+                      --}}
+                    </td>
+                    {{/if}}
+                  </tr>
+                  {{/each-in}}
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+          {{!-- --}}
+          {{/each-in}}
+          {{else}}
+          <div class="p-2">
+            <div class="alert alert-secondary fade show" role="alert">
+              Voci di traduzione non presenti. Contattare un amministratore.
+            </div>
+          </div>
+          {{/if}}
+          {{/if}}
+        </div>
+      </div>
+      <div class="d-block text-end card-footer text-right">
+        {{#if (gt this.changedValue 0)}}
+        <div class="dropdown d-block">
+            <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn btn-alternate">
+                SALVA
+            </button>
+            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-lg">
+                <div class="dropdown-menu-header">
+                    <div class="dropdown-menu-header-inner bg-secondary">
+                        <div class="menu-header-image opacity-2" style="background-image: url('assets/images/dropdown-header/abstract2.jpg');"></div>
+                        <div class="menu-header-content">
+                            <h5 class="menu-header-title">Salva la traduzione</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 p-4 text-center">
+                  {{#if (eq this.selectedEnvironment 'web')}}
+                  <button class="btn-save-field btn-hover-shine btn btn-lg btn-alternate w-100 mb-3" type="button" {{on 'click' (fn this.saveVoices 'web')}}>
+                    <i class="fa fa-save"></i> SALVA PER WEB
+                  </button>
+                  <button class="btn-save-field btn-hover-shine btn btn-lg btn-danger w-100" type="button" {{on 'click' (fn this.saveVoices 'both')}}>
+                    <i class="fa fa-save"></i> SALVA PER WEB + APP
+                  </button>
+                  {{else}}
+                  <button class="btn-save-field btn-hover-shine btn btn-lg btn-alternate w-100 mb-3" type="button" {{on 'click' (fn this.saveVoices 'app')}}>
+                    <i class="fa fa-save"></i> SALVA PER APP
+                  </button>
+                  {{/if}}
+                </div>
+            </div>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+</div>
+{{yield}}

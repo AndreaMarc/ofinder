@@ -1,0 +1,15 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Titolo" @description="Sottotitolo" @icon="pe-7s-user">
+  <button class="btn-wide btn btn-primary btn-sm" type="button">esempio di html</button>
+</ArchitectUi::AppMain::AppPageTitle>
+
+<div class="row p-4">
+  <div class="col-md-12">
+    <p>Qui inseriamo il contenuto della pagina!</p>
+    <p>Il codice di questa pagina è indicato qui sotto:</p>
+    {{#let (get-code-snippet "empty-logged-page.markup") as |snippet|}}
+      <CodeBlock @language={{snippet.language}} @code={{snippet.source}}/>
+    {{/let}}
+    <p>Tutti i parametri nell'intestazione (titolo, descrizione, icona) sono facoltativi.</p>
+  </div>
+</div>
+{{outlet}}

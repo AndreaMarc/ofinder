@@ -1,0 +1,47 @@
+// LOCAL STORAGE UTILIZZATI
+poc-allow-gdpr : per accettazione cookie
+poc-user-lang : eventuale lingua scelta dall'utente
+poc-fingerprint : hash univoco che identifica ogni combinazione computer+browser
+poc-allow-cookie : 'all' o 'limited' per indicare s eha accettato tutti i cookie o solo quelli tecnici
+
+
+// ICONE:
+// fontawesome aggiornato alla versione 6
+
+// Componenti NPM aggiunti:
+
+ember install ember-cli-bootstrap-4
+npm install popper.js
+npm install --save metismenu
+npm i perfect-scrollbar
+
+npm install animate.css --save 
+npm install animate-sass --save-dev
+
+npm i --save loaders.css
+npm install popper.js --save
+npm install slick-carousel
+
+npm install jquery-circle-progress
+
+npm install intro.js --save
+npm install sweetalert2 
+npm install --save toastr
+npm i jquery.fancytree
+
+npm install clipboard --save  
+npm install @chenfengyuan/datepicker
+npm install daterangepicker
+npm install jquery-validation
+npm install smartwizard
+npm i bootstrap-multiselect
+npm i select2
+npm install nouislider
+npm i wnumb
+npm install autosize
+npm install bootstrap4-toggle
+npm install apexcharts --save
+npm i chart.js
+npm i jquery-sparkline
+npm i pe7-icon
+npm i block-ui

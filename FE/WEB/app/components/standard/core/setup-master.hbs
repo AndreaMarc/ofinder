@@ -1,0 +1,198 @@
+<div class="setup-master">
+  {{!-- WAITING --}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+    <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{/if}}
+
+  {{!-- UNAVAILABLE --}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+      {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+    </Standard::LoadingSpinner>
+  {{/if}}
+
+  {{!-- AVAILABLE --}}
+  {{#if (eq this.serviceAvailable 'available')}}
+    <ul id="setup-master-ul-primary" class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+      {{!-- Generale --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link active" data-toggle="tab" href="#tab-setup-info">
+          INFO
+        </a>
+      </li>
+      {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+      {{!-- Generale --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-0">
+          {{!-- template-lint-disable require-presentational-children --}}
+          <Standard::TR @key="component.setupMaster.general" @default="GENERALE"/>
+        </a>
+      </li>
+      {{!-- Sicurezza --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-5">
+          <Standard::TR @key="component.setupMaster.security" @default="SICUREZZA"/>
+        </a>
+      </li>
+      {{!-- Aspetto --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-10">
+          <Standard::TR @key="component.setupMaster.aspect" @default="ASPETTO"/>
+        </a>
+      </li>
+      {{!-- Sliders --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-11">
+          <Standard::TR @key="component.setupMaster.sliders" @default="SLIDERS"/>
+        </a>
+      </li>
+      {{!-- Social --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-13">
+          <Standard::TR @key="component.setupMaster.integrations" @default="INTEGRAZIONI"/>
+        </a>
+      </li>
+      {{!-- Multi Lingua --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-15">
+          <Standard::TR @key="component.setupMaster.multiLanguage" @default="MULTI-LINGUA"/>
+        </a>
+      </li>
+      {{!-- Rotte --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-20">
+          <Standard::TR @key="component.setupMaster.routes" @default="ROTTE"/>
+        </a>
+      </li>
+      {{!-- Entità --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-25">
+          <Standard::TR @key="component.setupMaster.entities" @default="ENTITÁ"/>
+        </a>
+      </li>
+      {{!-- Profilo Utente --}}
+      <li class="nav-item">
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-30">
+          <Standard::TR @key="component.setupMaster.userProfile" @default="PROFILO UTENTE"/>
+        </a>
+      </li>
+      {{!-- Comunicazioni --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-35">
+          <Standard::TR @key="component.setupMaster.communications" @default="COMUNICAZIONI"/>
+        </a>
+      </li>
+      {{!-- Operatori --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-40">
+          <Standard::TR @key="component.setupMaster.operators" @default="OPERATORI"/>
+        </a>
+      </li>
+      {{!-- Ticket --}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-45">
+          <Standard::TR @key="" @default="TICKET"/>
+        </a>
+      </li>
+      {{/if}}
+      {{!-- Custom --}}
+      {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isAdmin'))}}
+      <li class="nav-item">
+        {{!-- template-lint-disable require-context-role --}}
+        <a role="tab" class="nav-link" data-toggle="tab" href="#tab-setup-50">
+          <Standard::TR @key="component.setupMaster.custom" @default="CUSTOM"/>
+        </a>
+      </li>
+      {{/if}}
+    </ul>
+
+    <div class="mb-3 card">
+      <div class="card-body">
+        <div id="setup-master-container-primary" class="tab-content">
+          {{!-- Generale --}}
+          <div class="tab-pane active" id="tab-setup-info" role="tabpanel">
+            <p>Questa sezione consenti di configurare le impostazioni di funzionamento del sito web e dell'app.</p>
+            <p>Seleziona la tab di tuo interesse.</p>
+          </div>
+          {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper'))}}
+          {{!-- Generale --}}
+          <div class="tab-pane" id="tab-setup-0" role="tabpanel">
+            <Standard::Core::SetupGeneral @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Sicurezza --}}
+          <div class="tab-pane" id="tab-setup-5" role="tabpanel">
+            <Standard::Core::SetupSecurity @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Aspetto --}}
+          <div class="tab-pane" id="tab-setup-10" role="tabpanel">
+            <Standard::Core::SetupAspect @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Sliders --}}
+          <div class="tab-pane" id="tab-setup-11" role="tabpanel">
+            <Standard::Core::SetupSliders @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Social --}}
+          <div class="tab-pane" id="tab-setup-13" role="tabpanel">
+            <Standard::Core::SetupSocial @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Multi Lingua --}}
+          <div class="tab-pane" id="tab-setup-15" role="tabpanel">
+            <Standard::Core::SetupMultiLanguage @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Rotte --}}
+          <div class="tab-pane" id="tab-setup-20" role="tabpanel">
+            <Standard::Core::SetupRoutes @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Entità --}}
+          <div class="tab-pane" id="tab-setup-25" role="tabpanel">
+            <Standard::Core::SetupEntities @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Profilo Utente --}}
+          <div class="tab-pane" id="tab-setup-30" role="tabpanel">
+            <Standard::Core::SetupProfile @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Comunicazioni --}}
+          <div class="tab-pane" id="tab-setup-35" role="tabpanel">
+            <Standard::Core::SetupCommunications @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Operatori --}}
+          <div class="tab-pane" id="tab-setup-40" role="tabpanel">
+            <Standard::Core::SetupOperators @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{!-- Ticket --}}
+          <div class="tab-pane" id="tab-setup-45" role="tabpanel">
+            <Standard::Core::SetupTicket @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}} @updateFunction={{this.start}}/>
+          </div>
+          {{/if}}
+          {{!-- Custom --}}
+          {{#if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isAdmin'))}}
+          <div class="tab-pane" id="tab-setup-50" role="tabpanel">
+            {{#if (or (has-permissions "isSuperAdmin") (has-permissions "isDeveloper"))}}
+              <div class="alert alert-secondary fade show" role="alert">
+                Qui inseriamo eventuali settaggi specifici per l'applicazione e/o eventuali configurazioni
+                modificabili dal titolare del sito.
+              </div>
+            {{/if}}
+            <SetupCustom @recordApp={{this.recordApp}} @recordWeb={{this.recordWeb}} @serviceAvailable={{this.serviceAvailable}}/>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  {{/if}}
+
+
+</div>
+{{yield}}

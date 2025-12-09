@@ -1,0 +1,226 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  <div>
+    <div class="row underline">
+      <div class="col-md-12 mb-5">
+        <div class="alert alert-primary fade show" role="alert">
+            <b>NOTA:</b> le modifiche avranno effetto solo dopo la pressione del pulsante di salvataggio a fondo pagina.
+        </div>
+      </div>
+    </div>
+
+    <div class="row underline">
+      {{!-- header fissa --}}
+      <div class="col-md-3 p-3">
+        <label>Header fissa?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'fixedHeader')}}>
+          <option value="" selected={{if (eq this.fixedHeader "") "selected"}}>No</option>
+          <option value="1" selected={{if (eq this.fixedHeader "1") "selected"}}>Sì</option>
+        </select>
+      </div>
+      {{!-- footer fisso --}}
+      <div class="col-md-3 p-3 left-border">
+        <label>Footer fisso?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'fixedFooter')}}>
+          <option value="" selected={{if (eq this.fixedFooter "") "selected"}}>No</option>
+          <option value="1" selected={{if (eq this.fixedFooter "1") "selected"}}>Sì</option>
+        </select>
+      </div>
+      {{!-- sidebar fissa --}}
+      <div class="col-md-3 p-3 left-border">
+        <label>Sidebar fissa?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'fixedSidebar')}}>
+          <option value="" selected={{if (eq this.fixedSidebar "") "selected"}}>No</option>
+          <option value="1" selected={{if (eq this.fixedSidebar "1") "selected"}}>Sì</option>
+        </select>
+      </div>
+      {{!-- body tabs line --}}
+      <div class="col-md-3 p-3 left-border">
+        <label>Body Tabs Line/Shadow?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'bodyTabsLine')}}>
+          <option value="1" selected={{if (eq this.bodyTabsLine "1") "selected"}}>Line</option>
+          <option value="" selected={{if (eq this.bodyTabsLine "") "selected"}}>Shadow</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row underline">
+      {{!-- schema di colori chiaro --}}
+      <div class="col-md-3 p-3">
+        <label>Schema di colori chiaro?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'appThemeWhite')}}>
+          <option value="" selected={{if (eq this.appThemeWhite "") "selected"}}>No</option>
+          <option value="1" selected={{if (eq this.appThemeWhite "1") "selected"}}>Sì</option>
+        </select>
+      </div>
+      {{!-- header shadow --}}
+      <div class="col-md-3 p-3 left-border">
+        <label>Header shadow?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'headerShadow')}}>
+          <option value="" selected={{if (eq this.headerShadow "") "selected"}}>No</option>
+          <option value="1" selected={{if (eq this.headerShadow "1") "selected"}}>Sì</option>
+        </select>
+      </div>
+      {{!-- sidebar shadow --}}
+      <div class="col-md-3 p-3 left-border">
+        <label>Sidebar shadow?</label>
+        <select class="form-control" {{on 'change' (fn this.changeValue 'boolean' 'both' 'sidebarShadow')}}>
+          <option value="" selected={{if (eq this.sidebarShadow "") "selected"}}>No</option>
+          <option value="1" selected={{if (eq this.sidebarShadow "1") "selected"}}>Sì</option>
+        </select>
+      </div>
+      {{!-- empty --}}
+      <div class="col-md-3 p-3 left-border unable-box"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 p-3"></div>
+    </div>
+
+    <div class="row">
+      {{!-- colore dell'header --}}
+      <div class="col-md-6 p-3">
+        <label class="mb-4">Colore dell'header</label>
+        <div class="theme-settings-swatches">
+            <div class="swatch-holder bg-primary switch-header-cs-class {{if (eq this.headerBackground 'bg-primary') 'active' ''}}" data-class="bg-primary" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-secondary switch-header-cs-class {{if (eq this.headerBackground 'bg-secondary') 'active' ''}}" data-class="bg-secondary" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-success switch-header-cs-class {{if (eq this.headerBackground 'bg-success') 'active' ''}}" data-class="bg-success" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-info switch-header-cs-class {{if (eq this.headerBackground 'bg-info') 'active' ''}}" data-class="bg-info" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-warning switch-header-cs-class {{if (eq this.headerBackground 'bg-warning') 'active' ''}}" data-class="bg-warning" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-danger switch-header-cs-class {{if (eq this.headerBackground 'bg-danger') 'active' ''}}" data-class="bg-danger" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-light switch-header-cs-class {{if (eq this.headerBackground 'bg-light') 'active' ''}}" data-class="bg-light" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-dark switch-header-cs-class {{if (eq this.headerBackground 'bg-dark') 'active' ''}}" data-class="bg-dark" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-focus switch-header-cs-class {{if (eq this.headerBackground 'bg-focus') 'active' ''}}" data-class="bg-focus" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-alternate switch-header-cs-class {{if (eq this.headerBackground 'bg-alternate') 'active' ''}}" data-class="bg-alternate" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-custom1 switch-header-cs-class {{if (eq this.headerBackground 'bg-custom1') 'active' ''}}" data-class="bg-custom1" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-white switch-header-cs-class {{if (eq this.headerBackground 'bg-white') 'active' ''}}" data-class="bg-white" data-text-class="header-text-dark"></div>
+            <div class="divider"></div>
+            <div class="swatch-holder bg-vicious-stance switch-header-cs-class {{if (eq this.headerBackground 'bg-vicious-stance') 'active' ''}}" data-class="bg-vicious-stance" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-midnight-bloom switch-header-cs-class {{if (eq this.headerBackground 'bg-midnight-bloom') 'active' ''}}" data-class="bg-midnight-bloom" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-night-sky switch-header-cs-class {{if (eq this.headerBackground 'bg-night-sky') 'active' ''}}" data-class="bg-night-sky" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-slick-carbon switch-header-cs-class {{if (eq this.headerBackground 'bg-slick-carbon') 'active' ''}}" data-class="bg-slick-carbon" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-asteroid switch-header-cs-class {{if (eq this.headerBackground 'bg-asteroid') 'active' ''}}" data-class="bg-asteroid" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-royal switch-header-cs-class {{if (eq this.headerBackground 'bg-royal') 'active' ''}}" data-class="bg-royal" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-warm-flame switch-header-cs-class {{if (eq this.headerBackground 'bg-warm-flame') 'active' ''}}" data-class="bg-warm-flame" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-night-fade switch-header-cs-class {{if (eq this.headerBackground 'bg-night-fade') 'active' ''}}" data-class="bg-night-fade" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-sunny-morning switch-header-cs-class {{if (eq this.headerBackground 'bg-sunny-morning') 'active' ''}}" data-class="bg-sunny-morning" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-tempting-azure switch-header-cs-class {{if (eq this.headerBackground 'bg-tempting-azure') 'active' ''}}" data-class="bg-tempting-azure" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-amy-crisp switch-header-cs-class {{if (eq this.headerBackground 'bg-amy-crisp') 'active' ''}}" data-class="bg-amy-crisp" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-heavy-rain switch-header-cs-class {{if (eq this.headerBackground 'bg-heavy-rain') 'active' ''}}" data-class="bg-heavy-rain" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-mean-fruit switch-header-cs-class {{if (eq this.headerBackground 'bg-mean-fruit') 'active' ''}}" data-class="bg-mean-fruit" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-malibu-beach switch-header-cs-class {{if (eq this.headerBackground 'bg-malibu-beach') 'active' ''}}" data-class="bg-malibu-beach" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-deep-blue switch-header-cs-class {{if (eq this.headerBackground 'bg-deep-blue') 'active' ''}}" data-class="bg-deep-blue" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-ripe-malin switch-header-cs-class {{if (eq this.headerBackground 'bg-ripe-malin') 'active' ''}}" data-class="bg-ripe-malin" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-arielle-smile switch-header-cs-class {{if (eq this.headerBackground 'bg-arielle-smile') 'active' ''}}" data-class="bg-arielle-smile" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-plum-plate switch-header-cs-class {{if (eq this.headerBackground 'bg-plum-plate') 'active' ''}}" data-class="bg-plum-plate" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-happy-fisher switch-header-cs-class {{if (eq this.headerBackground 'bg-happy-fisher') 'active' ''}}" data-class="bg-happy-fisher" data-text-class="header-text-dark"></div>
+            <div class="swatch-holder bg-happy-itmeo switch-header-cs-class {{if (eq this.headerBackground 'bg-happy-itmeo') 'active' ''}}" data-class="bg-happy-itmeo" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-mixed-hopes switch-header-cs-class {{if (eq this.headerBackground 'bg-mixed-hopes') 'active' ''}}" data-class="bg-mixed-hopes" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-strong-bliss switch-header-cs-class {{if (eq this.headerBackground 'bg-strong-bliss') 'active' ''}}" data-class="bg-strong-bliss" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-grow-early switch-header-cs-class {{if (eq this.headerBackground 'bg-grow-early') 'active' ''}}" data-class="bg-grow-early" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-love-kiss switch-header-cs-class {{if (eq this.headerBackground 'bg-love-kiss') 'active' ''}}" data-class="bg-love-kiss" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-premium-dark switch-header-cs-class {{if (eq this.headerBackground 'bg-premium-dark') 'active' ''}}" data-class="bg-premium-dark" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-happy-green switch-header-cs-class {{if (eq this.headerBackground 'bg-happy-green') 'active' ''}}" data-class="bg-happy-green" data-text-class="header-text-light"></div>
+        </div>
+      </div>
+      {{!-- colore della sidebar --}}
+      <div class="col-md-6 p-3 left-border">
+        <label class="mb-4">Colore della sidebar</label>
+        <div class="theme-settings-swatches">
+            <div class="swatch-holder bg-primary switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-primary') 'active' ''}}" data-class="bg-primary" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-secondary switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-secondary') 'active' ''}}" data-class="bg-secondary" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-success switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-success') 'active' ''}}" data-class="bg-success" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-info switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-info') 'active' ''}}" data-class="bg-info" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-warning switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-warning') 'active' ''}}" data-class="bg-warning" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-danger switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-danger') 'active' ''}}" data-class="bg-danger" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-light switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-light') 'active' ''}}" data-class="bg-light" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-dark switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-dark') 'active' ''}}" data-class="bg-dark" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-focus switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-focus') 'active' ''}}" data-class="bg-focus" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-alternate switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-alternate') 'active' ''}}" data-class="bg-alternate" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-custom1 switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-custom1') 'active' ''}}" data-class="bg-custom1" data-text-class="header-text-light"></div>
+            <div class="swatch-holder bg-white switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-white') 'active' ''}}" data-class="bg-white" data-text-class="header-text-dark"></div>
+
+            <div class="divider"></div>
+            <div class="swatch-holder bg-vicious-stance switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-vicious-stance') 'active' ''}}" data-class="bg-vicious-stance" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-midnight-bloom switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-midnight-bloom') 'active' ''}}" data-class="bg-midnight-bloom" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-night-sky switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-night-sky') 'active' ''}}" data-class="bg-night-sky" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-slick-carbon switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-slick-carbon') 'active' ''}}" data-class="bg-slick-carbon" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-asteroid switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-asteroid') 'active' ''}}" data-class="bg-asteroid" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-royal switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-royal') 'active' ''}}" data-class="bg-royal" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-warm-flame switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-warm-flame') 'active' ''}}" data-class="bg-warm-flame" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-night-fade switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-night-fade') 'active' ''}}" data-class="bg-night-fade" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-sunny-morning switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-sunny-morning') 'active' ''}}" data-class="bg-sunny-morning" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-tempting-azure switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-tempting-azure') 'active' ''}}" data-class="bg-tempting-azure" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-amy-crisp switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-amy-crisp') 'active' ''}}" data-class="bg-amy-crisp" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-heavy-rain switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-heavy-rain') 'active' ''}}" data-class="bg-heavy-rain" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-mean-fruit switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-mean-fruit') 'active' ''}}" data-class="bg-mean-fruit" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-malibu-beach switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-malibu-beach') 'active' ''}}" data-class="bg-malibu-beach" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-deep-blue switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-deep-blue') 'active' ''}}" data-class="bg-deep-blue" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-ripe-malin switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-ripe-malin') 'active' ''}}" data-class="bg-ripe-malin" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-arielle-smile switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-arielle-smile') 'active' ''}}" data-class="bg-arielle-smile" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-plum-plate switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-plum-plate') 'active' ''}}" data-class="bg-plum-plate" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-happy-fisher switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-happy-fisher') 'active' ''}}" data-class="bg-happy-fisher" data-text-class="sidebar-text-dark"></div>
+            <div class="swatch-holder bg-happy-itmeo switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-happy-itmeo') 'active' ''}}" data-class="bg-happy-itmeo" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-mixed-hopes switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-mixed-hopes') 'active' ''}}" data-class="bg-mixed-hopes" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-strong-bliss switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-strong-bliss') 'active' ''}}" data-class="bg-strong-bliss" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-grow-early switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-grow-early') 'active' ''}}" data-class="bg-grow-early" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-love-kiss switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-love-kiss') 'active' ''}}" data-class="bg-love-kiss" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-premium-dark switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-premium-dark') 'active' ''}}" data-class="bg-premium-dark" data-text-class="sidebar-text-light"></div>
+            <div class="swatch-holder bg-happy-green switch-sidebar-cs-class {{if (eq this.sidebarBackground 'bg-happy-green') 'active' ''}}" data-class="bg-happy-green" data-text-class="sidebar-text-light"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row underline">
+      {{!-- tonalità testo nell'header --}}
+      <div class="col-md-6 p-3">
+        <label>Tonalità del testo nell'header?</label> {{this.headerLight}}
+        <select disabled class="form-control" {{on 'change' (fn this.changeValue 'string' 'app' 'headerLight')}}>
+          <option value="white" selected={{(eq this.headerLight "white")}}>Chiara</option>
+          <option value="black" selected={{(eq this.headerLight "black")}}>Scura</option>
+          <option value="" selected={{(eq this.headerLight "")}}>Per sfondi bianchi</option>
+        </select>
+      </div>
+      {{!-- tonalità testo nella sidebar --}}
+      <div class="col-md-6 p-3 left-border">
+        <label>Tonalità del testo nella sidebar?</label> {{this.sidebarLight}}
+        <select disabled class="form-control" {{on 'change' (fn this.changeValue 'string' 'app' 'sidebarLight')}}>
+          <option value="white" selected={{(eq this.sidebarLight "white")}}>Chiara</option>
+          <option value="black" selected={{(eq this.sidebarLight "black")}}>Scura</option>
+          <option value="" selected={{(eq this.sidebarLight "")}}>Per sfondi bianchi</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      {{!-- salvataggio --}}
+      <div class="col-md-12 pt-5 text-right">
+        <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+          <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+          SALVA
+        </button>
+      </div>
+    </div>
+
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+  {{/if}}
+</div>
+{{yield}}

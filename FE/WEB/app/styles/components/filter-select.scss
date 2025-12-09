@@ -1,0 +1,22 @@
+.filter-select {
+  button {
+    margin-left: -1px;
+    margin-right: -1px;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    padding-left: 0.35rem !important;
+    padding-right: 0.35rem !important;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    margin-left: -1px;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    cursor: pointer;
+  }
+}

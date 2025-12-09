@@ -1,0 +1,278 @@
+<div class="legals-terms-crud" ...attributes>
+  {{#if (eq this.available 'waiting')}}
+    <div class="p-2">
+      <div class="alert alert-info fade show" role="alert">
+          <i class="fa fa-spinner fa-spin mr-2"></i> Recupero dati in corso, attendere prego...
+      </div>
+    </div>
+  {{else if (eq this.available 'unavailable')}}
+    <div class="p-2">
+      <div class="alert alert-danger fade show m-0" role="alert">
+        <i class="fa fa-exclamation-triangle mr-2"></i> Non hai i permessi necessari per accedere a questa sezione.
+        <a href="#" class="alert-link" {{on 'click' this.start}}>
+          Riprova
+        </a>
+      </div>
+    </div>
+  {{else if (eq this.available 'available')}}
+    {{!-- #region INTESTAZIONE - SCELTA LINGUA --}}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-3 bg-transparent">
+          <div class="card-header bg-transparent">
+            <div class="btn-actions-pane-right">
+              <div class="btn-toolbar" role="toolbar">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-sm btn-success" type="button" {{on 'click' (perform this.findRecords)}}>
+                      LINGUA
+                    </button>
+                  </div>
+                  <select class="form-control form-control-sm mr-2" {{on 'change' this.changeLang}}>
+                    {{#each this.availableActiveLanguages as |lang|}}
+                      <option value="{{lang.code}}" selected={{(eq lang.code this.currentLang)}}>
+                        {{lang.label}}
+                      </option>
+                    {{/each}}
+                  </select>
+
+                  <button class="btn btn-sm btn-success btn-icon-only" type="button" {{on 'click' this.start}}>
+                    <i class="fa fa-refresh"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- #endregion --}}
+    {{!-- #region ELENCO DOCUMENTI --}}
+    <div class="row">
+      {{!-- Informativa sulla privacy --}}
+      <div class="col-md-4 p-1 pt-0">
+        <div class="main-card card">
+          <div class="card-header text-success">
+            INFORMATIVA SULLA PRIVACY
+          </div>
+          <div class="card-body p-1">
+            {{#if (eq this.ok_privacy 'waiting')}}
+              <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+            {{else if (eq this.ok_privacy 'unavailable')}}
+              <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+                Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' (fn this.getData 'privacy')}}>Riprova.</a>
+              </Standard::LoadingSpinner>
+            {{else}}
+              {{#if (not-eq this.error_privacy '')}}
+                <Standard::LoadingSpinner @icon="" @msg={{this.error_privacy}} @style="3" class="alert-danger" />
+              {{/if}}
+              <ul class="list-group mb-3">
+                {{#each this.privacy as | doc |}}
+                <li class="list-group-item m-0">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Versione {{doc.version}}</div>
+                            <div class="widget-subheading"><small>{{doc.title}}</small></div>
+                        </div>
+                        <div class="widget-content-right text-right">
+                          <div role="group" class="btn-group-sm btn-group mb-2">
+                              <button {{on 'click' (fn this.edit doc.id)}} type="button" class="btn-shadow btn btn-{{if doc.active 'primary' 'secondary'}}" disabled>{{if doc.active 'ATTIVO' 'DISATTIVO'}}</button>
+                              <button {{on 'click' (fn this.edit doc.id)}} type="button" class="btn-shadow btn btn-{{if doc.active 'primary' 'secondary'}} btn-icon-only">
+                                <i class="fa fa-eye"></i>
+                              </button>
+                          </div>
+                          {{#unless doc.active}}
+                            {{#if (has-permissions 'LegalTerm.update')}}
+                              {{#if (not-eq doc.content '')}}
+                                <button {{on 'click' (fn this.activation doc.id)}} type="button" class="btn-transition btn btn-sm btn-outline-danger">
+                                  <small>
+                                    {{#if this.activationConfirmed.isRunning}}
+                                      <i class="fa fa-spinner fa-spin mr-2"></i>
+                                    {{/if}}
+                                    ATTIVALO
+                                  </small>
+                                </button>
+                              {{else}}
+                                <button type="button" class="btn-transition btn btn-sm btn-outline-warning" disabled>
+                                  <small>
+                                    Non attivabile
+                                  </small>
+                                </button>
+                              {{/if}}
+                            {{/if}}
+                          {{/unless}}
+                        </div>
+                    </div>
+                  </div>
+                </li>
+                {{/each}}
+              </ul>
+            {{/if}}
+          </div>
+          {{#if (and (eq this.ok_privacy 'available') (has-permissions 'LegalTerm.create'))}}
+          <div class="card-footer d-block text-center pt-4">
+            <h6 class="opacity-5">CREA NUOVA VERSIONE</h6>
+            <input value={{this.newVersion_privacy}} {{on 'keyup' (fn this.newValue 'privacy')}} {{on 'change' (fn this.newValue 'privacy')}} type="number" min="0.1" step="0.1" class="form-control form-control-sm mb-1" placeholder="...">
+            <button {{on 'click' (fn this.newRecord 'privacy')}} type="button" class="btn-hover-shine btn btn-sm btn-primary d-block w-100">
+              {{#if this.saving_privacy}}
+                <i class="fa fa-spinner fa-spin mr-2"></i>
+              {{/if}}
+              CREA
+            </button>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+      {{!-- Termini e condizioni --}}
+      <div class="col-md-4 p-1 pt-0">
+        <div class="main-card card">
+          <div class="card-header text-success">
+            TERMINI E CONDIZIONI
+          </div>
+          <div class="card-body p-1">
+            {{#if (eq this.ok_terms 'waiting')}}
+              <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+            {{else if (eq this.ok_terms 'unavailable')}}
+              <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+                Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' (fn this.getData 'terms')}}>Riprova.</a>
+              </Standard::LoadingSpinner>
+            {{else}}
+              {{#if (not-eq this.error_terms '')}}
+                <Standard::LoadingSpinner @icon="" @msg={{this.error_terms}} @style="3" class="alert-danger" />
+              {{/if}}
+              <ul class="list-group mb-3">
+                {{#each this.terms as | doc |}}
+                <li class="list-group-item m-0">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Versione {{doc.version}}</div>
+                            <div class="widget-subheading"><small>{{doc.title}}</small></div>
+                        </div>
+                        <div class="widget-content-right text-right">
+                          <div role="group" class="btn-group-sm btn-group mb-2">
+                              <button {{on 'click' (fn this.edit doc.id)}} type="button" class="btn-shadow btn btn-{{if doc.active 'primary' 'secondary'}}" disabled>{{if doc.active 'ATTIVO' 'DISATTIVO'}}</button>
+                              <button {{on 'click' (fn this.edit doc.id)}} type="button" class="btn-shadow btn btn-{{if doc.active 'primary' 'secondary'}} btn-icon-only">
+                                <i class="fa fa-eye"></i>
+                              </button>
+                          </div>
+                          {{#unless doc.active}}
+                            {{#if (not-eq doc.content '')}}
+                              <button {{on 'click' (fn this.activation doc.id)}} type="button" class="btn-transition btn btn-sm btn-outline-danger">
+                                <small>
+                                  {{#if this.activationConfirmed.isRunning}}
+                                    <i class="fa fa-spinner fa-spin mr-2"></i>
+                                  {{/if}}
+                                  ATTIVALO
+                                </small>
+                              </button>
+                            {{else}}
+                              <button type="button" class="btn-transition btn btn-sm btn-outline-warning" disabled>
+                                <small>
+                                  Non attivabile
+                                </small>
+                              </button>
+                            {{/if}}
+                          {{/unless}}
+                        </div>
+                    </div>
+                  </div>
+                </li>
+                {{/each}}
+              </ul>
+            {{/if}}
+          </div>
+          {{#if (and (eq this.ok_terms 'available')  (has-permissions 'LegalTerm.create'))}}
+            <div class="card-footer d-block text-center pt-4">
+              <h6 class="opacity-5">CREA NUOVA VERSIONE</h6>
+              <input value={{this.newVersion_terms}} {{on 'keyup' (fn this.newValue 'terms')}} {{on 'change' (fn this.newValue 'terms')}} type="number" min="0.1" step="0.1" class="form-control form-control-sm mb-1" placeholder="...">
+              <button {{on 'click' (fn this.newRecord 'terms')}} type="button" class="btn-hover-shine btn btn-sm btn-primary d-block w-100">
+                {{#if this.saving_terms}}
+                  <i class="fa fa-spinner fa-spin mr-2"></i>
+                {{/if}}
+                CREA
+              </button>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+      {{!-- #endRegion  --}}
+      {{!-- Accettazione dei cookie --}}
+      <div class="col-md-4 p-1 pt-0">
+        <div class="main-card card">
+          <div class="card-header text-success">
+            ACCETTAZIONE DEI COOKIE
+          </div>
+          <div class="card-body p-1">
+            {{#if (eq this.ok_cookie 'waiting')}}
+              <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+            {{else if (eq this.ok_cookie 'unavailable')}}
+              <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+                Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' (fn this.getData 'cookie')}}>Riprova.</a>
+              </Standard::LoadingSpinner>
+            {{else}}
+              {{#if (not-eq this.error_cookie '')}}
+                <Standard::LoadingSpinner @icon="" @msg={{this.error_cookie}} @style="3" class="alert-danger" />
+              {{/if}}
+              <ul class="list-group mb-3">
+                {{#each this.cookie as | doc |}}
+                <li class="list-group-item m-0">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                        <div class="widget-content-left">
+                            <div class="widget-heading">Versione {{doc.version}}</div>
+                            <div class="widget-subheading"><small>{{doc.title}}</small></div>
+                        </div>
+                        <div class="widget-content-right text-right">
+                          <div role="group" class="btn-group-sm btn-group mb-2">
+                              <button {{on 'click' (fn this.edit doc.id)}} type="button" class="btn-shadow btn btn-{{if doc.active 'primary' 'secondary'}}" disabled>{{if doc.active 'ATTIVO' 'DISATTIVO'}}</button>
+                              <button {{on 'click' (fn this.edit doc.id)}} type="button" class="btn-shadow btn btn-{{if doc.active 'primary' 'secondary'}} btn-icon-only">
+                                <i class="fa fa-eye"></i>
+                              </button>
+                          </div>
+                          {{#unless doc.active}}
+                            {{#if (not-eq doc.content '')}}
+                              <button {{on 'click' (fn this.activation doc.id)}} type="button" class="btn-transition btn btn-sm btn-outline-danger">
+                                <small>
+                                  {{#if this.activationConfirmed.isRunning}}
+                                    <i class="fa fa-spinner fa-spin mr-2"></i>
+                                  {{/if}}
+                                  ATTIVALO
+                                </small>
+                              </button>
+                            {{else}}
+                              <button type="button" class="btn-transition btn btn-sm btn-outline-warning" disabled>
+                                <small>
+                                  Non attivabile
+                                </small>
+                              </button>
+                            {{/if}}
+                          {{/unless}}
+                        </div>
+                    </div>
+                  </div>
+                </li>
+                {{/each}}
+              </ul>
+            {{/if}}
+          </div>
+          {{#if (and (eq this.ok_cookie 'available')  (has-permissions 'LegalTerm.create'))}}
+            <div class="card-footer d-block text-center pt-4 overflow-hidden">
+              <h6 class="opacity-5">CREA NUOVA VERSIONE</h6>
+              <input value={{this.newVersion_cookie}} {{on 'keyup' (fn this.newValue 'cookie')}} {{on 'change' (fn this.newValue 'cookie')}} type="number" min="0.1" step="0.1" class="form-control form-control-sm mb-1" placeholder="...">
+              <button {{on 'click' (fn this.newRecord 'cookie')}} type="button" class="btn-hover-shine btn btn-sm btn-primary d-block w-100">
+                {{#if this.saving_cookie}}
+                  <i class="fa fa-spinner fa-spin mr-2"></i>
+                {{/if}}
+                CREA
+              </button>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    {{!-- #endregion --}}
+  {{/if}}
+</div>
+{{yield}}

@@ -1,0 +1,118 @@
+<div class="notifications" ...attributes>
+  {{!-- WAITING --}}
+    {{#if (eq this.serviceAvailable 'waiting')}}
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+    {{/if}}
+
+    {{!-- UNAVAILABLE --}}
+    {{#if (eq this.serviceAvailable 'unavailable')}}
+      <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+        {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+      </Standard::LoadingSpinner>
+    {{/if}}
+
+    {{!-- AVAILABLE --}}
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div class="card mb-3">
+        {{!-- #region HEADER --}}
+        <div class="card-header">
+          Elenco delle notifiche ricevute
+          <div class="btn-actions-pane-right actions-icon-btn">
+            <button type="button" {{on 'click' this.start}} aria-haspopup="true" data-toggle="dropdown" aria-expanded="false" class="btn-icon btn-icon-only btn btn-link">
+                <i class="lnr-sync btn-icon-wrapper"></i>
+            </button>
+            <div class="btn-group dropdown">
+              <button type="button" aria-haspopup="true" data-toggle="dropdown" aria-expanded="false" class="btn-icon btn-icon-only btn btn-link">
+                <i class="lnr-menu btn-icon-wrapper"></i>
+              </button>
+              <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-shadow dropdown-menu-right dropdown-menu-hover-link dropdown-menu">
+                <button {{on 'click' (fn this.processAll 'setReaded')}} type="button" tabindex="0" class="dropdown-item">
+                  <span class="text-primary">
+                    <i class="dropdown-icon lnr-checkmark-circle"> </i><span>Contrassegna come lette</span>
+                  </span>
+                </button>
+                <button {{on 'click' (fn this.processAll 'delete')}} type="button" tabindex="0" class="dropdown-item">
+                  <span class="text-danger">
+                    <i class="dropdown-icon lnr-trash"></i><span>Elimina tutte</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{!-- #endregion --}}
+        {{!-- #region BODY --}}
+        <div class="card-body p-0">
+          <div class="row">
+            <div class="col-md-12">
+              <ul class="todo-list-wrapper list-group list-group-flush">
+                {{#if (gt (length this.notifications) 0)}}
+                  {{#each this.notifications as |notify index|}}
+                    {{#unless notify.erased}}
+                      <li class="list-group-item {{if notify.read 'unable-box' ''}}">
+                          <div class="transition todo-indicator {{if notify.read 'bg-white' 'bg-warning'}}"></div>
+                          <div class="widget-content p-0">
+                            <div class="widget-content-wrapper">
+                              {{!-- data e ora --}}
+                              <div class="widget-content-left mr-2">
+                                <div class="notifications-time">
+                                  <span>{{convertdate notify.dateSent 'DD/MM/YY'}}</span>
+                                  <span>{{convertdate notify.dateSent 'HH:mm'}}</span>
+                                </div>
+                              </div>
+                              {{!-- dettagli della notifica --}}
+                              <div class="widget-content-left datas">
+                                <div class="widget-heading {{if notify.read 'opacity-5' ''}}">
+                                  {{#if (include this.typeCallbackExists notify.pushType)}}
+                                    <button {{on 'click' (fn this.openCallBack notify)}} class="border-0 btn-primary btn btn-sm btn-hover-shine mb-1 {{if notify.read 'opacity-9' ''}}" type="button">
+                                      {{notify.title}} <i class="fa fa-angle-right ml-2"></i>
+                                    </button>
+                                  {{else}}
+                                    <button {{on 'click' (fn this.openCallBack notify)}} class="border-0 btn-secondary btn btn-sm btn-hover-shine mb-1 {{if notify.read 'opacity-5' ''}}" type="button" disabled>
+                                      {{notify.title}}
+                                    </button>
+                                  {{/if}}
+                                  {{#unless notify.read}}
+                                    <div class="badge badge-warning ml-2 animated swing">NEW</div>
+                                  {{/unless}}
+                                </div>
+                                <div class="widget-subheading">
+                                  <div class="notifications-preview" data-id="{{index}}">
+                                    <i>{{notify.body}}</i>
+                                  </div>
+                                </div>
+                              </div>
+                              {{!-- pulsante di cancellazione --}}
+                              <div class="widget-content-right">
+                                <button data-id="{{index}}" class="show-btn notify-btn border-0 btn-success btn btn-sm btn-hover-shine mb-1" type="button" {{on 'click' (fn this.showExpanded index notify)}}>
+                                  <i class="fa fa-expand"></i>
+                                </button>
+                                <button data-id="{{index}}" class="show-btn show-btn-hide notify-btn border-0 btn-secondary btn btn-sm btn-hover-shine mb-1" type="button" {{on 'click' (fn this.showExpanded index notify)}}>
+                                  <i class="fa fa-compress"></i>
+                                </button>
+                                <button class="notify-btn border-0 btn-danger btn btn-sm btn-hover-shine mb-1" type="button" {{on 'click' (fn this.deleteSingleNotification notify)}}>
+                                  <i class="fa fa-trash-alt"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                      </li>
+                    {{/unless}}
+                  {{/each}}
+                {{else}}
+                  <p class="mt-5 ml-4 mb-5"><em>Non ci sono notifiche da visualizzare</em></p>
+                {{/if}}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {{!-- #endregion --}}
+        {{!-- #region FOOTER --}}
+        <div class="card-footer text-center">
+          <Standard::PaginationButtons class="m-auto" @currentPageNumber={{this.pageNumber}} @totalRecords={{this.totalRecords}} @recordsPerPage={{this.pageSize}} @cb={{this.changePage}}/>
+        </div>
+        {{!-- #endregion --}}
+      </div>
+    {{/if}}
+</div>
+{{yield}}

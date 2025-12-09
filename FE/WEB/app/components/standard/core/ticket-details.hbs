@@ -1,0 +1,99 @@
+<div class="ticket-details" ...attributes>
+  {{#if (not this.ticketActive)}}
+    {{!-- Servizio ticket non attivato in setup --}}
+    <Standard::LoadingSpinner @icon="" @msg="Il servizio di Assistenza Clienti non è attivo." @style="3" class="alert-warning mt-5 text-center" />
+
+  {{else if (not this.ticketTenantEnabled)}}
+    {{!-- licenza scaduta --}}
+    <Standard::LoadingSpinner @icon="" @msg={{this.ticketUnableMessage}} @style="3" class="alert-warning mt-5 text-center" />
+
+  {{else if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isTicketManagement') (has-permissions 'isTicketEnabled'))}}
+
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div class="app-inner-layout chat-layout">
+        {{!-- intestazione --}}
+        <div class="app-inner-layout__header bg-heavy-rain">
+          <div class="app-page-title">
+            <div class="page-title-wrapper">
+              <div class="page-title-heading mb-3">
+                <div class="page-title-icon">
+                  <i class="pe-7s-help2 icon-gradient {{this.getBgColor}}"></i>
+                </div>
+                <div>
+                  Dettagli del Ticket
+                  <div class="page-title-subheading">Gestisci il ticket</div>
+                </div>
+              </div>
+
+              <div class="page-title-actions mt-0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="app-inner-layout__wrapper">
+            <div class="app-inner-layout__content card">
+              <div>
+
+                <div class="app-inner-layout__top-pane">
+                  {{!-- INTESTAZIONE --}}
+                  <div class="pane-left">
+                    <div class="mobile-app-menu-btn">
+                        <button type="button" class="hamburger hamburger--elastic">
+                            <span class="hamburger-box">
+                                <span class="hamburger-inner"></span>
+                            </span>
+                        </button>
+                    </div>
+                    <h4 class="mb-0">Elenco richieste</h4>
+                  </div>
+
+                  <div class="pane-right">
+                    <button {{on 'click' (perform this.findTickets)}} class="btn btn-sm btn-hover-shine btn-light btn-icon-only" type="button">
+                      <i class="fa {{if this.findTickets.isRunning 'fa-spinner fa-spin' 'fa-refresh'}}"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="bg-white">
+                  Questo è il contenuto
+                </div>
+
+              </div>
+            </div>
+
+            {{!-- MENU LATERALE SINISTRO --}}
+            <div class="app-inner-layout__sidebar card">
+
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+    {{/if}}
+
+    {{#if (eq this.serviceAvailable 'waiting')}}
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+    {{/if}}
+
+    {{#if (eq this.serviceAvailable 'unavailable')}}
+      <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+        {{this.error}} <a href="#" class="ml-2" {{on 'click' this.start}}>Riprova.</a>
+      </Standard::LoadingSpinner>
+    {{/if}}
+
+  {{else}}
+  {{!-- permessi mancanti --}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p>
+          <em class="text-danger">Non hai i permessi necessari per accedere!</em>
+        </p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

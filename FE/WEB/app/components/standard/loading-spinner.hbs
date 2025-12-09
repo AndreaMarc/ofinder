@@ -1,0 +1,24 @@
+{{!-- #region STYLE 1 e 2 --}}
+{{#if (or (eq this.style 1) (eq this.style 2))}}
+<p class="{{if (eq this.style 2) 'd-block text-center'}}" {{did-update this.updLangParams @msgKey @msg}} ...attributes>
+  {{#if this.icon}}
+  <i class="fa fa-spin fa-spinner mr-3"></i>
+  {{/if}}
+  <em>{{this.textToShow}}</em>
+  {{yield}}
+</p>
+{{/if}}
+{{!-- #endregion --}}
+{{!-- #region STYLE 3 --}}
+{{#if (eq this.style 3)}}
+<div class="p-2">
+  <div class="alert fade show" role="alert" {{did-update this.updLangParams @msgKey @msg}} ...attributes>
+    {{#if this.icon}}
+    <i class="fa fa-spinner fa-spin mr-2"></i>
+    {{/if}}
+    {{this.textToShow}}
+    {{yield}}
+  </div>
+</div>
+{{/if}}
+{{!-- #endregion --}}

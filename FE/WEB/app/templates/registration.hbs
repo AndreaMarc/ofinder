@@ -1,0 +1,37 @@
+<div class="app-container">
+    <div class="h-100">
+        <div class="h-100 no-gutters row">
+            {{#if this.leftSlider}}
+                <div class="d-none d-lg-block col-lg-4">
+                    <Standard::Core::LoginSlider @page="registration"/>
+                </div>
+            {{/if}}
+            <div class="h-100 d-md-flex d-sm-block bg-white justify-content-center align-items-center col-md-12 {{this.loginAreaClass}}">
+                <div class="unlog-variable-height">
+                    <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-10">
+                        <div class="d-block d-sm-block d-md-none d-lg-none p-3"></div>
+                        <div class="app-logo"></div>
+                        <h4>
+                            <div>
+                                <Standard::TR @key="template.registration.welcome" @default="Benvenuto,"/>
+                            </div>
+                            <span>
+                                <Standard::TR @key="template.registration.howTo1" @default="crea il tuo account in"/> 
+                                <span class="text-success">
+                                    <Standard::TR @key="template.registration.howTo2" @default="pochi secondi"/>
+                                </span>
+                            </span>
+                        </h4>
+                        <Standard::Core::RegistrationForm @tenantId="1"/>
+                    </div>
+                </div>
+            </div>
+            {{#if this.rightSlider}}
+                <div class="d-none d-lg-block col-lg-4">
+                    <Standard::Core::LoginSlider @page="registration"/>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+{{outlet}}

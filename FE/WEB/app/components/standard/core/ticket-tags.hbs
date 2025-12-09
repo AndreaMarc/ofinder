@@ -1,0 +1,92 @@
+<div class="ticket-tags p-3" {{did-update (perform this.start) @lastRefresh}}>
+  <div class="row m-0 mb-4 underline">
+    <div class="col-md-12 mb-3 underline">
+      <h6>Puoi definire dei Tags, ovvero delle etichette con cui identificare i ticket.<br />E' possibile filtrare i ticket per Tags. Sei libero di scegliere <em>se</em> e <em>come</em> utilizzare i tags.</h6>
+    </div>
+
+    <div class="col-md-12 mb-1">
+      <h6>Aggiungi un nuovo tag</h6>
+    </div>
+
+    <div class="col-md-5 mb-3">
+      <label for="ticket-tag-name">Nome del Tag</label>
+      <input {{on 'input' this.setNewName}} value={{this.newName}} id="ticket-tag-name" type="text" class="form-control">
+    </div>
+    <div class="col-md-5 mb-3">
+      <label for="ticket-area-desc">Descrizione (facoltativa)</label>
+      <Standard::TextareaAutosize @disabled="" @cb={{this.setNewNote}} @value={{this.newNote}} id="ticket-area-desc" @rows="1" @autosize="fixed"/>
+    </div>
+    <div class="col-md-2 mb-3 text-center">
+      <label>Il tag apparirà così:<br /><span class="text-success">{{this.currentTag}}</span></label>
+      <button {{on 'click' (perform this.save)}} class="btn btn-icon-only btn-hover-shine btn-success m-auto btn-block" type="button">
+        <i class="fa {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="card main-card mb-3">
+      {{#if (eq (length this.tags) 0)}}
+        <p class="m-4 text-warning">
+          <em>Non sono presenti Tags!</em>
+        </p>
+      {{else}}
+        <ul class="list-group">
+          {{#each this.tags as | tag |}}
+            <li class="list-group-item">
+              <div class="widget-content p-0">
+                <div class="widget-content-wrapper">
+                  <div class="widget-content-left pl-0 col-md-10">
+                    {{#if (eq tag.id this.editingGuid)}}
+                      <div class="widget-heading">
+                        <em>Modifica tag {{tag.name}} (<span class="text-success">{{tag.tag}}</span>)</em>
+                      </div>
+                      <div class="widget-subheading">
+                        <div class="row">
+                          <div class="col-md-6">
+                            {{!-- template-lint-disable require-input-label --}}
+                            Nome:<br /><input {{on 'input' this.updateName}} value={{this.editRecord.name}} type="text" class="form-control form-control-sm mb-1">
+                            <small class="form-text text-muted">({{this.editRecord.tag}})</small>
+                          </div>
+                          <div class="col-md-6">
+                            Descrizione (facoltativa):<br /><Standard::TextareaAutosize @disabled="" @cb={{this.updateNote}} @value={{this.editRecord.note}} @rows="1" @autosize="fixed"/>
+                          </div>
+                        </div>
+                      </div>
+                    {{else}}
+                      <div class="widget-heading">{{sanitize-content tag.name}} ({{tag.tag}})</div>
+                      <div class="widget-subheading">{{sanitize-content tag.note}}</div>
+                    {{/if}}
+                  </div>
+                  <div class="widget-content-right col-md-2 pr-0 text-right">
+                    {{#if (eq this.editingGuid '')}}
+                      <div role="group" class="btn-group btn-group-sm">
+                        <button {{on 'click' (fn this.modifyRecord tag)}} type="button" class="btn btn-warning btn-shadow btn-hover-shine btn-icon-only">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button {{on 'click' (fn this.deleteArea tag)}} type="button" class="btn btn-danger btn-shadow btn-hover-shine btn-icon-only">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    {{else if (eq this.editingGuid tag.id)}}
+                      <div role="group" class="btn-group btn-group-sm">
+                        <button {{on 'click' (fn this.restoreRecord tag)}} type="button" class="btn btn-success btn-shadow btn-hover-shine btn-icon-only">
+                          <i class="fa fa-undo"></i>
+                        </button>
+                        <button {{on 'click' (fn this.saveUpdatedRecord tag)}} type="button" class="btn btn-warning btn-shadow btn-hover-shine btn-icon-only">
+                          <i class="fa fa-save"></i>
+                        </button>
+                      </div>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </div>
+  </div>
+
+</div>
+{{yield}}

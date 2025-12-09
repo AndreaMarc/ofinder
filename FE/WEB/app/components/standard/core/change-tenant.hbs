@@ -1,0 +1,128 @@
+<div class="change-tenant">
+  {{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="card">
+    <div class="card-body">
+      <div class="alert alert-info fade show m-0" role="alert">
+          <i class="fa fa-spinner fa-spin"></i> Attendere prego...
+      </div>
+    </div>
+  </div>
+  {{/if}}
+  {{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="card">
+    <div class="card-body">
+      <div class="alert alert-danger fade show m-0" role="alert">
+          <i class="fa fa-exclamation-triangle"></i> {{this.notAvailableRaison}}
+          {{#if this.showRetry}}
+          <a class="ml-1" href="#" {{on 'click' this.showMyTenant}}>Riprova.</a>
+          {{/if}}
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if (eq this.serviceAvailable 'available')}}
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8 mb-5">
+          <strong>Sei associato a {{this.numberTenants}} aziende.</strong><br />
+          Seleziona dall'elenco la nuova azienda a cui vuoi collegarti.
+        </div>
+         <div class="col-md-4 mb-5">
+          <div class="input-group">
+            {{!-- template-lint-disable require-input-label --}}
+            <input type="search" class="form-control form-control-sm" placeholder="..." {{on 'input' this.findMyTenant}}>
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-secondary btn-icon-only" type="button">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-menu grid-menu-2col">
+        <div class="no-gutters row">
+          {{#each this.myTenantFiltered as | tenant |}}
+            <div class="col-sm-6">
+              {{#if tenant.enabled}}
+                {{#if (eq tenant.id this.currentTenantId)}}
+                <button class="choice-tenant current btn-icon-vertical btn-square btn-transition btn btn-primary" type="button">
+                  <i class="lnr-apartment btn-icon-wrapper"></i>
+                  <p class="mb-0">{{tenant.name}}</p>
+                  <p class="mb-0"><small>{{tenant.organization}}</small></p>
+                  <small class="opacity-5"><em>(azienda corrente)</em></small>
+                </button>
+                {{else}}
+                <button class="choice-tenant btn-icon-vertical btn-square btn-transition btn btn-outline-link" type="button" {{on 'click' (fn this.confirmChangeTenant tenant.id)}}>
+                  <i class="lnr-apartment btn-icon-wrapper"></i>
+                  <p class="mb-0">{{tenant.name}}</p>
+                  <p class="mb-0"><small>{{tenant.organization}}</small></p>
+                  <small>&nbsp;</small>
+                </button>
+                {{/if}}
+              {{/if}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if (and (gt this.otherTenantLength 0) (has-permissions 'canSeeAllTenants'))}}
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8 mb-5">
+          <strong class="text-warning">TUTTI I CLIENTI</strong><br />
+          Seleziona azienda alla quale vuoi associarti.
+        </div>
+        <div class="col-md-4 mb-5">
+          <div class="input-group">
+            {{!-- template-lint-disable require-input-label --}}
+            <input type="search" class="form-control form-control-sm" placeholder="..." {{on 'input' this.findTenant}}>
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-secondary btn-icon-only" type="button">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-gutters row">
+        {{#each this.otherTenantFiltered as | tenant |}}
+          <div class="col-md-2 text-center p-1 d-flex align-items-stretch">
+            {{#if (eq tenant.id this.currentTenantId)}}
+            <button class="w-100 border choice-tenant current btn-icon-vertical btn-square btn-transition btn btn-primary" type="button">
+              <i class="lnr-apartment btn-icon-wrapper"></i>
+              <p class="mb-0">{{tenant.name}}</p>
+              <p class="mb-0"><small>{{tenant.organization}}</small></p>
+              <small class="opacity-5"><em>(azienda corrente)</em></small>
+            </button>
+            {{else if tenant.enabled}}
+            <button class="w-100 border choice-tenant btn-icon-vertical btn-square btn-transition btn btn-outline-link" type="button" {{on 'click' (fn this.confirmChangeTenant tenant.id)}}>
+              <i class="lnr-apartment btn-icon-wrapper"></i>
+              <p class="mb-0">{{tenant.name}}</p>
+              <p class="mb-0"><small>{{tenant.organization}}</small></p>
+              <small>&nbsp;</small>
+            </button>
+            {{else}}
+            <button class="w-100 choice-tenant btn-icon-vertical btn-square btn-transition btn btn-outline-link" type="button" disabled>
+              <i class="lnr-apartment btn-icon-wrapper"></i>
+              <p class="mb-0">{{tenant.name}} - DISATTIVO</p>
+              <p class="mb-0"><small>{{tenant.organization}}</small></p>
+              <small>&nbsp;</small>
+            </button>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+
+    </div>
+  </div>
+  {{/if}}
+</div>
+{{yield}}

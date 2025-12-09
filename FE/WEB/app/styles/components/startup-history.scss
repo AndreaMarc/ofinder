@@ -1,0 +1,19 @@
+.startupHystoryUpd, .startupHystoryDel, .startupHystorySav, .startupHystoryAnn {
+  display: none;
+}
+
+.startupHystoryDate, .startupHystoryValue {
+  background: #ffffff;
+}
+.startupHystoryDate[disabled], .startupHystoryValue[disabled] {
+  background: transparent;
+  border: none;
+}
+
+.startupHystoryRow {
+  padding: 4px 0;
+  border-bottom: 1px solid #dddddd;
+}
+.row-hover {
+  background-color: #f8f8f8;
+}

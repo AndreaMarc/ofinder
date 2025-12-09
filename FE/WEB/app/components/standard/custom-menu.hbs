@@ -1,0 +1,68 @@
+{{!-- HTML DA INSERIRE NEL MENÚ CUSTOM --}}
+<div class="grid-menu grid-menu-3col">
+  <div class="no-gutters row">
+    {{!-- ANAGRAFICA AZIENDA --}}
+    <div class="col-sm-6 col-xl-4">
+      <button class="btn-icon-vertical btn-square br-bl btn-transition btn btn-outline-secondary" type="button">
+        <i class="pe-7s-news-paper btn-icon-wrapper"> </i>
+        <span class="badge badge-primary badge-dot badge-dot-inside"> </span>
+        AZIENDA
+      </button>
+    </div>
+    {{!-- SEDI --}}
+    {{#if (has-permissions 'ErpSite.read')}}
+      <div class="col-sm-6 col-xl-4">
+        <button {{on 'click' (fn this.goToPage 'erp-site')}} class="btn-icon-vertical btn-square btn-transition btn btn-outline-secondary" type="button">
+          <i class="lnr-apartment btn-icon-wrapper"> </i>
+          {{#if this.errorSite}}
+            <span class="badge badge-danger badge-dot badge-dot-inside"> </span>
+          {{/if}}
+          SEDI
+        </button>
+      </div>
+    {{/if}}
+    {{!-- TURNI --}}
+    {{!-- DIPENDENTI --}}
+    <div class="col-sm-6 col-xl-4">
+      <button class="btn-icon-vertical btn-square btn-transition btn btn-outline-secondary" type="button">
+        <i class="lnr-users btn-icon-wrapper"> </i>
+        <span class="badge badge-success badge-dot badge-dot-inside"> </span>
+        DIPENDENTI
+      </button>
+    </div>
+    {{!-- CLIENTI --}}
+    <div class="col-sm-6 col-xl-4">
+      <button class="btn-icon-vertical btn-square btn-transition btn btn-outline-secondary" type="button">
+        <i class="pe-7s-helm btn-icon-wrapper"> </i>
+        <span class="badge badge-success badge-dot badge-dot-inside"> </span>
+        CLIENTI
+      </button>
+    </div>
+    {{!-- PROGETTI --}}
+    <div class="col-sm-6 col-xl-4">
+      <button class="btn-icon-vertical btn-square btn-transition btn btn-outline-secondary" type="button">
+        <i class="pe-7s-piggy btn-icon-wrapper"> </i>
+        <span class="badge badge-danger badge-dot badge-dot-inside"> </span>
+        PROGETTI
+      </button>
+    </div>
+    {{!-- TICKETING --}}
+    <div class="col-sm-6 col-xl-4">
+      <button class="btn-icon-vertical btn-square br-tr btn-transition btn btn-outline-secondary" type="button">
+        <i class="pe-7s-comment btn-icon-wrapper"> </i>
+        <span class="badge badge-warning badge-dot badge-dot-inside"> </span>
+        TICKETING
+      </button>
+    </div>
+    {{!-- PLANNER --}}
+    <div class="col-sm-6 col-xl-4">
+      <button class="btn-icon-vertical btn-square br-tr btn-transition btn btn-outline-secondary" type="button">
+        <i class="pe-7s-hourglass btn-icon-wrapper"> </i>
+        <span class="badge badge-warning badge-dot badge-dot-inside"> </span>
+        PLANNER
+      </button>
+    </div>
+  </div>
+</div>
+
+{{yield}}

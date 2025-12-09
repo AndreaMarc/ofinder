@@ -1,0 +1,13 @@
+<div class="textarea-autosize" {{did-update this.updateDisabled @disabled}} {{did-update this.updateValue @value}} ...attributes>
+  <div class="input-group">
+    <textarea id={{this.textareaId}} disabled={{this.disabled}} {{on 'input' this.onInput}} rows={{this.rows}} value={{this.value}} class="form-control {{if this.smallSize 'form-control-sm'}} autosize-input"></textarea>
+    {{#if (or (eq this.autosizeMode 'on') (eq this.autosizeMode 'off'))}}
+    <div class="input-group-append">
+      <button {{on 'click' this.changeActive}} disabled={{this.disabled}} class="btn {{if this.smallSize 'btn-sm'}} btn-light bg-white btn-icon-only textareaBtn" type="button">
+        <i class="fa fa-sort opacity-5"></i>
+      </button>
+    </div>
+    {{/if}}
+  </div>
+</div>
+{{yield}}

@@ -1,0 +1,143 @@
+<div class="crud-permissions" ...attributes {{did-update this.start @currentTenant}} {{did-update (perform this.findRoles) @lastUpdateRoles}}>
+  {{#if (eq this.serviceUpperAvailable 'waiting')}}
+    {{!-- WAITING --}}
+    <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+  {{else}}
+    {{!-- AVAILABLE --}}
+    {{#if (and this.available (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+      <div class="card-header text-success">
+        <i class="header-icon lnr-thumbs-up"></i> GESTIONE PERMESSI DI CRUD
+        <div class="btn-actions-pane-right">
+
+          <div class="btn-toolbar" role="toolbar">
+            <div class="input-group mr-2">
+              <div class="input-group-prepend">
+                <button class="btn btn-sm btn-success" disabled={{this.findRoles.isRunning}} {{on 'click' (perform this.findRoles)}} type="button">
+                  <i class="fa fa-refresh {{if this.findRoles.isRunning 'fa-spin'}} mr-2"></i> RUOLO
+                </button>
+              </div>
+              <select class="form-control form-control-sm" value={{this.currentRole}} {{on 'change' this.updateRole}} disabled={{this.findRoles.isRunning}} aria-describedby="btnGroup1">
+                <option value="">--</option>
+                {{#each this.roles as | role |}}
+                <option value={{role.id}}>{{role.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="swatch-holder swatch-holder-sm bg-success text-center" data-toggle="collapse" data-target="#info-crud-permissions" type="button" style="border-radius: 50%;">
+              <i class="fa fa-info text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body underline p-1">
+        <div id="info-crud-permissions" class="row collapse m-0">
+          <div class="col-md-12 p-3">
+            <div class="alert alert-success fade show mb-5" role="alert">
+              Per ciascun ruolo e per ciascuna entità, puoi definire i permessi di lettura, creazione, aggiornamento e cancellazione dei record.<br />
+              Il permesso di lettura è necessario per attivare le altre operazioni.
+            </div>
+          </div>
+        </div>
+        {{#if (eq this.currentRole '')}}
+          <p class="m-3"><em>Scegli il ruolo!</em></p>
+        {{else}}
+          {{#if this.findRecords.isRunning}}
+          <Standard::LoadingSpinner @icon='1' @msg="Caricamento dati in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+          {{#if this.findRecords.isIdle}}
+            {{#if (eq this.entitiesLength 0)}}
+              <p class="m-3"><em>Non ci sono dati da mostrare</em></p>
+            {{else}}
+              {{!-- #region elenco record --}}
+              <table id="role-permissions-crud-table" class="mae-table mb-3">
+                <thead>
+                  <tr>
+                    <th colspan="6" class="text-right pb-3">
+                      {{!-- campo di ricerca  --}}
+                      <div class="input-group mr-2 pr-0 pt-2 col-md-4 float-right">
+                        <input type="search" placeholder="..." value={{this.filterText}} class="find-primary-key form-control form-control-sm" {{on 'input' this.insertFilter}}>
+                        <div class="input-group-append">
+                          <button class="btn btn-secondary btn-sm" disabled type="button">
+                            <i class="fa fa-search"></i>
+                          </button>
+                        </div>
+                        <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' (perform this.findRecords)}}>
+                          <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
+                        </button>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>ENTITÀ</th>
+                    <th>Nome entità</th>
+                    <th class="col-md-2 text-center">LETTURA</th>
+                    <th class="col-md-2 text-center">CREAZIONE</th>
+                    <th class="col-md-2 text-center">AGGIORNAMENTO</th>
+                    <th class="col-md-2 text-center">CANCELLAZIONE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each this.filteredEntities as | entity index |}}
+                  <tr data-entity="{{this.encode entity.entity}}">
+                    <td class="align-middle">
+                      <strong>{{entity.title}}</strong><br />
+                      <small>{{entity.description}}</small>
+                    </td>
+                    <td>
+                      <small class="opacity-5"><em>{{entity.entity}}</em></small>
+                    </td>
+                    <td class="text-center">
+                      <input checked={{this.isChecked entity.entity 'read'}} class="crud-perms form-check-input" type="checkbox" data-entity="{{this.encode entity.entity}}" data-operation="read" data-toggle="toggle" data-size="sm" data-onstyle="danger" data-offstyle="light" data-on="Sì" data-off="No">
+                    </td>
+                    <td class="text-center">
+                      <input disabled={{this.isDisabled entity.entity}} checked={{this.isChecked entity.entity 'create'}} class="crud-perms form-check-input" type="checkbox" data-entity="{{this.encode entity.entity}}" data-operation="create" data-toggle="toggle" data-size="sm" data-onstyle="danger" data-offstyle="light" data-on="Sì" data-off="No">
+                    </td>
+                    <td class="text-center">
+                      <input disabled={{this.isDisabled entity.entity}} checked={{this.isChecked entity.entity 'update'}} class="crud-perms form-check-input" type="checkbox" data-entity="{{this.encode entity.entity}}" data-operation="update" data-toggle="toggle" data-size="sm" data-onstyle="danger" data-offstyle="light" data-on="Sì" data-off="No">
+                    </td>
+                    <td class="text-center">
+                      <input disabled={{this.isDisabled entity.entity}} checked={{this.isChecked entity.entity 'delete'}} class="crud-perms form-check-input" type="checkbox" data-entity="{{this.encode entity.entity}}" data-operation="delete" data-toggle="toggle" data-size="sm" data-onstyle="danger" data-offstyle="light" data-on="Sì" data-off="No">
+                    </td>
+                  </tr>
+                  {{this.bootstrapToggle index}}
+                  {{/each}}
+                </tbody>
+              </table>
+              {{!-- #endregion --}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+
+      </div>
+
+      {{!-- #region Salvataggio  --}}
+      {{#if (not-eq this.currentRole '')}}
+        <div class="card-body text-right">
+          <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' this.save}}>
+            {{#if this.saveNewVoice.isRunning}}
+            <i class="fa fa-refresh fa-spin mr-2"></i>
+            {{/if}}
+            {{#if this.saveNewVoice.isIdle}}
+            <i class="fa fa-save mr-2"></i>
+            {{/if}}
+            SALVA
+          </button>
+        </div>
+      {{/if}}
+      {{!-- #endregion --}}
+    {{else}}
+    <div class="card">
+      <div class="card-body">
+        <div class="alert alert-danger fade show m-0" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Servizio non disponibile.
+            <a href="#" class="alert-link" {{on 'click' this.start}}>Riprova</a>.
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  {{/if}}
+</div>
+
+{{yield}}

@@ -1,0 +1,68 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceTotalAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isAdmin') (has-permissions 'isOwner')))}}
+    <div>
+      <div class="row underline">
+        <div class="col-md-4 p-3"></div>
+        <div class="col-md-4 p-3">
+          <b>APP</b>
+        </div>
+        <div class="col-md-4 p-3">
+          <b>WEB</b>
+        </div>
+      </div>
+
+      {{!-- manutenzione --}}
+      <div class="row underline">
+        <div class="col-md-4 p-3">
+          <label>Manutenzione attiva?</label>
+        </div>
+        <div class="col-md-4 p-3">
+            <select disabled={{this.maintenanceApp}} {{on 'change' (fn this.changeValue 'maintenanceAdmin' false)}} class="form-control col-md-4">
+                <option value="1" selected={{(eq this.recordCustomApp.maintenanceAdmin true)}}>Sì</option>
+                <option value="" selected={{(eq this.recordCustomApp.maintenanceAdmin false)}}>No</option>
+            </select>
+            <small class="form-text text-muted">Se attiva, l'accesso all'App non è consentito ed avviene un redirect ad un'apposita pagina di "manutenzione in corso"</small>
+            {{#if this.maintenanceApp}}
+            <small class="form-text text-danger">Non modificabile perchè è in corso la Manutenzione a livello Amministrativo</small>
+            {{/if}}
+        </div>
+        <div class="col-md-4 p-3 left-border">
+          <select disabled={{this.maintenanceWeb}} {{on 'change' (fn this.changeValue 'maintenanceAdmin' true)}} class="form-control col-md-4">
+              <option value="1" selected={{(eq this.recordCustomWeb.maintenanceAdmin true)}}>Sì</option>
+              <option value="" selected={{(eq this.recordCustomWeb.maintenanceAdmin false)}}>No</option>
+          </select>
+          <small class="form-text text-muted">Se attiva, l'accesso al sito web non è consentito ed avviene un redirect ad un'apposita pagina di "manutenzione in corso"</small>
+          {{#if this.maintenanceWeb}}
+            <small class="form-text text-danger">Non modificabile perchè è in corso la Manutenzione a livello Amministrativo</small>
+          {{/if}}
+        </div>
+      </div>
+
+      <div class="pt-5 text-right">
+        <button class="btn btn-shadow btn-hover-shine btn btn-primary btn-lg" disabled={{this.savedChanges}} {{on "click" (perform this.save)}} type="submit">
+          <i class="fa mr-2 {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+          SALVA
+        </button>
+      </div>
+    </div>
+  {{/if}}
+  {{#if (eq this.serviceTotalAvailable 'waiting')}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p>
+          <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+        </p>
+      </div>
+    </div>
+  {{/if}}
+  {{#if (eq this.serviceTotalAvailable 'unavailable')}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p>
+          <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+        </p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

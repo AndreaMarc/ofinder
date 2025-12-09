@@ -1,0 +1,145 @@
+<div class="ticket-area p-3" {{did-update (perform this.start) @lastRefresh}}>
+  {{#if (or (eq this.available 'waiting') this.start.isRunning)}}
+    <Standard::LoadingSpinner @icon='1' @msg="Caricamento in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+  {{else if (eq this.available 'unavailable')}}
+    <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+      Si è verificato un errore. <a href="#" class="ml-2" {{on 'click' (perform this.start)}}>Riprova.</a>
+    </Standard::LoadingSpinner>
+  {{else if (eq this.available 'available')}}
+    <div class="row m-0 mb-4">
+      <div class="col-12 text-right">
+        <button class="btn btn-sm btn-hover-shine btn-primary mb-2 mr-1" type="button" data-toggle="collapse" href="#ticket-area-add">
+          <i class="fa fa-plus-circle mr-2"></i>
+          AGGIUNGI REPARTO
+        </button>
+        <button class="btn btn-sm btn-hover-shine btn-secondary btn-icon-only mb-2" type="button" data-toggle="collapse" href="#ticket-area-info">
+          <i class="fa fa-info-circle"></i>
+        </button>
+      </div>
+
+      <div class="col-12 mb-3 collapse" id="ticket-area-info">
+        <div class="alert alert-secondary fade show mb-3" role="alert">
+          <strong>INFO:</strong> per una migliore fruibilità, puoi suddividere gli operatori in diversi Reparti (es: Reparto Marketing, reparto Vendite ecc).<br />In questa pagina puoi definire i Reparti che meglio rappresentano la tua azienda.
+        </div>
+      </div>
+
+      <div class="col-12 mb-3 collapse" id="ticket-area-add">
+        <div class="main-card mb-3 card">
+          <div class="card-body">
+            <div class="row">
+              {{#if this.auth.license.multiArea}}
+
+                <div class="col-12 col-md-6 mb-3">
+                  <div class="position-relative form-group">
+                    <label for="ticket-area-name">Nome del Reparto</label>
+                    <input {{on 'input' this.setNewName}} value={{this.newName}} id="ticket-area-name" type="text" class="form-control">
+                  </div>
+                </div>
+
+
+                <div class="col-12 col-md-6 mb-3">
+                  <div class="position-relative form-group">
+                    <label for="ticket-area-desc">Descrizione (facoltativa)</label>
+                    <Standard::TextareaAutosize @disabled="" @cb={{this.setNewNote}} @value={{this.newNote}} id="ticket-area-desc" @rows="1" @autosize="fixed"/>
+                  </div>
+                </div>
+
+                <div class="col-12 text-center">
+                  <button {{on 'click' (perform this.save)}} class="btn btn-hover-shine btn-success m-auto" type="button">
+                    <i class="fa {{if this.save.isRunning 'fa-spinner fa-spin' 'fa-save'}} mr-2"></i>
+                    SALVA
+                  </button>
+                </div>
+              {{else}}
+                <div class="col-12">
+                  <small class="form-text text-danger">La tua Licenza non consente di aggiungere Aree! <LinkTo @route="ticket-license" class="text-danger"><u>Espandi la tua licenza!</u></LinkTo></small>
+                </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="card main-card mb-3">
+        <div class="card-header">ELENCO DEI REPARTI</div>
+        <div class="card-body p-0">
+          {{#if (eq (length this.areas) 0)}}
+            <p class="m-4 text-danger">
+              <em>
+                Non sono presenti Reparti!
+              </em>
+            </p>
+          {{else}}
+            <ul class="list-group">
+              {{#each this.areas as | area |}}
+                <li class="list-group-item">
+                  <div class="widget-content p-0">
+                    <div class="widget-content-wrapper">
+                      <div class="widget-content-left pl-0 col-md-10">
+                        {{#if (eq area.id this.editingGuid)}}
+                          <div class="widget-heading">
+                            <em>Modifica reparto "{{area.name}}"</em>
+                          </div>
+                          <div class="widget-subheading">
+                            <div class="row">
+                              <div class="col-md-6">
+                                {{!-- template-lint-disable require-input-label --}}
+                                Nome:<br /><input {{on 'input' this.updateName}} value={{this.editRecord.name}} type="text" class="form-control form-control-sm mb-1">
+                              </div>
+                              <div class="col-md-6">
+                                Descrizione (facoltativa):<br /><Standard::TextareaAutosize @disabled="" @cb={{this.updateNote}} @value={{this.editRecord.note}} @rows="1" @autosize="fixed"/>
+                              </div>
+                            </div>
+                          </div>
+                        {{else}}
+                          <div class="widget-heading">{{sanitize-content area.name}}
+                            {{#if (eq area.operatorCount 0)}}
+                              <small class="text-warning ml-3">(0 operatori assegnati)</small>
+                            {{else}}
+                              <small class="opacity-5 ml-3">({{area.operatorCount}} operatori assegnati)</small>
+                            {{/if}}
+                          </div>
+                          <div class="widget-subheading">{{sanitize-content area.note}}</div>
+                        {{/if}}
+                      </div>
+                      <div class="widget-content-right col-md-2 pr-0 text-right">
+                        {{#if (eq this.editingGuid '')}}
+                          <div role="group" class="btn-group btn-group-sm">
+                            {{!-- edit button --}}
+                            <button {{on 'click' (fn this.modifyRecord area)}} type="button" class="btn btn-warning btn-shadow btn-hover-shine btn-icon-only">
+                              <i class="fa fa-edit"></i>
+                            </button>
+                            {{!-- delete button --}}
+                            {{#if area.erasable}}
+                              <button {{on 'click' (fn this.deleteArea area)}} type="button" class="btn btn-danger btn-shadow btn-hover-shine btn-icon-only">
+                                <i class="fa fa-trash"></i>
+                              </button>
+                            {{/if}}
+                          </div>
+                        {{else if (eq this.editingGuid area.id)}}
+                          <div role="group" class="btn-group btn-group-sm">
+                            {{!-- undo button --}}
+                            <button {{on 'click' (fn this.restoreRecord area)}} type="button" class="btn btn-success btn-shadow btn-hover-shine btn-icon-only">
+                              <i class="fa fa-undo"></i>
+                            </button>
+                            {{!-- save button --}}
+                            <button {{on 'click' (fn this.saveUpdatedRecord area)}} type="button" class="btn btn-warning btn-shadow btn-hover-shine btn-icon-only">
+                              <i class="fa fa-save"></i>
+                            </button>
+                          </div>
+                        {{/if}}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {{/each}}
+            </ul>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

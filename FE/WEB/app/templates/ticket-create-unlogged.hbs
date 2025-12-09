@@ -1,0 +1,20 @@
+<div class="app-container">
+    <div class="h-100">
+        <div class="h-100 no-gutters row">
+            <div class="d-flex bg-custom1 justify-content-center align-items-center col-md-12 {{this.loginAreaClass}} text-white">
+                <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-10 text-center">
+                    <div class="d-block d-sm-block d-md-none d-lg-none p-3"></div>
+                    <div class="app-logo2 mb-5 d-md-none d-lg-none"></div>
+                    <h2>
+                      CENTRO ASSISTENZA CLIENTI
+                    </h2>
+                    <Standard::BackButton class="pl-0 btn-link btn btn-sm text-custom2">Torna indietro</Standard::BackButton>
+                    <div class="text-dark">
+                      <Standard::Core::TicketCreate @classUnlogged="" @classLogged="" @tenantId="1"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{outlet}}

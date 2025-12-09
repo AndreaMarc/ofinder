@@ -1,0 +1,31 @@
+<div class="gdpr-block d-none">
+    <div class="gdpr-cont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="gdpr-text">{{this.message}}</div>
+                    <p class="mb-5">
+                        <small>
+                            <Standard::TR @key="component.gdpr.consult" @default="Consulta"/> <span class="link-style text-primary" {{on "click" this.read}}><Standard::TR @key="component.gdpr.privacyPolicy" @default="l'Informativa sulla Privacy"/></span> <Standard::TR @key="component.gdpr.moreDetails" @default="per maggiori dettagli"/>
+                        </small>
+                    </p>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <button test-none class="mb-3 btn-transition btn btn-outline-light btn-sm btn-block animated fadeInRight" type="button" {{on "click" (fn this.accept 'none')}}>
+                        <span><Standard::TR @key="component.gdpr.refuse" @default="Rifiuto"/></span>
+                    </button>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <button test-limited class="mb-3 btn-transition btn btn-outline-light btn-sm btn-block animated fadeInLeft" type="button" {{on "click" (fn this.accept 'limited')}}>
+                        <span><Standard::TR @key="component.gdpr.acceptPartial" @default="Accetto i soli cookie tecnici"/></span>
+                    </button>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <button test-all class="mb-3 btn-transition btn btn-outline-success btn-sm btn-block animated fadeInRight" type="button" {{on "click" (fn this.accept 'all')}}>
+                        <span><Standard::TR @key="component.gdpr.accept" @default="Accetto tutto"/></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

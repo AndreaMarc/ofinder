@@ -1,0 +1,174 @@
+<div {{did-update this.start @recordWeb @recordApp @serviceAvailable}} ...attributes>
+  {{#if (and (eq this.serviceAvailable 'available') (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
+  {{!-- maggiori informazioni --}}
+    <div class="card-shadow-info border mb-5 card card-body border-info p-0">
+      <div id="accordion" class="accordion-wrapper m-0 no-border">
+        <div class="card no-border">
+          <div id="headingOne" class="card-header">
+            <button type="button" data-toggle="collapse" data-target="#collapseOne1" aria-expanded="false" aria-controls="collapseOne" class="text-left m-0 p-0 btn btn-link btn-block">
+                <h5 class="m-0 p-0 text-info">Maggiori informazioni...</h5>
+            </button>
+          </div>
+          <div data-parent="#accordion" id="collapseOne1" aria-labelledby="headingOne" class="collapse">
+            <div class="card-body">
+              Nel menù 'Setup/Struttura traduzioni' viene definita una lista di coppie chiave-valore relative alle traduzioni, 
+              esempio {'welcome': 'benvenuto'}.
+              <br />
+              Se pensi che il sito potrebbe richiedere (anche in futuro) una gestione multi-lingua, tutti i testi e 
+              le frasi al suo interno dovrebbero essere inseriti tramite l'apposito componente di traduzione:
+              <br />
+              <em>&lt;Standard::TR @key="welcome" @default="Benvenuto!"/&gt;</em>.
+              <br /><br />
+              Tale componente estrae il valore di traduzione corrispondente alla chiave o, se non la trova, restituisce il 
+              valore di default. Inoltre, se l'utente cambia lingua, il componente sostituisce automaticamente tutte le 
+              parole e frasi nella lingua selezionata dall'utente.
+              <br /><br />
+              In questa pagina scegli quali lingue sono attive oltre alla lingua di default (italiano). Il componente di 
+              cambio lingua compare automaticamente (in header e footer) se attivi almeno due lingue.
+              <br /><br />
+              Quando attivi una nuova lingua, viene creata una nuova traduzione clonata dalla quella definita
+              in 'Setup/Struttura traduzioni'. Dovrai poi occuparti di tradurre manualmente i valori di ogni chiave 
+              tramite il menù 'Setup/Traduzioni', esempio: {'welcome': 'welcome'}.
+              <br /><br />
+              Ovviamente puoi inserire i testi nei tuoi html e javascript senza utilizzare il componente di traduzione 
+              ma è buona norma utilizzarlo così da predisporre il sito ad eventuali future traduzioni.
+              <br /><br />
+              Infine, puoi fornire accesso al menù 'Setup/Traduzioni' a gruppi di utenze specifiche (ad esempio 
+              l'ufficio Marketing) così da delegare a queste la possibilità di modificare i testi in autonomia. 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        {{#if this.numberActive}}
+          <div class="alert alert-success fade show" role="alert">Il servizio è attivo</div>
+        {{else}}
+          <div class="alert alert-warning fade show" role="alert">Il servizio non è attivo</div>
+        {{/if}}
+      </div>
+    </div>
+
+    <div class="row mb-3 pb-3 underline">
+      <div class="col-md-3">
+          <label for="lang_supported">Lingue supportate</label>
+          <small class="form-text text-muted">
+            Normativa <a href="https://www.iso.org/obp/ui/#search" target="_blank" rel="noopener noreferrer">ISO 3166-1-alpha-2</a>
+          </small>
+      </div>
+      
+      <div class="col-md-9">
+        
+        <div class="row single_lang mb-2" data-row="it">
+          <div class="col-md-1">
+              <label>Flag</label>
+          </div>
+          <div class="col-md-3">
+              <label>Codice lingua</label>
+          </div>
+          <div class="col-md-4">
+              <label>Label visualizzata</label>
+          </div>
+          <div class="col-md-2">
+              <label>Attiva?</label>
+          </div>
+          <div class="col-md-2">
+              <label>Opzioni</label>
+          </div>
+        </div>
+
+        {{#each this.availableLanguages as |lang|}}
+          <div class="row single_lang mb-2">
+            <div class="col-md-1">
+              <span class="language-icon opacity-8 flag large {{convertLangCode lang.code}} d-block"></span>
+            </div>
+            <div class="col-md-3">
+                <input type="text" maxlength="2" size="2" value="{{lang.code}}" class="lang lang_code form-control" disabled>
+            </div>
+            <div class="col-md-4">
+                <input type="text" value="{{lang.label}}" class="lang lang_label form-control" disabled>
+            </div>
+            <div class="col-md-2">
+                <input disabled={{if (eq lang.code 'it') true false}} checked={{if (eq lang.code 'it') true lang.active}} class="form-check-input lang-active" type="checkbox" data-toggle="toggle" data-code="{{lang.code}}" data-label="{{lang.label}}">
+            </div>
+            <div class="col-md-3text-right">
+                <button disabled={{if (eq lang.code 'it') 'disabled' ''}} class="lang_delete btn-hover-shine btn btn-danger mr-2" type="button" {{on 'click' (fn this.deleteLang lang.code lang.label)}}>
+                  <i class="fa {{if this.deleteLangConfirmed.isRunning 'fa-spinner fa-spin' 'fa-trash'}}" aria-hidden="true"></i>
+                </button>
+                {{#if (eq lang.code 'it')}}
+
+                  {{!-- clonazione lingua --}}
+                  <div class="dropdown d-inline-block">
+                      <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn btn-primary">
+                        <i class="fa {{if this.cloneConfirmed.isRunning 'fa-spinner fa-spin' 'fa-copy'}}"></i>
+                      </button>
+                      <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-xl dropdown-menu-right dropdown-menu-rounded">
+                          <div class="dropdown-menu-header">
+                              <div class="dropdown-menu-header-inner bg-secondary">
+                                  <div class="menu-header-image" style="background-image: url('assets/images/dropdown-header/abstract1.jpg');"></div>
+                                  <div class="menu-header-content">
+                                      <h5 class="menu-header-subtitle">Scegli la lingua</h5>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="scroll-area-lg">
+                            <div class="scrollbar-container ps--active-y">
+                              <div class="grid-menu grid-menu-3col">
+                                <div class="no-gutters row">
+                                  {{#each this.remainingLanguages as |remLang|}}
+                                    
+                                    <div class="col-sm-4 col-xl-4">
+                                        <button class="lang-choose-lang btn-icon-vertical btn-transition btn btn-outline-secondary" type="button" {{on 'click' (fn this.clone remLang.code remLang.label remLang.selectLabel)}}>
+                                            <span class="language-icon opacity-8 flag large {{convertLangCode remLang.code}} d-block mb-2"></span>
+                                            {{remLang.selectLabel}}
+                                        </button>
+                                        <p class="opacity-5 text-center m-0"><small>{{remLang.selectNations}}</small></p>
+                                    </div>
+                                    
+                                  {{/each}}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+
+                {{/if}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="row">
+      {{!-- salvataggio --}}
+      <div class="col-md-12 pt-5 text-right">
+        <button disabled={{this.savedChanges}} class="btn btn-shadow btn-hover-shine btn-primary btn-lg" {{on "click" (perform this.saveLangs)}} type="submit">
+          <i class="fa mr-2 {{if this.saveLangs.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+          SALVA
+        </button>
+      </div>
+    </div>
+{{/if}}
+{{#if (eq this.serviceAvailable 'waiting')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-info"><i class="fa fa-spin fa-spinner"></i> attendere prego...</em>
+      </p>
+    </div>
+  </div>
+{{/if}}
+{{#if (eq this.serviceAvailable 'unavailable')}}
+  <div class="row">
+    <div class="col-md-12 text-center pt-4">
+      <p>
+        <em class="text-danger">Il servizio non è al momento disponibile. Ricaricare la pagina!</em>
+      </p>
+    </div>
+  </div>
+{{/if}}
+</div>
+{{yield}}

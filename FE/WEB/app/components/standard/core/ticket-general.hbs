@@ -1,0 +1,165 @@
+<div class="ticket-general" ...attributes>
+  {{!-- Caricamento in corso --}}
+  {{!-- template-lint-disable no-inline-styles --}}
+  {{!-- template-lint-disable no-invalid-interactive --}}
+  {{#if (eq this.serviceAvailable 'waiting')}}
+    <div class="p-3">
+      <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info mb-4" />
+    </div>
+
+  {{!-- Errore di inizializzazione --}}
+  {{else if (eq this.serviceAvailable 'unavailable')}}
+    <div class="p-3">
+      <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger mb-4">
+        {{this.error}} <a href="#" {{on 'click' (perform this.start)}}>Riprova.</a>
+      </Standard::LoadingSpinner>
+    </div>
+
+  {{else if (not this.ticketInfo.settings.ticketActive)}}
+    {{!-- SERVIZIO TICKET NON ATTIVO IN SETUP --}}
+    <div class="p-3">
+      <Standard::LoadingSpinner @icon="" @msg="Il servizio di Assistenza Clienti non è attivo." @style="3" class="alert-warning mt-5 text-center" />
+    </div>
+
+  {{else if (not this.ticketTenantEnabled)}}
+    {{!-- LICENZA SCADUTA --}}
+    <div class="p-3">
+      <Standard::LoadingSpinner @icon="" @msg={{this.ticketUnableMessage}} @style="3" class="alert-warning mt-5 text-center" />
+    </div>
+
+  {{else if (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper') (has-permissions 'isTicketManagement') (has-permissions 'isTicketEnabled'))}}
+
+    {{!-- Servizio disponibile --}}
+    {{#if (eq this.serviceAvailable 'available')}}
+      <div class="app-inner-layout">
+        {{!-- intestazione --}}
+        <div class="app-inner-layout__header bg-heavy-rain">
+          <div class="app-page-title">
+            <div class="page-title-wrapper">
+              <div class="page-title-heading mb-3">
+                <div class="page-title-icon">
+                  <i class="pe-7s-help2 icon-gradient {{this.getBgColor}}"></i>
+                </div>
+                <div>
+                  Centro Assistenza Clienti - Amministrazione
+                  <div class="page-title-subheading">
+                    {{#if (or (eq this.ticketMode 'all') this.unlimitedService)}}
+                      Gestisci le richieste di assistenza dei Clienti.
+                    {{else}}
+                    <span class={{this.alertClass}}>
+                        La Licenza d'Uso dei ticket scade il
+                        {{convertdate2 this.expirationDate '' 'it'}}
+                      </span>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="page-title-actions mt-0">
+                {{!-- SELEZIONE TAB --}}
+                <div class="dropdown d-inline-block">
+                  <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="dropdown-toggle btn btn-wide btn-shine-hover {{this.getBtnBg}}">
+                    <span class="mr-2">
+                      {{this.activeTabName}}
+                    </span>
+                    {{#if this.alarmExists}}
+                      <span class="badge badge-danger badge-dot badge-dot-lg icon-anim-pulse"> </span>
+                    {{/if}}
+                  </button>
+                  <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-xl dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-menu-header">
+                      <div class="dropdown-menu-header-inner {{this.getDropdownBg}}">
+                        <div class="menu-header-image opacity-1" style="background-image: url('assets/images/dropdown-header/abstract5.jpg');"></div>
+                        <div class="menu-header-content">
+                          <h5 class="menu-header-title">Menù Ticket</h5>
+                          <h6 class="menu-header-subtitle">scegli la voce di tuo interesse</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="grid-menu grid-menu-3col">
+                      <div class="no-gutters row">
+                        {{#each this.tabListTraked as | tab |}}
+                          {{#if tab.id}}
+                            <div class="col-sm-6 col-xl-4">
+                              {{#if (and tab.activeLicense tab.activeCustom)}}
+                                <button {{on 'click' (fn this.changeTab tab.id tab.label tab.icon)}} class="btn-icon-vertical btn-transition btn {{if (eq this.activeTab tab.id) (concat "btn-" this.getColorOnly) 'btn-outline-secondary'}}" type="button">
+                                  {{#if (and tab.icon (not-eq tab.icon ''))}}
+                                    <i class="{{tab.icon}} btn-icon-wrapper"></i>
+                                  {{/if}}
+                                  <span>{{tab.label}}</span>
+                                  {{#if tab.alarm}}
+                                    <span class="badge badge-danger badge-dot badge-dot-inside icon-anim-pulse"> </span>
+                                  {{/if}}
+                                </button>
+                              {{else}}
+                                {{!-- bottone non attivo xchè opzione non attiva o licenza non acquistata --}}
+                                <button {{on 'click' (fn this.changeTabUnabled tab.activeLicense tab.activeCustom tab.label)}} class="btn-icon-vertical btn bordered btn-lighte" type="button">
+                                  {{#if (and tab.icon (not-eq tab.icon ''))}}
+                                    <i class="{{tab.icon}} btn-icon-wrapper opacity-2"></i>
+                                  {{/if}}
+                                  <span class="opacity-4">{{tab.label}}</span>
+                                </button>
+                              {{/if}}
+                            </div>
+                          {{else}}
+                            <div class="col-sm-6 col-xl-4"></div>
+                          {{/if}}
+                        {{/each}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button {{on 'click' (perform this.start)}} class="btn btn-light btn-hover-shine btn-icon-only ml-2" type="button">
+                  <i class="fa {{if this.start.isRunning 'fa-spinner fa-spin' 'fa-refresh'}}"></i>
+                </button>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- CONTENUTO --}}
+        <div>
+          {{#if (eq this.activeTab 'ticket-management')}}
+            {{!-- Lista e gestione ticket --}}
+            <Standard::Core::TicketManagement @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @changeTab={{this.changeTab}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-areas')}}
+            {{!-- Reparti --}}
+            <Standard::Core::TicketArea @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-roles')}}
+            {{!-- Ruoli --}}
+            <Standard::Core::TicketRoles @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-operators')}}
+          {{!-- Operatori --}}
+            <Standard::Core::TicketOperators @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-scopes')}}
+            {{!-- Ambiti --}}
+            <Standard::Core::TicketScopes @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-tag')}}
+            <Standard::Core::TicketTags @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-tracker')}}
+            <Standard::Core::TicketCustomSetup @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}}/>
+          {{else if (eq this.activeTab 'ticket-sla')}}
+            <Standard::Core::TicketCustomSetup @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{else if (eq this.activeTab 'ticket-setup')}}
+            <Standard::Core::TicketCustomSetup @lastRefresh={{this.lastRefresh}} @updateSubComponent={{this.updateSubComponent}} @auth={{this.ticketInfo}}/>
+          {{/if}}
+        </div>
+
+      </div>
+    {{/if}}
+
+  {{else}}
+    {{!-- PERMESSI DI ACCESSO MANCANTI --}}
+    <div class="row">
+      <div class="col-md-12 text-center pt-4">
+        <p>
+          <em class="text-danger">Non hai i permessi necessari per accedere!</em>
+        </p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

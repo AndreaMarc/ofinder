@@ -1,0 +1,16 @@
+<div class="app-container fixed-footer app-theme-white">
+    <div class="unlogged-language-area">
+        <Standard::Core::ChooseLanguage @position="unlogged"/>
+    </div>
+    <div class="h-100">
+        <div class="h-100 no-gutters row">
+            <div class="d-lg-block col-12">
+                <div class="unlogged-slider-cont">
+                  <LoginSlider @page="login"/>
+                </div>
+                <ArchitectUi::AppFooter::AppUnloggedFooter/>
+            </div>
+            <Standard::Core::Gdpr/>
+        </div>
+    </div>
+</div>

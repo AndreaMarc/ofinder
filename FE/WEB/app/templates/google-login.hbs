@@ -1,0 +1,36 @@
+<div class="google-login">
+  <div class="app-container">
+      <div class="h-100">
+          <div class="h-100 no-gutters row">
+              <div class="d-flex bg-white justify-content-center align-items-center col-md-12">
+                  <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-8 text-center">
+                      <div class="d-block d-sm-block d-md-none d-lg-none p-3"></div>
+                      <div class="app-logo m-auto"></div>
+                      {{#if (eq this.state 'waiting')}}
+                        <h4 class="mt-5 mb-0">
+                            <span class="d-block mb-3">
+                                <i class="fa fa-spinner fa-spin mr-2"></i> Attendere prego.
+                            </span>
+                            <span>
+                                Stiamo verificando i permessi di accesso...
+                            </span>
+                        </h4>
+                      {{else if (eq this.state 'error')}}
+                        <h4 class="text-danger">
+                          {{this.errorMessage}}
+                        </h4>
+                        <p>
+                          <LinkTo @route="login" class="ml-2">Torna al login.</LinkTo>
+                        </p>
+                      {{else}}
+                        <h4 class="mt-5 mb-0">
+                          <span>Autenticazione riuscita, attendere prego...</span>
+                        </h4>
+                      {{/if}}
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+{{outlet}}

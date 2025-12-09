@@ -1,0 +1,16 @@
+<ArchitectUi::AppMain::AppPageTitle @title="Home" @titleKey="template.loggedHome.title" @description="Personalizza la home-page!" @icon="fa fa-home"> {{!-- @descriptionKey="template.loggedHome.subTitle" --}}
+  {{#if (eq this.environment 'development')}}
+    <button class="mt-1 btn btn-danger" type="button">DEV {{if this.isApp 'APP' ''}} Environment <span class="opacity-4">{{this.appVersion}}</span></button>
+  {{else if (eq this.environment 'test')}}
+    <button class="mt-1 btn btn-warning" type="button">TEST {{if this.isApp 'APP' ''}} Environment <span class="opacity-4">{{this.appVersion}}</span></button>
+  {{else if this.isApp}}
+    <small class="opacity-4"><em>{{this.appVersion}}</em></small>
+  {{/if}}
+</ArchitectUi::AppMain::AppPageTitle>
+
+<div class="row">
+  <div class="col-12">
+    Personalizza la home-page come vuoi!
+  </div>
+</div>
+{{outlet}}

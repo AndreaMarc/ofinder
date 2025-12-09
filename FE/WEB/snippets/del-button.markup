@@ -1,0 +1,8 @@
+<div class="input-group">
+  <input id="myId" type="text" class="form-control form-control-sm">
+  <div class="input-group-append">
+    <button class="clearButton btn btn-sm btn-outline-secondary" type="button" data-ref="#myId">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>

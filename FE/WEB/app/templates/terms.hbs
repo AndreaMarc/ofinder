@@ -1,0 +1,30 @@
+<div class="app-container">
+    <div class="h-100">
+        <div class="h-100 no-gutters row">
+            <div class="d-none d-lg-block col-lg-4">
+                {{#if this.leftSlider}}
+                    <Standard::Core::LoginSlider @page="terms"/>
+                {{/if}}
+            </div>
+            <div class="h-100 d-flex bg-white justify-content-center align-items-center col-md-12 {{this.loginAreaClass}}">
+                <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-9">
+                    <div class="app-logo"></div>
+                    <p>
+                        <Standard::TR @key="template.terms.return" @default="Torna"/>
+                        <a href="javascript:window.history.back();" class="text-primary">
+                            <Standard::TR @key="template.terms.backwards" @default="indietro"/>
+                        </a>
+                    </p>
+                    <div class="divider row mb-3"></div>
+                    <Standard::Core::TermsConditions @code={{@model.legalCode}}/>
+                </div>
+            </div>
+            <div class="d-none d-lg-block col-lg-4">
+                {{#if this.rightSlider}}
+                    <Standard::Core::LoginSlider @page="terms"/>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+{{outlet}}

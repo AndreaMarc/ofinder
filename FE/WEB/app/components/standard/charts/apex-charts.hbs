@@ -1,0 +1,8 @@
+<div class="apex-charts" ...attributes {{did-update this.renderChart @options}}>
+  {{#if (eq this.error '')}}
+    <div id="{{this.chartId}}" {{did-insert this.renderChart}}></div>
+  {{else}}
+    <p class="text-danger"><em>{{this.error}}</em></p>
+  {{/if}}
+</div>
+{{yield}}

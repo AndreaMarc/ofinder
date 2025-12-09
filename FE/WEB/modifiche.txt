@@ -1,0 +1,1 @@
+npm install --save-dev bootstrap (guida: https://blog.davideferrero.com/2021/06/ember-boostrap-5/)

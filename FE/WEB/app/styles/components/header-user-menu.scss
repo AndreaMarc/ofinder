@@ -1,0 +1,15 @@
+.header-user-menu {
+  .image-toggle {
+    display: flex;
+    align-items: center;
+  }
+  .logo-container {
+    width: 42px;
+    height: 42px;
+    display: inline-block;
+  }
+
+  .menu-header-image{
+    background-image: url('/assets/images/dropdown-header/abstract1.jpg');
+  }
+}

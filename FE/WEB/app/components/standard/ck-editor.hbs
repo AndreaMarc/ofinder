@@ -1,0 +1,11 @@
+<div class="ckeditor-component" {{did-update this.start @reload}} ...attributes> {{!--   --}}
+  {{#if this.available}}
+  <textarea id={{this.element}} class="form-control" value={{this.defaultValue}} {{did-insert this.start}}></textarea>
+  {{else}}
+    <p class="text-danger">
+      <i class="fa fa-fa-exclamation-triangle"></i> 
+      <em>Errore nella configurazione della callback per ck-editor!</em>
+    </p>
+  {{/if}}
+</div>
+{{yield}}

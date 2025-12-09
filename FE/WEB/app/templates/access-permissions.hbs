@@ -1,0 +1,39 @@
+<div>
+  <div class="not-found-logged d-flex justify-content-center align-items-center col-md-12 col-lg-12">
+    <div class="mx-auto app-login-box col-sm-12 col-md-12 col-lg-12 text-center p-3 pt-5">
+      <div class="mb-5 pb-3 underline">
+        <h4>
+          <div class="d-block mb-4">RICHIESTA DI REGISTRAZIONE</div>
+        </h4>
+        {{#if (eq this.available 'waiting')}}
+          <Standard::LoadingSpinner @icon="true" @msg="Attendere prego..." @style="3" class="alert-info" />
+        {{else if (eq this.available 'unavailable')}}
+          <Standard::LoadingSpinner @icon="" @style="3" class="alert-danger">
+            {{this.error}} 
+          </Standard::LoadingSpinner>
+          {{#if this.resend}}
+            <button class="btn btn-hover-shine btn-secondary mr-3" type="button" {{on 'click' this.sendAgain}}>INVIA UN NUOVO LINK</button>
+          {{/if}}
+        {{else}}
+          <h4 class="mb-5">
+            <span>
+              Confermi la registrazione presso l'azienda <span class="text-primary">{{this.record.tenant.name}}</span>?
+            </span>
+          </h4>
+          <button class="btn btn-hover-shine btn-secondary mr-3" type="button" {{on 'click' (fn this.sendResult false)}}>RIFIUTA</button>
+          <button class="btn btn-hover-shine btn-primary" type="button" {{on 'click' (fn this.sendResult true)}}>ACCETTA</button>
+        {{/if}}
+      </div>
+      <div class="opacity-4 pl-5 pr-5">
+        <p class="mb-2"><strong>COSA STO VEDENDO?</strong></p>
+        <p>
+          Il tuo profilo risulta registrato presso una delle aziende di questo portale.<br />
+          Per proteggere la tua privacy non consentiamo alle altre aziende 
+          del sito di accedere ai tuoi dati senza la tua esplicita autorizzazione.<br />
+          In questa pagina decidi se confermare la registrazione all'azienda richiedente.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{{outlet}}

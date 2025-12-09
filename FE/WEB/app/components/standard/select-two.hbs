@@ -1,0 +1,8 @@
+<select id={{this.selectId}} class="form-control" {{did-update (perform this.start) @addEmptyOption @options}} ...attributes>
+  {{!--
+  {{#each this.optionsList as |item|}}
+    <option value={{item.key}}>{{item.value}}</option>
+  {{/each}}
+  --}}
+</select>
+{{yield}}

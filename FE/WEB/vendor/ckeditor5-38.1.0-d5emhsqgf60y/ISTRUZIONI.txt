@@ -1,0 +1,17 @@
+PER CREARE NUOVI PLUGIN CUSTOM o
+PER MODIFICARE LA CONFIGURAZIONE DELL'EDITOR:
+
+è necessario rifare la build del pacchetto. Qui le istruzioni.
+
+Rispetto alla cartella corrente (ckeditor5-38.1.0-d5emhsqgf60y):
+
+1) crea il file javascript del plugin in src/plugins (prendi spunto dagli altri file già presenti)
+2) modifica il file src/ckeditor.js aggiungendone l'importazione, es:
+    import PluginUserName from '../src/plugins/plugin-user-name.js';
+3) apri un terminale nella cartella corrente (ckeditor5-38.1.0-d5emhsqgf60y) ed esegui il comando:
+    yarn run build
+
+
+Se la build avviene con successo, il plugin viene automaticamente inserito nella build finale
+(cartella ckeditor5-38.1.0-d5emhsqgf60y/build/ckeditor.js) ed è quindi immediatamente disponibile 
+nell'applicativo ember.

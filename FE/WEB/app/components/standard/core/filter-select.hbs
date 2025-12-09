@@ -1,0 +1,44 @@
+<div class="input-group" {{did-update this.update @disabled}} ...attributes>
+  {{#if (eq this.inputType 'boolean')}}
+    <input disabled={{this.disabled}} type="checkbox" {{on 'click' this.changeValue}} checked={{this.defaultValue}} class="form-control {{if this.smallSize 'form-control-sm'}}">
+  {{else}}
+
+    {{#if (eq this.inputType 'string')}}
+      <Standard::TextareaAutosize @size={{if this.smallSize 'sm'}} @rows="1" @autosize={{this.autosize}} @value={{this.defaultValue}} disabled={{this.disabled}} @cb={{this.changeValue}}/>
+    {{else if (eq this.inputType 'date')}}
+      <input {{on 'input' this.changeValue}} disabled={{this.disabled}} type="date" value={{this.defaultValue}} class="form-control {{if this.smallSize 'form-control-sm'}}">
+    {{else if (eq this.inputType 'number')}}
+      <input {{on 'input' this.changeValue}} disabled={{this.disabled}} type="number" step="0.01" value={{this.defaultValue}} class="form-control {{if this.smallSize 'form-control-sm'}}">
+    {{else}}
+      <Standard::TextareaAutosize @size={{if this.smallSize 'sm'}} @rows="1" @autosize={{this.autosize}} @value={{this.defaultValue}} @type={{this.inputType}} disabled={{this.disabled}} @cb={{this.changeValue}}/>
+    {{/if}}
+
+    <div class="input-group-append">
+      <div role="group" class="filter-select btn-group">
+
+        <button disabled={{this.disabled}} class="btn {{if this.smallSize 'btn-sm'}} btn-light bg-white btn-icon-only" type="button" {{on 'click' this.emptyValue}}>
+          <i class="fa fa-times opacity-5"></i>
+        </button>
+        <select disabled={{this.disabled}} {{on 'change' this.changeFilterType}} value={{this.filterType}} class="form-control {{if this.smallSize 'form-control-sm'}}">
+          <option value="equals" selected>=</option>
+          <option value="not-equals">&ne;</option>
+          {{#if (or (eq this.inputType 'number') (eq this.inputType 'date'))}}
+            <option value="lessThan">&lt;</option>
+            <option value="lessOrEqual">&le;</option>
+            <option value="greaterThan">&gt;</option>
+            <option value="greaterOrEqual">&ge;</option>
+          {{/if}}
+          {{#if (eq this.inputType 'string')}}
+          <option value="contains">&sub;</option>
+          {{/if}}
+        </select>
+        <select disabled={{this.disabled}} {{on 'change' this.changeOrder}} value={{this.order}} class="form-control {{if this.smallSize 'form-control-sm'}}">
+          <option value="" selected>&#8645;</option>
+          <option value="{{this.column}}">&uarr;</option>
+          <option value="-{{this.column}}">&darr;</option>
+        </select>
+      </div>
+    </div>
+  {{/if}}
+</div>
+{{yield}}

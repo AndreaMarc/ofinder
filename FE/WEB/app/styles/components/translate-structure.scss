@@ -1,0 +1,65 @@
+.translate-structure {
+
+  input, textarea {
+    background: #ffffff;
+    border-radius: 0;
+  }
+  textarea.old-value {
+    border-top: none;
+    background: #eeeeee !important;
+    cursor: default !important;
+  }
+  input:disabled, textarea:disabled {
+    background: #f4f4f4;
+    cursor: not-allowed;
+  }
+
+  .json-table > tbody > tr:hover {
+    box-shadow: inset 0px 0px 6px 1px #c5d3f6; /* #3f6ad8;*/
+  }
+
+  .json-table {
+    width: calc(100% - 30px);
+    margin: 1em 0 1em 25px;
+    color: #555555;
+
+    thead > tr > th {
+      font-weight: 200;
+      font-size: 70%;
+      padding: 2px 4px;
+    }
+
+    
+
+    tbody > tr:not(:last-of-type) {
+      border-bottom: 1px solid #e7eaee;
+    }
+
+    tbody > tr > td {
+      padding: 5px 4px;
+      vertical-align: top;
+    }
+  }
+
+  .json-sub-table {
+    width: 100%;
+
+    thead > tr > th {
+      font-weight: 200;
+      font-size: 70%;
+      padding: 2px 4px 0;
+    }
+  
+    tbody > tr > td {
+      font-weight: 200;
+      font-size: 70%;
+      padding: 3px 4px 4px;
+
+      p {
+        font-weight: 400;
+        font-size: 136%;
+      }
+    }
+  }
+  
+}

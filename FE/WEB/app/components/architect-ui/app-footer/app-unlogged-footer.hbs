@@ -1,0 +1,14 @@
+<div class="unlogged-wrapper-footer">
+  <div class="unlogged-footer row">
+
+    {{#if this.showRegistration}}
+    <div class="unlogged-footer-btn col">
+      <LinkTo @route="registration">REGISTRATI</LinkTo>
+    </div>
+    {{/if}}
+    <div class="unlogged-footer-btn col">
+      <LinkTo @route="login">ACCEDI</LinkTo>
+    </div>
+
+  </div>
+</div>
