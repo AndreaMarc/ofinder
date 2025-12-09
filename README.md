@@ -212,6 +212,57 @@ This framework follows **specific conventions that take priority over standard E
 * Custom query builder for EmberData queries
 * Specific file naming and organization conventions
 
+### Critical Framework Directives
+
+**1. NO COOKIES - Use localStorage Instead**
+
+**NEVER use browser cookies for client-side data storage.** Cookies are difficult to manage in Cordova mobile apps and can cause inconsistencies between web and mobile versions.
+
+**Always use `localStorage` for:**
+- User preferences
+- Client-side flags (e.g., age verification, onboarding status)
+- Cached data
+- Session-related client state
+
+**Example:**
+```javascript
+// ❌ WRONG - Do NOT use cookies
+this.cookies.write('age-verified', 'true');
+
+// ✅ CORRECT - Use localStorage
+localStorage.setItem('age-verified', 'true');
+const ageVerified = localStorage.getItem('age-verified');
+```
+
+**2. Legal Documents System**
+
+The framework includes a built-in system for managing legal documents (Privacy Policy, Terms & Conditions):
+
+* Model: `legal-term` with versioning, multi-language support, and activation dates
+* Component: `<Standard::Core::TermsConditions @code="privacyPolicy" />` or `@code="termsEndConditions"`
+* Route: `/terms/:legal_code` (e.g., `/terms/privacyPolicy`)
+* Backend-managed content with HTML support
+
+**Do NOT create separate privacy-policy or terms-of-service routes.** Use the existing `/terms/:legal_code` system.
+
+**3. External Libraries**
+
+* NO auto-import for external libraries
+* All external libraries must be manually imported in `ember-cli-build.js`
+* This policy discourages arbitrary library installation and ensures explicit dependency management
+
+**4. Forms and Modals**
+
+* NO forms inside modals (SweetAlert2 should only be used for confirmations)
+* Use dedicated pages or components for forms
+* Mobile-first approach: full-page forms work better on small screens
+
+**5. Styling**
+
+* Prefer ArchitectUI/Bootstrap classes over custom SCSS
+* Only write custom SCSS when strictly necessary
+* Maintain consistency with the existing theme
+
 **Please refer to FE FWK DOCS v1.1 20240530.pdf for complete code standards and conventions.**
 
 ## Deploying
