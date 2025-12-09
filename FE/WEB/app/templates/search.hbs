@@ -4,19 +4,19 @@
 <div class="app-page-title ofinder-gradient-header">
   <div class="page-title-wrapper">
     <div class="page-title-heading">
-      <div class="page-title-icon">
+      <div class="page-title-icon d-none d-md-flex">
         <i class="fa fa-search"></i>
       </div>
       <div>
         <div class="page-title-head">
           OFINDER
-          {{#unless @model.isLoggedIn}}
-            <span class="ofinder-badge-new ml-2">Guest Mode</span>
-          {{/unless}}
         </div>
         <div class="page-title-subheading">
-          Cerca e scopri i migliori content creator su OnlyFans, Fansly e altre
-          piattaforme
+          Cerca e scopri i migliori
+          <span class="ofinder-highlight-text">performer</span>
+          e
+          <span class="ofinder-highlight-text">cam-girl</span>
+          su OnlyFans, Fansly e altre piattaforme
         </div>
       </div>
     </div>
@@ -66,9 +66,9 @@
         @onFilterChange={{this.handleFilterChange}}
       />
 
-      {{!-- Info Box for Guest Users --}}
+      {{!-- Info Box for Guest Users (solo desktop) --}}
       {{#unless @model.isLoggedIn}}
-        <div class="card ofinder-shadow ofinder-rounded mt-4">
+        <div class="card ofinder-shadow ofinder-rounded mt-4 d-none d-md-block">
           <div class="card-body text-center">
             <i class="fa fa-lock fa-3x ofinder-text-primary mb-3"></i>
             <h6 class="ofinder-heading-sm">Accedi per più funzionalità</h6>
@@ -93,7 +93,6 @@
     <div class="col-md-9">
       {{!-- Search Bar --}}
       <SearchBar
-        @placeholder="Cerca performer per nome, categoria o piattaforma..."
         @quickFilters={{@model.quickFilters}}
         @onSearch={{this.handleSearch}}
         @onFilterToggle={{this.handleQuickFilterToggle}}

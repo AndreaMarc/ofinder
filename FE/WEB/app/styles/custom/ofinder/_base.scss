@@ -68,6 +68,12 @@ p, span, div {
   color: $ofinder-gray-100 !important;
 }
 
+// Highlight text (for keywords like "performer", "cam-girl")
+.ofinder-highlight-text {
+  color: $ofinder-accent !important; // Gold color
+  font-weight: 600;
+}
+
 // Form controls for dark theme
 .form-control {
   background-color: $ofinder-dark-surface;

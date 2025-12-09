@@ -2,8 +2,8 @@
 <div class="search-bar-container mb-4" ...attributes>
   {{!-- Input Group principale --}}
   <div class="input-group input-group-lg ofinder-shadow-sm ofinder-rounded">
-    {{!-- Icona Search --}}
-    <div class="input-group-prepend">
+    {{!-- Icona Search (solo desktop) --}}
+    <div class="input-group-prepend d-none d-md-flex">
       <span class="input-group-text bg-white border-0">
         <i class="fa fa-search ofinder-text-primary"></i>
       </span>
@@ -13,7 +13,7 @@
     <input
       type="text"
       class="form-control border-0"
-      placeholder={{this.placeholder}}
+      placeholder={{this.responsivePlaceholder}}
       value={{this.searchQuery}}
       {{on "input" this.handleInput}}
       {{on "keydown" this.handleKeydown}}
@@ -25,9 +25,10 @@
         type="button"
         class="btn btn-ofinder-secondary"
         {{on "click" this.toggleFilters}}
+        title="Apri/Chiudi pannello filtri avanzati"
       >
-        <i class="fa fa-filter mr-2"></i>
-        Filtri
+        <i class="fa fa-filter"></i>
+        <span class="d-none d-md-inline ml-2">Filtri</span>
         {{#if this.activeFiltersCount}}
           <span class="badge badge-light ml-2">{{this.activeFiltersCount}}</span>
         {{/if}}
