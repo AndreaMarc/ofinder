@@ -1,0 +1,65 @@
+{{!-- SearchBar Component Template --}}
+<div class="search-bar-container mb-4" ...attributes>
+  {{!-- Input Group principale --}}
+  <div class="input-group input-group-lg ofinder-shadow-sm ofinder-rounded">
+    {{!-- Icona Search --}}
+    <div class="input-group-prepend">
+      <span class="input-group-text bg-white border-0">
+        <i
+          class="pe-7s-search ofinder-text-primary"
+          style="font-size: 24px;"
+        ></i>
+      </span>
+    </div>
+
+    {{!-- Input field --}}
+    <input
+      type="text"
+      class="form-control border-0"
+      placeholder={{this.placeholder}}
+      value={{this.searchQuery}}
+      {{on "input" this.handleInput}}
+      {{on "keydown" this.handleKeydown}}
+    />
+
+    {{!-- Bottone Filtri Avanzati --}}
+    <div class="input-group-append">
+      <button
+        type="button"
+        class="btn btn-ofinder-secondary"
+        {{on "click" this.toggleFilters}}
+      >
+        <i class="pe-7s-filter mr-2"></i>
+        Filtri
+        {{#if this.activeFiltersCount}}
+          <span class="badge badge-light ml-2">{{this.activeFiltersCount}}</span>
+        {{/if}}
+      </button>
+    </div>
+  </div>
+
+  {{!-- Filtri Rapidi (chips) --}}
+  {{#if this.quickFilters}}
+    <div class="mt-3 d-flex flex-wrap align-items-center" style="gap: 0.5rem;">
+      <span class="text-muted">Filtri rapidi:</span>
+
+      {{#each this.quickFilters as |filter|}}
+        <button
+          type="button"
+          class="btn btn-sm {{if
+            (this.isFilterActive filter.id)
+            'btn-ofinder-primary'
+            'btn-outline-secondary'
+          }} ofinder-rounded-sm"
+          {{on "click" (fn this.toggleQuickFilter filter)}}
+        >
+          {{filter.icon}}
+          {{filter.label}}
+          {{#if (this.isFilterActive filter.id)}}
+            <i class="pe-7s-close-circle ml-1"></i>
+          {{/if}}
+        </button>
+      {{/each}}
+    </div>
+  {{/if}}
+</div>

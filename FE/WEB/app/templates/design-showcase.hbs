@@ -1,0 +1,264 @@
+{{!-- Design Showcase Template --}}
+<div class="app-main__outer">
+  <div class="app-main__inner">
+    {{!-- Page Title --}}
+    <div class="app-page-title">
+      <div class="page-title-wrapper">
+        <div class="page-title-heading">
+          <div class="page-title-icon">
+            <i class="pe-7s-paint-bucket icon-gradient bg-mean-fruit"></i>
+          </div>
+          <div>
+            OFinder - Design System Showcase
+            <div class="page-title-subheading">
+              Preview di tutti i componenti base con dati mockati
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Section 1: Rating Stars --}}
+    <div class="mb-5">
+      <div class="card ofinder-shadow ofinder-rounded">
+        <div class="card-header ofinder-bg-gradient-primary">
+          <h5 class="text-white mb-0">
+            <i class="pe-7s-star mr-2"></i>
+            1. Rating Stars Component
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="ofinder-text-muted mb-4">
+            Componente per visualizzare rating con stelle, voto numerico e
+            conteggio recensioni. Disponibile in 3 dimensioni: sm, md, lg.
+          </p>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <div class="p-3 ofinder-bg-light ofinder-rounded">
+                <p class="ofinder-text-sm font-weight-bold mb-2">Size: Small</p>
+                <RatingStars @rating={{5.0}} @reviewCount={{127}} @size="sm" />
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="p-3 ofinder-bg-light ofinder-rounded">
+                <p class="ofinder-text-sm font-weight-bold mb-2">Size: Medium
+                  (default)</p>
+                <RatingStars @rating={{4.3}} @reviewCount={{89}} @size="md" />
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="p-3 ofinder-bg-light ofinder-rounded">
+                <p class="ofinder-text-sm font-weight-bold mb-2">Size: Large</p>
+                <RatingStars @rating={{3.7}} @reviewCount={{45}} @size="lg" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <RatingStars @rating={{4.8}} @size="sm" />
+            </div>
+            <div class="col-md-4">
+              <RatingStars @rating={{2.5}} @reviewCount={{12}} />
+            </div>
+            <div class="col-md-4">
+              <RatingStars @rating={{1.2}} @reviewCount={{3}} @size="sm" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Section 2: Channel Badges --}}
+    <div class="mb-5">
+      <div class="card ofinder-shadow ofinder-rounded">
+        <div class="card-header ofinder-bg-gradient-secondary">
+          <h5 class="text-white mb-0">
+            <i class="pe-7s-share mr-2"></i>
+            2. Channel Badge Component
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="ofinder-text-muted mb-4">
+            Badge colorati per indicare piattaforme social. Ogni piattaforma ha
+            colore ed emoji distintivi.
+          </p>
+
+          <div class="mb-4">
+            <p class="ofinder-text-sm font-weight-bold mb-3">All Platforms:</p>
+            <div class="d-flex flex-wrap" style="gap: 0.75rem;">
+              <ChannelBadge @channel={{hash platformType="onlyfans" verified=true}} />
+              <ChannelBadge @channel={{hash platformType="fansly" verified=false}} />
+              <ChannelBadge @channel={{hash platformType="instagram" verified=true}} />
+              <ChannelBadge @channel={{hash platformType="twitter" verified=false}} />
+              <ChannelBadge @channel={{hash platformType="tiktok" verified=true}} />
+              <ChannelBadge @channel={{hash platformType="youtube" verified=false}} />
+              <ChannelBadge @channel={{hash platformType="snapchat" verified=false}} />
+            </div>
+          </div>
+
+          <div>
+            <p class="ofinder-text-sm font-weight-bold mb-3">Size: Small</p>
+            <div class="d-flex flex-wrap" style="gap: 0.5rem;">
+              <ChannelBadge
+                @channel={{hash platformType="onlyfans" verified=true}}
+                @size="sm"
+              />
+              <ChannelBadge
+                @channel={{hash platformType="fansly" verified=true}}
+                @size="sm"
+              />
+              <ChannelBadge
+                @channel={{hash platformType="instagram" verified=true}}
+                @size="sm"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Section 3: Search Bar --}}
+    <div class="mb-5">
+      <div class="card ofinder-shadow ofinder-rounded">
+        <div class="card-header ofinder-bg-gradient-primary">
+          <h5 class="text-white mb-0">
+            <i class="pe-7s-search mr-2"></i>
+            3. Search Bar Component
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="ofinder-text-muted mb-4">
+            Barra di ricerca principale con filtri rapidi cliccabili. Include
+            conteggio filtri attivi.
+          </p>
+
+          <SearchBar @quickFilters={{@model.quickFilters}} />
+        </div>
+      </div>
+    </div>
+
+    {{!-- Section 4: Performer Cards --}}
+    <div class="mb-5">
+      <div class="card ofinder-shadow ofinder-rounded">
+        <div class="card-header ofinder-bg-gradient-secondary">
+          <h5 class="text-white mb-0">
+            <i class="pe-7s-id mr-2"></i>
+            4. Performer Card Component
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="ofinder-text-muted mb-4">
+            Card responsiva per visualizzare informazioni performer. Include
+            avatar, rating, channel badges, bio e CTA.
+          </p>
+
+          <div class="row">
+            {{#each @model.performers as |performer|}}
+              <div class="col-lg-3 col-md-6 mb-4">
+                <PerformerCard @performer={{performer}} />
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Section 5: Filter Panel --}}
+    <div class="mb-5">
+      <div class="card ofinder-shadow ofinder-rounded">
+        <div class="card-header ofinder-bg-gradient-primary">
+          <h5 class="text-white mb-0">
+            <i class="pe-7s-filter mr-2"></i>
+            5. Filter Panel Component
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="ofinder-text-muted mb-4">
+            Pannello filtri avanzati con checkbox, radio buttons e range slider.
+            Mostra conteggio filtri attivi.
+          </p>
+
+          <div class="row">
+            <div class="col-lg-4">
+              <FilterPanel />
+            </div>
+            <div class="col-lg-8">
+              <div class="alert ofinder-bg-light" role="alert">
+                <h5 class="ofinder-heading-md">Come usare FilterPanel</h5>
+                <ul class="mb-0 ofinder-text-sm">
+                  <li>Seleziona piattaforme e categorie tramite checkbox</li>
+                  <li>Regola il prezzo massimo con lo slider</li>
+                  <li>Scegli rating minimo con radio buttons</li>
+                  <li>Attiva filtri speciali (Verificati, Nuovi, Attivi)</li>
+                  <li>Applica filtri o cancellali tutti</li>
+                </ul>
+              </div>
+
+              <div class="alert alert-info" role="alert">
+                <strong>Note:</strong>
+                In produzione, il pannello sarà posizionato in una sidebar
+                laterale. Su mobile si collasserà in un drawer.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Design Tokens Reference --}}
+    <div class="mb-5">
+      <div class="card ofinder-shadow ofinder-rounded">
+        <div class="card-header" style="background: linear-gradient(135deg, #E91E63 0%, #673AB7 100%);">
+          <h5 class="text-white mb-0">
+            <i class="pe-7s-paint mr-2"></i>
+            Design Tokens Reference
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-4">
+              <h6 class="ofinder-text-sm font-weight-bold mb-3">COLORS</h6>
+              <div class="d-flex align-items-center mb-2">
+                <div class="ofinder-bg-primary ofinder-rounded" style="width: 40px; height: 40px; margin-right: 10px;"></div>
+                <span class="ofinder-text-sm">Primary (#E91E63)</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <div class="ofinder-bg-secondary ofinder-rounded" style="width: 40px; height: 40px; margin-right: 10px;"></div>
+                <span class="ofinder-text-sm">Secondary (#673AB7)</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <div class="ofinder-bg-accent ofinder-rounded" style="width: 40px; height: 40px; margin-right: 10px;"></div>
+                <span class="ofinder-text-sm">Accent (#FFC107)</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+              <h6 class="ofinder-text-sm font-weight-bold mb-3">BADGES</h6>
+              <div class="mb-2">
+                <span class="ofinder-badge-verified">Verified</span>
+              </div>
+              <div class="mb-2">
+                <span class="ofinder-badge-premium">Premium</span>
+              </div>
+              <div class="mb-2">
+                <span class="ofinder-badge-new">New</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+              <h6 class="ofinder-text-sm font-weight-bold mb-3">BUTTONS</h6>
+              <div class="mb-2">
+                <button type="button" class="btn btn-sm btn-ofinder-primary">Primary</button>
+              </div>
+              <div class="mb-2">
+                <button type="button" class="btn btn-sm btn-ofinder-secondary">Secondary</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

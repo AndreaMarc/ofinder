@@ -81,6 +81,7 @@ Router.map(function () {
   this.route('devices');
   this.route('developer-guide');
   this.route('developer-summary');
+  this.route('design-showcase'); // OFinder Design System Showcase
   this.route('user-guide');
   this.route('legals');
   this.route('legals-details', { path: '/legals-details/:legal_id' });

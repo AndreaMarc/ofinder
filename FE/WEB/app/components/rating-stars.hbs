@@ -1,0 +1,35 @@
+{{!-- RatingStars Component Template --}}
+<div
+  class="rating-stars d-inline-flex align-items-center"
+  ...attributes
+>
+  {{!-- Stelle (piene e vuote) --}}
+  <div class="stars-container mr-2">
+    {{#each this.starsArray as |star|}}
+      <i
+        class="{{star.iconClass}} {{star.colorClass}}"
+        style="font-size: {{this.fontSize}}; {{if star.style star.style ''}}"
+      ></i>
+    {{/each}}
+  </div>
+
+  {{!-- Voto numerico --}}
+  <span
+    class="font-weight-bold mr-1"
+    style="font-size: {{this.textSize}};"
+  >
+    {{this.formattedRating}}
+  </span>
+
+  {{!-- Conteggio recensioni (opzionale) --}}
+  {{#if @reviewCount}}
+    <span class="ofinder-text-muted ofinder-text-xs">
+      ({{@reviewCount}}
+      {{#if (eq @reviewCount 1)}}
+        recensione
+      {{else}}
+        recensioni
+      {{/if}})
+    </span>
+  {{/if}}
+</div>

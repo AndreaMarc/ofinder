@@ -1,0 +1,191 @@
+{{!-- FilterPanel Component Template --}}
+<div
+  class="filter-panel card ofinder-shadow ofinder-rounded p-4"
+  ...attributes
+>
+  {{!-- Header --}}
+  <div class="filter-panel-header d-flex justify-content-between align-items-center mb-4">
+    <h5 class="ofinder-heading-md mb-0">Filtri</h5>
+
+    {{#if this.hasActiveFilters}}
+      <button
+        type="button"
+        class="btn btn-link btn-sm ofinder-text-primary p-0"
+        {{on "click" this.clearAllFilters}}
+      >
+        Cancella tutto
+      </button>
+    {{/if}}
+  </div>
+
+  {{!-- Piattaforme --}}
+  <div class="filter-section mb-4">
+    <h6 class="ofinder-text-sm font-weight-bold mb-3 text-uppercase">
+      Piattaforme
+    </h6>
+    {{#each this.platformFilters as |platform|}}
+      <div class="custom-control custom-checkbox mb-2">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="platform-{{platform.id}}"
+          checked={{this.isPlatformSelected platform.id}}
+          {{on "change" (fn this.togglePlatform platform)}}
+        />
+        <label
+          class="custom-control-label ofinder-text-sm"
+          for="platform-{{platform.id}}"
+        >
+          {{platform.emoji}}
+          {{platform.name}}
+          <span class="ofinder-text-muted">({{platform.count}})</span>
+        </label>
+      </div>
+    {{/each}}
+  </div>
+
+  {{!-- Categorie --}}
+  <div class="filter-section mb-4">
+    <h6 class="ofinder-text-sm font-weight-bold mb-3 text-uppercase">
+      Categorie
+    </h6>
+    {{#each this.categoryFilters as |category|}}
+      <div class="custom-control custom-checkbox mb-2">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="category-{{category.id}}"
+          checked={{this.isCategorySelected category.id}}
+          {{on "change" (fn this.toggleCategory category)}}
+        />
+        <label
+          class="custom-control-label ofinder-text-sm"
+          for="category-{{category.id}}"
+        >
+          {{category.name}}
+          <span class="ofinder-text-muted">({{category.count}})</span>
+        </label>
+      </div>
+    {{/each}}
+  </div>
+
+  {{!-- Range Slider Prezzo --}}
+  <div class="filter-section mb-4">
+    <h6 class="ofinder-text-sm font-weight-bold mb-3 text-uppercase">
+      Prezzo ($/mese)
+      <span class="ofinder-text-primary float-right">${{this.maxPrice}}</span>
+    </h6>
+    <input
+      type="range"
+      class="custom-range"
+      min="0"
+      max="50"
+      step="5"
+      value={{this.maxPrice}}
+      {{on "input" this.updatePriceFilter}}
+    />
+    <div
+      class="d-flex justify-content-between ofinder-text-xs ofinder-text-muted mt-2"
+    >
+      <span>Free</span>
+      <span>$50+</span>
+    </div>
+  </div>
+
+  {{!-- Rating --}}
+  <div class="filter-section mb-4">
+    <h6 class="ofinder-text-sm font-weight-bold mb-3 text-uppercase">
+      Rating Minimo
+    </h6>
+    {{#each this.ratingFilters as |rating|}}
+      <div class="custom-control custom-radio mb-2">
+        <input
+          type="radio"
+          class="custom-control-input"
+          id="rating-{{rating.value}}"
+          name="ratingFilter"
+          checked={{eq this.selectedRating rating.value}}
+          {{on "change" (fn this.selectRating rating.value)}}
+        />
+        <label
+          class="custom-control-label ofinder-text-sm"
+          for="rating-{{rating.value}}"
+        >
+          <RatingStars @rating={{rating.value}} @size="sm" />
+          ({{rating.label}})
+        </label>
+      </div>
+    {{/each}}
+  </div>
+
+  {{!-- Stato --}}
+  <div class="filter-section mb-4">
+    <h6 class="ofinder-text-sm font-weight-bold mb-3 text-uppercase">Stato</h6>
+
+    <div class="custom-control custom-checkbox mb-2">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="filter-verified"
+        checked={{this.onlyVerified}}
+        {{on "change" this.toggleVerified}}
+      />
+      <label class="custom-control-label ofinder-text-sm" for="filter-verified">
+        <span class="ofinder-badge-verified ofinder-rounded-sm">✓</span>
+        Solo Verificati
+      </label>
+    </div>
+
+    <div class="custom-control custom-checkbox mb-2">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="filter-new"
+        checked={{this.onlyNew}}
+        {{on "change" this.toggleNew}}
+      />
+      <label class="custom-control-label ofinder-text-sm" for="filter-new">
+        <span class="ofinder-badge-new ofinder-rounded-sm">New</span>
+        Nuovi (ultimi 30gg)
+      </label>
+    </div>
+
+    <div class="custom-control custom-checkbox mb-2">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        id="filter-active"
+        checked={{this.onlyActiveToday}}
+        {{on "change" this.toggleActiveToday}}
+      />
+      <label class="custom-control-label ofinder-text-sm" for="filter-active">
+        <i class="pe-7s-signal ofinder-text-success"></i>
+        Attivi oggi
+      </label>
+    </div>
+  </div>
+
+  {{!-- Bottoni Azione --}}
+  <div class="filter-panel-footer">
+    <button
+      type="button"
+      class="btn btn-block btn-ofinder-primary mb-2"
+      {{on "click" this.applyFilters}}
+    >
+      Applica Filtri
+      {{#if this.activeFiltersCount}}
+        ({{this.activeFiltersCount}})
+      {{/if}}
+    </button>
+
+    {{#if this.hasActiveFilters}}
+      <button
+        type="button"
+        class="btn btn-block btn-outline-secondary"
+        {{on "click" this.clearAllFilters}}
+      >
+        Cancella tutto
+      </button>
+    {{/if}}
+  </div>
+</div>
