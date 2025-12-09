@@ -5,10 +5,7 @@
     {{!-- Icona Search --}}
     <div class="input-group-prepend">
       <span class="input-group-text bg-white border-0">
-        <i
-          class="fa fa-search ofinder-text-primary"
-          style="font-size: 20px;"
-        ></i>
+        <i class="fa fa-search ofinder-text-primary"></i>
       </span>
     </div>
 
@@ -40,8 +37,8 @@
 
   {{!-- Filtri Rapidi (chips) --}}
   {{#if this.quickFilters}}
-    <div class="mt-3 d-flex flex-wrap align-items-center" style="gap: 0.5rem;">
-      <span class="text-muted">Filtri rapidi:</span>
+    <div class="mt-3 d-flex flex-wrap align-items-center quick-filters">
+      <span class="text-muted mr-2">Filtri rapidi:</span>
 
       {{#each this.quickFilters as |filter|}}
         <button

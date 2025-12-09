@@ -7,6 +7,34 @@
 .ofinder-performer-avatar {
   height: 300px;
   object-fit: cover;
+  width: 100%;
+}
+
+// Performer Card Bio (text truncation)
+.performer-bio-truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+// Performer Card Badge Overlays
+.ofinder-badge-overlay-tr {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.ofinder-badge-overlay-tl {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+// Performer Card Channels
+.performer-channels {
+  gap: 0.5rem;
 }
 
 // Rating Stars Component
@@ -67,6 +95,68 @@
 
   .star-half {
     opacity: 0.5;
+  }
+}
+
+// Search Page Specific Styles
+.filter-panel {
+  position: sticky;
+  top: 20px;
+}
+
+.search-bar-container {
+  .input-group {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+
+    .input-group-text {
+      border: none;
+
+      i {
+        font-size: 20px;
+      }
+    }
+
+    .form-control {
+      border: none;
+      font-size: 16px;
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
+
+  .quick-filters {
+    gap: 0.5rem;
+  }
+}
+
+// Performer Card in Grid
+.performer-grid {
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// Info boxes
+.info-box {
+  border-left: 4px solid;
+
+  &.info-box-primary {
+    border-color: #e91e63;
+    background-color: rgba(233, 30, 99, 0.05);
+  }
+
+  &.info-box-secondary {
+    border-color: #673ab7;
+    background-color: rgba(103, 58, 183, 0.05);
   }
 }
 

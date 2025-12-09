@@ -10,10 +10,7 @@
 
     {{!-- Badge Verified (top-right overlay) --}}
     {{#if @performer.verified}}
-      <span
-        class="ofinder-badge-verified position-absolute"
-        style="top: 10px; right: 10px;"
-      >
+      <span class="ofinder-badge-verified ofinder-badge-overlay-tr">
         <i class="pe-7s-check mr-1"></i>
         Verified
       </span>
@@ -21,10 +18,7 @@
 
     {{!-- Badge Premium (top-left overlay) --}}
     {{#if @performer.isPremium}}
-      <span
-        class="ofinder-badge-premium position-absolute"
-        style="top: 10px; left: 10px;"
-      >
+      <span class="ofinder-badge-premium ofinder-badge-overlay-tl">
         <i class="pe-7s-star mr-1"></i>
         Premium
       </span>
@@ -49,7 +43,7 @@
 
     {{!-- Channel Badges (Social Platforms) --}}
     {{#if @performer.channels}}
-      <div class="mb-3 d-flex flex-wrap" style="gap: 0.5rem;">
+      <div class="mb-3 d-flex flex-wrap performer-channels">
         {{#each @performer.channels as |channel|}}
           <ChannelBadge @channel={{channel}} @size="sm" />
         {{/each}}
@@ -58,15 +52,7 @@
 
     {{!-- Descrizione breve (troncata) --}}
     {{#if this.showBio}}
-      <p
-        class="ofinder-text-sm ofinder-text-muted mb-3"
-        style="
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        "
-      >
+      <p class="ofinder-text-sm ofinder-text-muted mb-3 performer-bio-truncated">
         {{this.truncatedBio}}
       </p>
     {{/if}}

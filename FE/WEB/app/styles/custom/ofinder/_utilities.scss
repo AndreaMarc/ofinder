@@ -112,3 +112,20 @@
     border-color: $ofinder-secondary-dark;
   }
 }
+
+// Header Gradient for pages
+.ofinder-gradient-header {
+  background: $ofinder-primary-gradient;
+
+  .page-title-head {
+    color: white;
+  }
+
+  .page-title-subheading {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .page-title-icon i {
+    color: $ofinder-accent;
+  }
+}
