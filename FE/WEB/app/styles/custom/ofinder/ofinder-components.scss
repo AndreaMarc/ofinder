@@ -142,7 +142,29 @@
     gap: 0.5rem;
 
     .text-muted {
-      color: $ofinder-gray-700 !important;
+      color: $ofinder-gray-200 !important;
+      font-weight: 500;
+    }
+
+    // Quick filter buttons
+    .btn {
+      color: $ofinder-gray-100 !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+      background-color: transparent !important;
+      font-weight: 500;
+
+      &.btn-ofinder-primary {
+        background-color: $ofinder-primary !important;
+        border-color: $ofinder-primary !important;
+        color: white !important;
+      }
+
+      &.btn-outline-secondary {
+        &:hover {
+          background-color: $ofinder-dark-surface-light !important;
+          border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+      }
     }
   }
 }
