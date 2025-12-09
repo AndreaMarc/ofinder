@@ -100,8 +100,7 @@
 
 // Search Page Specific Styles
 .filter-panel {
-  position: sticky;
-  top: 20px;
+  // Rimosso sticky per evitare sovrapposizioni con guest box
 
   .card {
     background-color: $ofinder-dark-surface;
@@ -184,13 +183,13 @@
     }
 
     .card-body {
-      padding: 1rem !important; // Ridotto padding per evitare altezza eccessiva
+      padding: 0.75rem !important; // Padding compatto
     }
 
     .card-footer {
       background-color: rgba(0, 0, 0, 0.2);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.75rem !important; // Ridotto padding footer
+      padding: 0.75rem !important; // Padding compatto footer
     }
   }
 }

@@ -179,7 +179,6 @@ p, span, div {
     }
 
     .page-title-icon {
-      display: flex !important;
       align-items: center !important;
       justify-content: center !important;
       width: 60px !important;
@@ -189,6 +188,11 @@ p, span, div {
       border-radius: 12px !important;
       margin-right: 1.5rem !important;
       flex-shrink: 0;
+
+      // Rispetta le classi Bootstrap d-none/d-flex (non forza display)
+      &:not(.d-none) {
+        display: flex !important;
+      }
 
       i {
         font-size: 32px !important;
