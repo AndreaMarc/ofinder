@@ -20,20 +20,26 @@ export default class FilterPanelComponent extends Component {
   @tracked onlyNew = false;
   @tracked onlyActiveToday = false;
 
-  platformFilters = [
-    { id: 'onlyfans', name: 'OnlyFans', emoji: '🔵', count: 1234 },
-    { id: 'fansly', name: 'Fansly', emoji: '🟣', count: 567 },
-    { id: 'instagram', name: 'Instagram', emoji: '📸', count: 890 },
-    { id: 'tiktok', name: 'TikTok', emoji: '🎵', count: 456 },
-  ];
+  // Use passed platformFilters from args, or fallback to defaults
+  get platformFilters() {
+    return this.args.platformFilters || [
+      { id: 'onlyfans', name: 'OnlyFans', emoji: '🔵', count: 1234 },
+      { id: 'fansly', name: 'Fansly', emoji: '🟣', count: 567 },
+      { id: 'instagram', name: 'Instagram', emoji: '📸', count: 890 },
+      { id: 'tiktok', name: 'TikTok', emoji: '🎵', count: 456 },
+    ];
+  }
 
-  categoryFilters = [
-    { id: 'fitness', name: 'Fitness', count: 234 },
-    { id: 'gaming', name: 'Gaming', count: 156 },
-    { id: 'lifestyle', name: 'Lifestyle', count: 345 },
-    { id: 'cosplay', name: 'Cosplay', count: 123 },
-    { id: 'art', name: 'Art & Design', count: 89 },
-  ];
+  // Use passed categoryFilters from args, or fallback to defaults
+  get categoryFilters() {
+    return this.args.categoryFilters || [
+      { id: 'fitness', name: 'Fitness', count: 234 },
+      { id: 'gaming', name: 'Gaming', count: 156 },
+      { id: 'lifestyle', name: 'Lifestyle', count: 345 },
+      { id: 'cosplay', name: 'Cosplay', count: 123 },
+      { id: 'art', name: 'Art & Design', count: 89 },
+    ];
+  }
 
   ratingFilters = [
     { value: 5, label: '5 stelle' },
@@ -114,17 +120,8 @@ export default class FilterPanelComponent extends Component {
 
   @action
   applyFilters() {
-    if (this.args.onApply) {
-      this.args.onApply({
-        platforms: this.selectedPlatforms,
-        categories: this.selectedCategories,
-        maxPrice: this.maxPrice,
-        minRating: this.selectedRating,
-        onlyVerified: this.onlyVerified,
-        onlyNew: this.onlyNew,
-        onlyActiveToday: this.onlyActiveToday,
-      });
-    }
+    // Notify parent with current filter state
+    this.notifyFilterChange();
   }
 
   @action
@@ -137,16 +134,32 @@ export default class FilterPanelComponent extends Component {
     this.onlyNew = false;
     this.onlyActiveToday = false;
 
-    if (this.args.onClear) {
-      this.args.onClear();
+    // Notify parent
+    this.notifyFilterChange();
+  }
+
+  /**
+   * Notify parent component of filter changes
+   */
+  notifyFilterChange() {
+    if (this.args.onFilterChange) {
+      this.args.onFilterChange({
+        platforms: this.selectedPlatforms,
+        categories: this.selectedCategories,
+        maxPrice: this.maxPrice,
+        minRating: this.selectedRating,
+        onlyVerified: this.onlyVerified,
+        onlyNew: this.onlyNew,
+        onlyActiveToday: this.onlyActiveToday,
+      });
     }
   }
 
-  isPlatformSelected(platformId) {
-    return this.selectedPlatforms.includes(platformId);
+  get isPlatformSelected() {
+    return (platformId) => this.selectedPlatforms.includes(platformId);
   }
 
-  isCategorySelected(categoryId) {
-    return this.selectedCategories.includes(categoryId);
+  get isCategorySelected() {
+    return (categoryId) => this.selectedCategories.includes(categoryId);
   }
 }

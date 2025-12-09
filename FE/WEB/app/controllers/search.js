@@ -183,22 +183,22 @@ export default class SearchController extends Controller {
   }
 
   /**
-   * Handle advanced filter changes
+   * Handle advanced filter changes from FilterPanel
+   * Receives complete filter object from FilterPanel component
    */
   @action
-  handleFilterChange(filterType, value) {
-    if (filterType === 'platforms' || filterType === 'categories') {
-      // Toggle array filters
-      const index = this.activeFilters[filterType].indexOf(value);
-      if (index > -1) {
-        this.activeFilters[filterType].splice(index, 1);
-      } else {
-        this.activeFilters[filterType].push(value);
-      }
-    } else {
-      // Set scalar filters
-      this.activeFilters[filterType] = value;
-    }
+  handleFilterChange(filters) {
+    // Update activeFilters with all values from FilterPanel
+    this.activeFilters = {
+      platforms: filters.platforms || [],
+      categories: filters.categories || [],
+      verified: filters.onlyVerified || false,
+      premium: this.activeFilters.premium, // Keep quick filter state
+      new: filters.onlyNew || false,
+      topRated: this.activeFilters.topRated, // Keep quick filter state
+      minRating: filters.minRating || 0,
+      maxPrice: filters.maxPrice || 50,
+    };
     this.currentPage = 1; // Reset to first page on filter change
   }
 
