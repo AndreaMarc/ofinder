@@ -32,7 +32,7 @@ export default class SearchRoute extends Route {
       {
         id: 1,
         displayName: 'Sofia Martinez',
-        avatarUrl: 'https://i.pravatar.cc/300?img=1',
+        avatarUrl: '/assets/images/avatars/1.jpg',
         verified: true,
         isPremium: true,
         averageRating: 4.8,
@@ -48,7 +48,7 @@ export default class SearchRoute extends Route {
       {
         id: 2,
         displayName: 'Emma Rose',
-        avatarUrl: 'https://i.pravatar.cc/300?img=5',
+        avatarUrl: '/assets/images/avatars/5.jpg',
         verified: true,
         isPremium: false,
         averageRating: 4.5,
@@ -63,7 +63,7 @@ export default class SearchRoute extends Route {
       {
         id: 3,
         displayName: 'Luna Star',
-        avatarUrl: 'https://i.pravatar.cc/300?img=9',
+        avatarUrl: '/assets/images/avatars/9.jpg',
         verified: false,
         isPremium: true,
         averageRating: 4.9,
@@ -80,7 +80,7 @@ export default class SearchRoute extends Route {
       {
         id: 4,
         displayName: 'Mia Johnson',
-        avatarUrl: 'https://i.pravatar.cc/300?img=20',
+        avatarUrl: '/assets/images/avatars/8.jpg',
         verified: true,
         isPremium: false,
         averageRating: 4.2,

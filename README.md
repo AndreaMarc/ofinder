@@ -334,6 +334,41 @@ The pe-7s (PE-icon-7-stroke) icons are too small and difficult to read when used
 - Better performance (CSS is faster than inline styles)
 - Easier to maintain and theme
 
+**8. NO External Resources Without Authorization**
+
+**NEVER load external resources (images, fonts, APIs, scripts) without explicit authorization.** The framework has a strict Content Security Policy (CSP) that blocks external resources by default.
+
+**Always:**
+1. Check if the resource exists locally in the framework first
+2. Ask for authorization before using external resources
+3. Provide justification for why the external resource is needed
+4. Update the CSP configuration if approved
+
+**Example - Images:**
+```javascript
+// ❌ WRONG - External image (violates CSP)
+avatarUrl: 'https://i.pravatar.cc/300?img=1'
+
+// ✅ CORRECT - Use framework avatars
+avatarUrl: '/assets/images/avatars/1.jpg'
+```
+
+**Framework Resources Available:**
+- **Avatars**: `/assets/images/avatars/1.jpg` through `/assets/images/avatars/12.jpg`
+- **Placeholder**: `/public/no_img.png`
+- **Icons**: Font Awesome (included), PE-icon-7-stroke (included)
+- **Fonts**: System fonts stack (no external fonts)
+
+**CSP Configuration:**
+The CSP is configured in `config/environment.js`. Any changes require explicit approval and documentation.
+
+**Why this matters:**
+- Prevents CSP violations and browser errors
+- Protects user privacy (no external tracking)
+- Improves performance (local resources load faster)
+- Works offline in Cordova apps
+- Reduces dependencies on third-party services
+
 **Please refer to FE FWK DOCS v1.1 20240530.pdf for complete code standards and conventions.**
 
 ## Deploying
