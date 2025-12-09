@@ -1,0 +1,61 @@
+// ==================================
+// OFinder Design System - Variables
+// ==================================
+
+// PRIMARY COLORS
+$ofinder-primary: #E91E63;
+$ofinder-primary-dark: #C2185B;
+$ofinder-primary-light: #F8BBD0;
+$ofinder-primary-gradient: linear-gradient(135deg, $ofinder-primary 0%, $ofinder-primary-dark 100%);
+
+// SECONDARY COLORS
+$ofinder-secondary: #673AB7;
+$ofinder-secondary-dark: #512DA8;
+$ofinder-secondary-light: #D1C4E9;
+
+// ACCENT COLORS (Premium Features)
+$ofinder-accent: #FFC107;
+$ofinder-accent-dark: #FFA000;
+
+// NEUTRAL GRAYS
+$ofinder-gray-100: #F5F5F5;
+$ofinder-gray-200: #EEEEEE;
+$ofinder-gray-300: #E0E0E0;
+$ofinder-gray-700: #616161;
+$ofinder-gray-900: #212121;
+
+// SEMANTIC COLORS
+$ofinder-success: #4CAF50;
+$ofinder-warning: #FF9800;
+$ofinder-danger: #F44336;
+$ofinder-info: #2196F3;
+
+// TYPOGRAPHY
+$ofinder-font-size-xs: 0.75rem;
+$ofinder-font-size-sm: 0.875rem;
+$ofinder-font-size-base: 1rem;
+$ofinder-font-size-lg: 1.125rem;
+$ofinder-font-size-xl: 1.5rem;
+$ofinder-font-size-2xl: 2rem;
+
+$ofinder-font-weight-normal: 400;
+$ofinder-font-weight-medium: 500;
+$ofinder-font-weight-bold: 700;
+
+// SPACING
+$ofinder-spacing-xs: 0.25rem;
+$ofinder-spacing-sm: 0.5rem;
+$ofinder-spacing-md: 1rem;
+$ofinder-spacing-lg: 1.5rem;
+$ofinder-spacing-xl: 2rem;
+$ofinder-spacing-2xl: 3rem;
+
+// BORDERS
+$ofinder-border-radius-sm: 0.25rem;
+$ofinder-border-radius: 0.5rem;
+$ofinder-border-radius-lg: 1rem;
+
+// SHADOWS
+$ofinder-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$ofinder-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+$ofinder-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);

@@ -1,0 +1,50 @@
+// ==================================
+// OFinder Design System - Typography
+// ==================================
+
+// Heading Utilities
+.ofinder-heading-xl {
+  font-size: $ofinder-font-size-2xl;
+  font-weight: $ofinder-font-weight-bold;
+  line-height: 1.2;
+}
+
+.ofinder-heading-lg {
+  font-size: $ofinder-font-size-xl;
+  font-weight: $ofinder-font-weight-bold;
+  line-height: 1.3;
+}
+
+.ofinder-heading-md {
+  font-size: $ofinder-font-size-lg;
+  font-weight: $ofinder-font-weight-medium;
+  line-height: 1.4;
+}
+
+// Body Text Utilities
+.ofinder-text-sm {
+  font-size: $ofinder-font-size-sm;
+  line-height: 1.5;
+}
+
+.ofinder-text-xs {
+  font-size: $ofinder-font-size-xs;
+  line-height: 1.4;
+}
+
+// Text Colors (usa variabili OFinder)
+.ofinder-text-primary {
+  color: $ofinder-primary;
+}
+
+.ofinder-text-secondary {
+  color: $ofinder-secondary;
+}
+
+.ofinder-text-accent {
+  color: $ofinder-accent;
+}
+
+.ofinder-text-muted {
+  color: $ofinder-gray-700;
+}

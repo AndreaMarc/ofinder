@@ -1,0 +1,114 @@
+// ==================================
+// OFinder Design System - Utilities
+// ==================================
+
+// Background Gradients
+.ofinder-bg-gradient-primary {
+  background: $ofinder-primary-gradient;
+  color: white;
+}
+
+.ofinder-bg-gradient-secondary {
+  background: linear-gradient(135deg, $ofinder-secondary 0%, $ofinder-secondary-dark 100%);
+  color: white;
+}
+
+// Background Colors
+.ofinder-bg-primary {
+  background-color: $ofinder-primary;
+  color: white;
+}
+
+.ofinder-bg-secondary {
+  background-color: $ofinder-secondary;
+  color: white;
+}
+
+.ofinder-bg-accent {
+  background-color: $ofinder-accent;
+  color: $ofinder-gray-900;
+}
+
+.ofinder-bg-light {
+  background-color: $ofinder-gray-100;
+}
+
+// Shadows
+.ofinder-shadow-sm {
+  box-shadow: $ofinder-shadow-sm;
+}
+
+.ofinder-shadow {
+  box-shadow: $ofinder-shadow;
+}
+
+.ofinder-shadow-lg {
+  box-shadow: $ofinder-shadow-lg;
+}
+
+// Borders
+.ofinder-rounded-sm {
+  border-radius: $ofinder-border-radius-sm;
+}
+
+.ofinder-rounded {
+  border-radius: $ofinder-border-radius;
+}
+
+.ofinder-rounded-lg {
+  border-radius: $ofinder-border-radius-lg;
+}
+
+// Badges (per tag come "Verified", "New", "Premium")
+.ofinder-badge-verified {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: $ofinder-success;
+  color: white;
+  border-radius: $ofinder-border-radius-sm;
+  font-size: $ofinder-font-size-xs;
+  font-weight: $ofinder-font-weight-medium;
+}
+
+.ofinder-badge-premium {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: $ofinder-accent;
+  color: $ofinder-gray-900;
+  border-radius: $ofinder-border-radius-sm;
+  font-size: $ofinder-font-size-xs;
+  font-weight: $ofinder-font-weight-bold;
+}
+
+.ofinder-badge-new {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: $ofinder-info;
+  color: white;
+  border-radius: $ofinder-border-radius-sm;
+  font-size: $ofinder-font-size-xs;
+  font-weight: $ofinder-font-weight-medium;
+}
+
+// Button Override (estende ArchitectUI)
+.btn-ofinder-primary {
+  background-color: $ofinder-primary;
+  border-color: $ofinder-primary;
+  color: white;
+
+  &:hover {
+    background-color: $ofinder-primary-dark;
+    border-color: $ofinder-primary-dark;
+  }
+}
+
+.btn-ofinder-secondary {
+  background-color: $ofinder-secondary;
+  border-color: $ofinder-secondary;
+  color: white;
+
+  &:hover {
+    background-color: $ofinder-secondary-dark;
+    border-color: $ofinder-secondary-dark;
+  }
+}
