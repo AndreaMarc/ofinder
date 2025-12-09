@@ -10,28 +10,12 @@ import { action } from '@ember/object';
  * @param {Function} onViewProfile - Callback click su bottone
  */
 export default class PerformerCardComponent extends Component {
-  get variant() {
-    return this.args.variant || 'default';
-  }
-
-  get avatarHeight() {
-    const heights = {
-      compact: '200px',
-      default: '300px',
-      featured: '400px',
-    };
-    return heights[this.variant] || heights.default;
-  }
-
   get showBio() {
-    return this.variant !== 'compact' && this.args.performer.bio;
+    return this.args.showBio !== false && this.args.performer?.bio;
   }
 
   get truncatedBio() {
-    const bio = this.args.performer.bio || '';
-    if (this.variant === 'featured') {
-      return bio.length > 200 ? bio.substring(0, 200) + '...' : bio;
-    }
+    const bio = this.args.performer?.bio || '';
     return bio.length > 100 ? bio.substring(0, 100) + '...' : bio;
   }
 

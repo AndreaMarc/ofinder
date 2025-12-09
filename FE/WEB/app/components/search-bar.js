@@ -56,19 +56,21 @@ export default class SearchBarComponent extends Component {
     } else {
       this.activeQuickFilters = [...this.activeQuickFilters, filter.id];
     }
+
+    // Notify parent component
+    if (this.args.onFilterToggle) {
+      this.args.onFilterToggle(filter);
+    }
   }
 
   @action
   performSearch() {
     if (this.args.onSearch) {
-      this.args.onSearch({
-        query: this.searchQuery,
-        quickFilters: this.activeQuickFilters,
-      });
+      this.args.onSearch(this.searchQuery);
     }
   }
 
-  isFilterActive(filterId) {
-    return this.activeQuickFilters.includes(filterId);
+  get isFilterActive() {
+    return (filterId) => this.activeQuickFilters.includes(filterId);
   }
 }

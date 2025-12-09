@@ -288,6 +288,52 @@ The pe-7s (PE-icon-7-stroke) icons are too small and difficult to read when used
 - **Font Awesome (`fa fa-*`)**: Inside buttons, important UI elements, mobile-friendly contexts
 - **PE-icon-7-stroke (`pe-7s-*`)**: Page titles, section headers, decorative elements (where size is not critical)
 
+**7. NO Dynamic Style/Class Bindings**
+
+**NEVER bind dynamic values directly to `style` or `class` attributes.** This creates XSS (Cross-Site Scripting) vulnerabilities and generates Ember deprecation warnings.
+
+**Always use:**
+- CSS classes with conditional logic
+- Predefined CSS classes based on component state
+- Component modifiers for dynamic styling
+
+**Example:**
+```handlebars
+{{!-- ❌ WRONG - Dynamic style binding (XSS vulnerability) --}}
+<div style="height: {{this.dynamicHeight}}; color: {{this.userColor}};">
+  Content
+</div>
+
+<i style="font-size: {{this.fontSize}};" class="fa fa-star"></i>
+
+{{!-- ✅ CORRECT - Use CSS classes instead --}}
+<div class="content-box content-box-{{this.size}}">
+  Content
+</div>
+
+<i class="fa fa-star star-{{@size}}"></i>
+```
+
+**In SCSS:**
+```scss
+// Define classes for different states/sizes
+.content-box {
+  &.content-box-sm { height: 100px; }
+  &.content-box-md { height: 200px; }
+  &.content-box-lg { height: 300px; }
+}
+
+.star-sm { font-size: 14px; }
+.star-md { font-size: 16px; }
+.star-lg { font-size: 20px; }
+```
+
+**Why this matters:**
+- Prevents XSS attacks from malicious user input
+- Avoids Ember deprecation warnings
+- Better performance (CSS is faster than inline styles)
+- Easier to maintain and theme
+
 **Please refer to FE FWK DOCS v1.1 20240530.pdf for complete code standards and conventions.**
 
 ## Deploying

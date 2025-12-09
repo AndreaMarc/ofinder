@@ -1,0 +1,71 @@
+/**
+ * OFinder Components Styles
+ * Component-specific styles for OFinder
+ */
+
+// Performer Card Avatar
+.ofinder-performer-avatar {
+  height: 300px;
+  object-fit: cover;
+}
+
+// Rating Stars Component
+.rating-stars {
+  .stars-container {
+    i {
+      // Default size
+      font-size: 16px;
+    }
+  }
+
+  .rating-value {
+    // Default text size
+    font-size: 14px;
+  }
+
+  // Small size
+  &.rating-stars-sm {
+    .stars-container i {
+      font-size: 14px;
+    }
+
+    .rating-value {
+      font-size: 12px;
+    }
+  }
+
+  // Medium size (default)
+  &.rating-stars-md {
+    .stars-container i {
+      font-size: 16px;
+    }
+
+    .rating-value {
+      font-size: 14px;
+    }
+  }
+
+  // Large size
+  &.rating-stars-lg {
+    .stars-container i {
+      font-size: 20px;
+    }
+
+    .rating-value {
+      font-size: 16px;
+    }
+  }
+
+  // Star states
+  .star-filled {
+    opacity: 1;
+  }
+
+  .star-empty {
+    opacity: 1;
+  }
+
+  .star-half {
+    opacity: 0.5;
+  }
+}

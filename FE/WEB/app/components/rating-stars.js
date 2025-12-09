@@ -29,13 +29,13 @@ export default class RatingStarsComponent extends Component {
           filled: true,
         });
       } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
-        // Mezza stella (mostrata con opacity)
+        // Mezza stella (mostrata con opacity via CSS)
         stars.push({
           index: i,
           iconClass: 'pe-7s-star',
           colorClass: 'ofinder-text-accent',
           filled: true,
-          style: 'opacity: 0.5;',
+          isHalf: true,
         });
       } else {
         // Stella vuota
@@ -49,25 +49,5 @@ export default class RatingStarsComponent extends Component {
     }
 
     return stars;
-  }
-
-  get fontSize() {
-    const size = this.args.size || 'md';
-    const sizes = {
-      sm: '16px',
-      md: '20px',
-      lg: '28px',
-    };
-    return sizes[size] || sizes.md;
-  }
-
-  get textSize() {
-    const size = this.args.size || 'md';
-    const sizes = {
-      sm: '14px',
-      md: '16px',
-      lg: '20px',
-    };
-    return sizes[size] || sizes.md;
   }
 }

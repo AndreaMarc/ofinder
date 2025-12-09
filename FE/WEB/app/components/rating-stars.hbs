@@ -1,23 +1,19 @@
 {{!-- RatingStars Component Template --}}
 <div
-  class="rating-stars d-inline-flex align-items-center"
+  class="rating-stars rating-stars-{{@size}} d-inline-flex align-items-center"
   ...attributes
 >
   {{!-- Stelle (piene e vuote) --}}
   <div class="stars-container mr-2">
     {{#each this.starsArray as |star|}}
       <i
-        class="{{star.iconClass}} {{star.colorClass}}"
-        style="font-size: {{this.fontSize}}; {{if star.style star.style ''}}"
+        class="{{star.iconClass}} {{star.colorClass}} {{if star.filled 'star-filled' 'star-empty'}} {{if star.isHalf 'star-half'}}"
       ></i>
     {{/each}}
   </div>
 
   {{!-- Voto numerico --}}
-  <span
-    class="font-weight-bold mr-1"
-    style="font-size: {{this.textSize}};"
-  >
+  <span class="font-weight-bold mr-1 rating-value">
     {{this.formattedRating}}
   </span>
 
