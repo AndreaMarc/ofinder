@@ -43,8 +43,8 @@ export default class AgeGateComponent extends Component {
     localStorage.setItem('ofinder-age-verified', 'true');
     localStorage.setItem('ofinder-age-verified-date', new Date().toISOString());
 
-    // Redirect alla home
-    this.router.transitionTo('index');
+    // Redirect alla pagina di ricerca pubblica
+    this.router.transitionTo('search');
   }
 
   /**

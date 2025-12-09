@@ -41,6 +41,7 @@ export default class ApplicationRoute extends Route {
     'user-profile', // necessaria per il redirect post-login
     'age-gate', // Age verification (AGCOM)
     'terms', // Legal documents (Privacy, Terms)
+    'search', // Public search page for performers
   ];
 
   async beforeModel(transition) {

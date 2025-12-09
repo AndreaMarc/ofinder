@@ -54,6 +54,7 @@ Router.map(function () {
   this.route('about-us');
   this.route('help-desk-unlog');
   this.route('age-gate'); // Age verification (AGCOM Delibera 96/25/CONS)
+  this.route('search'); // Public search page for performers
 
   // NOT LOGGED AND LOGGED USERS
   this.route('access-permissions', { queryParams: ['otp'] });

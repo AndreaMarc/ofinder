@@ -1,0 +1,207 @@
+{{!-- Search Page - Public performer search --}}
+{{!-- Accessible to both logged and unlogged users --}}
+
+<div class="app-page-title ofinder-gradient-header">
+  <div class="page-title-wrapper">
+    <div class="page-title-heading">
+      <div class="page-title-icon">
+        <i class="fa fa-search icon-gradient ofinder-text-primary"></i>
+      </div>
+      <div>
+        <div class="page-title-head">
+          OFINDER
+          {{#unless @model.isLoggedIn}}
+            <span class="ofinder-badge-new ml-2">Guest Mode</span>
+          {{/unless}}
+        </div>
+        <div class="page-title-subheading">
+          Cerca e scopri i migliori content creator su OnlyFans, Fansly e altre
+          piattaforme
+        </div>
+      </div>
+    </div>
+
+    {{#if @model.isLoggedIn}}
+      <div class="page-title-actions">
+        <button
+          type="button"
+          class="btn btn-ofinder-primary"
+          {{on "click" this.goToProfile}}
+        >
+          <i class="fa fa-user mr-2"></i>
+          Profilo
+        </button>
+      </div>
+    {{else}}
+      <div class="page-title-actions">
+        <button
+          type="button"
+          class="btn btn-outline-primary mr-2"
+          {{on "click" this.goToLogin}}
+        >
+          <i class="fa fa-sign-in-alt mr-2"></i>
+          Accedi
+        </button>
+        <button
+          type="button"
+          class="btn btn-ofinder-primary"
+          {{on "click" this.goToRegistration}}
+        >
+          <i class="fa fa-user-plus mr-2"></i>
+          Registrati
+        </button>
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+{{!-- Main Content --}}
+<div class="app-main__inner">
+  <div class="row">
+    {{!-- Sidebar - Filter Panel --}}
+    <div class="col-md-3 mb-4">
+      <FilterPanel
+        @platformFilters={{@model.platformFilters}}
+        @categoryFilters={{@model.categoryFilters}}
+        @onFilterChange={{this.handleFilterChange}}
+      />
+
+      {{!-- Info Box for Guest Users --}}
+      {{#unless @model.isLoggedIn}}
+        <div class="card ofinder-shadow ofinder-rounded mt-4">
+          <div class="card-body text-center">
+            <i class="fa fa-lock fa-3x ofinder-text-primary mb-3"></i>
+            <h6 class="ofinder-heading-sm">Accedi per più funzionalità</h6>
+            <p class="ofinder-text-sm ofinder-text-muted mb-3">
+              Registrati o accedi per salvare i tuoi preferiti, ricevere
+              notifiche e accedere a contenuti esclusivi.
+            </p>
+            <button
+              type="button"
+              class="btn btn-block btn-ofinder-primary"
+              {{on "click" this.goToRegistration}}
+            >
+              <i class="fa fa-user-plus mr-2"></i>
+              Registrati Gratis
+            </button>
+          </div>
+        </div>
+      {{/unless}}
+    </div>
+
+    {{!-- Main Content Area --}}
+    <div class="col-md-9">
+      {{!-- Search Bar --}}
+      <SearchBar
+        @placeholder="Cerca performer per nome, categoria o piattaforma..."
+        @quickFilters={{@model.quickFilters}}
+        @onSearch={{this.handleSearch}}
+        @onFilterToggle={{this.handleQuickFilterToggle}}
+        class="mb-4"
+      />
+
+      {{!-- Results Info --}}
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h5 class="ofinder-heading-md mb-1">
+            {{this.filteredPerformersCount}}
+            Performer trovati
+          </h5>
+          <p class="ofinder-text-sm ofinder-text-muted mb-0">
+            {{#if @model.isLoggedIn}}
+              Visualizzazione completa con tutti i dettagli
+            {{else}}
+              Modalità ospite - Registrati per vedere tutti i dettagli
+            {{/if}}
+          </p>
+        </div>
+
+        <div class="btn-group">
+          <button
+            type="button"
+            class="btn btn-sm {{if
+              (eq this.viewMode 'grid')
+              'btn-ofinder-primary'
+              'btn-outline-secondary'
+            }}"
+            {{on "click" (fn this.setViewMode "grid")}}
+          >
+            <i class="fa fa-th"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm {{if
+              (eq this.viewMode 'list')
+              'btn-ofinder-primary'
+              'btn-outline-secondary'
+            }}"
+            {{on "click" (fn this.setViewMode "list")}}
+          >
+            <i class="fa fa-list"></i>
+          </button>
+        </div>
+      </div>
+
+      {{!-- Performer Grid --}}
+      <div class="row">
+        {{#each this.filteredPerformers as |performer|}}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <PerformerCard
+              @performer={{performer}}
+              @showBio={{@model.isLoggedIn}}
+              @onViewProfile={{fn this.handleViewProfile performer}}
+            />
+          </div>
+        {{else}}
+          <div class="col-12">
+            <div class="card ofinder-shadow ofinder-rounded text-center p-5">
+              <i class="fa fa-search fa-4x ofinder-text-muted mb-3"></i>
+              <h5 class="ofinder-heading-md mb-2">Nessun risultato</h5>
+              <p class="ofinder-text-muted">
+                Prova a modificare i filtri di ricerca o cerca qualcosa di
+                diverso.
+              </p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+
+      {{!-- Pagination --}}
+      {{#if this.hasResults}}
+        <div class="d-flex justify-content-center mt-4">
+          <nav>
+            <ul class="pagination">
+              <li class="page-item {{if this.isFirstPage 'disabled'}}">
+                <a
+                  class="page-link"
+                  href="#"
+                  {{on "click" this.goToPreviousPage}}
+                >
+                  <i class="fa fa-chevron-left"></i>
+                </a>
+              </li>
+
+              {{#each this.pageNumbers as |pageNum|}}
+                <li class="page-item {{if (eq pageNum this.currentPage) 'active'}}">
+                  <a
+                    class="page-link"
+                    href="#"
+                    {{on "click" (fn this.goToPage pageNum)}}
+                  >
+                    {{pageNum}}
+                  </a>
+                </li>
+              {{/each}}
+
+              <li class="page-item {{if this.isLastPage 'disabled'}}">
+                <a class="page-link" href="#" {{on "click" this.goToNextPage}}>
+                  <i class="fa fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+</div>
