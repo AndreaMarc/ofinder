@@ -53,6 +53,7 @@ Router.map(function () {
   this.route('google-login');
   this.route('about-us');
   this.route('help-desk-unlog');
+  this.route('age-gate'); // Age verification (AGCOM Delibera 96/25/CONS)
 
   // NOT LOGGED AND LOGGED USERS
   this.route('access-permissions', { queryParams: ['otp'] });

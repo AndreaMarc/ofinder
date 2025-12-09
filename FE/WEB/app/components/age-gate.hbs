@@ -1,0 +1,113 @@
+{{!--
+  Age Gate Component Template
+  Modal boxed style con:
+  - Warning alert (AGCOM)
+  - Checkbox conferma 18+
+  - Link Privacy/Terms (route framework)
+  - Bottoni Esci/Entra
+--}}
+
+<div class="modal-dialog w-100 mx-auto">
+  <div class="modal-content">
+    {{!-- Header --}}
+    <div class="modal-header">
+      <div class="h5 modal-title">
+        <h4 class="mt-2">
+          <div>Verifica Età</div>
+          <span class="text-muted">Accesso riservato a maggiorenni</span>
+        </h4>
+      </div>
+    </div>
+
+    {{!-- Body --}}
+    <div class="modal-body">
+      {{!-- Icona Warning --}}
+      <div class="text-center mb-4">
+        <i
+          class="pe-7s-attention icon-gradient bg-sunny-morning"
+          style="font-size: 80px;"
+        ></i>
+      </div>
+
+      {{!-- Alert AGCOM --}}
+      <div class="alert alert-warning" role="alert">
+        <h5 class="alert-heading">⚠️ Contenuto per Adulti</h5>
+        <p>
+          Questo sito contiene materiale per adulti e non è adatto a minori di
+          18 anni. Per accedere, devi confermare di aver compiuto la maggiore
+          età.
+        </p>
+        <hr />
+        <p class="mb-0">
+          <strong>Delibera AGCOM 96/25/CONS (Decreto Caivano)</strong>
+          -
+          L'accesso a piattaforme con contenuti per adulti è riservato
+          esclusivamente a utenti maggiorenni in conformità alla normativa
+          italiana.
+          <br />
+          <small class="text-muted">Obbligatorio dal 12 Novembre 2025.</small>
+        </p>
+      </div>
+
+      {{!-- Checkbox Accettazione --}}
+      <div class="position-relative form-check mt-4">
+        <label class="form-check-label">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            checked={{this.accepted}}
+            {{on "change" this.toggleAccepted}}
+          />
+          <strong>Confermo di avere almeno 18 anni</strong>
+          e di voler accedere a contenuti destinati a un pubblico adulto.
+        </label>
+      </div>
+
+      {{!-- Messaggio Errore --}}
+      {{#if this.errorMessage}}
+        <div class="alert alert-danger mt-3" role="alert">
+          {{this.errorMessage}}
+        </div>
+      {{/if}}
+
+      {{!-- Link Privacy e Terms (route framework esistenti) --}}
+      <div class="mt-4 text-center">
+        <small class="text-muted">
+          Accedendo al sito accetti i nostri
+          <a
+            href="#"
+            class="text-primary"
+            {{on "click" this.goToTerms}}
+          >Termini di Servizio</a>
+          e la
+          <a
+            href="#"
+            class="text-primary"
+            {{on "click" this.goToPrivacyPolicy}}
+          >Privacy Policy</a>.
+        </small>
+      </div>
+    </div>
+
+    {{!-- Footer con Bottoni --}}
+    <div class="modal-footer d-flex justify-content-between">
+      <button
+        type="button"
+        class="btn btn-secondary btn-lg"
+        {{on "click" this.exitSite}}
+      >
+        <i class="pe-7s-close-circle mr-2"></i>
+        Esci
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        disabled={{not this.accepted}}
+        {{on "click" this.confirmAge}}
+      >
+        <i class="pe-7s-check mr-2"></i>
+        Entra (18+)
+      </button>
+    </div>
+  </div>
+</div>

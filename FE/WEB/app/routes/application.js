@@ -39,6 +39,8 @@ export default class ApplicationRoute extends Route {
     'help-desk-unlog',
     'maintenance',
     'user-profile', // necessaria per il redirect post-login
+    'age-gate', // Age verification (AGCOM)
+    'terms', // Legal documents (Privacy, Terms)
   ];
 
   async beforeModel(transition) {
@@ -64,6 +66,24 @@ export default class ApplicationRoute extends Route {
     try {
       let self = this;
       if (window.cordova) console.log('EXEC DEVICE READY');
+
+      // ============================================
+      // AGE GATE CHECK (AGCOM Delibera 96/25/CONS)
+      // Verifica età obbligatoria - Decreto Caivano
+      // ============================================
+      const ageVerified = localStorage.getItem('ofinder-age-verified');
+      const destinationRoute = transition.to.name;
+
+      // Usa unloggedEnabledPages esistente (contiene già age-gate e terms)
+      if (
+        ageVerified !== 'true' &&
+        !this.unloggedEnabledPages.includes(destinationRoute)
+      ) {
+        this.router.transitionTo('age-gate');
+        return false; // Stop execution
+      }
+      // ============================================
+
       await this.session.setup();
 
       // RECUPERO INFORMAZIONI SUGLI ADDON
