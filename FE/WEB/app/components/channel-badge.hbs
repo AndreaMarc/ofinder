@@ -1,12 +1,6 @@
 {{!-- ChannelBadge Component Template --}}
 <span
-  class="channel-badge ofinder-rounded-sm d-inline-flex align-items-center px-2 py-1"
-  style="
-    background-color: {{this.channelColor}};
-    color: {{this.textColor}};
-    font-size: {{this.fontSize}};
-    font-weight: 500;
-  "
+  class="channel-badge channel-badge-{{this.platformType}} channel-badge-{{@size}} ofinder-rounded-sm d-inline-flex align-items-center px-2 py-1"
   ...attributes
 >
   {{!-- Emoji piattaforma --}}
@@ -17,6 +11,6 @@
 
   {{!-- Badge Verified (se verificato) --}}
   {{#if @channel.verified}}
-    <i class="pe-7s-check ml-1" style="font-size: 10px;"></i>
+    <i class="pe-7s-check ml-1 channel-badge-check"></i>
   {{/if}}
 </span>

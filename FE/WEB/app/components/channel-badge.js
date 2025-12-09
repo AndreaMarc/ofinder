@@ -62,17 +62,16 @@ const CHANNEL_CONFIG = {
 };
 
 export default class ChannelBadgeComponent extends Component {
+  get platformType() {
+    return this.args.channel?.platformType?.toLowerCase() || 'other';
+  }
+
   get channelConfig() {
-    const platformType = this.args.channel?.platformType || 'other';
-    return CHANNEL_CONFIG[platformType.toLowerCase()] || CHANNEL_CONFIG.other;
+    return CHANNEL_CONFIG[this.platformType] || CHANNEL_CONFIG.other;
   }
 
   get channelName() {
     return this.channelConfig.name;
-  }
-
-  get channelColor() {
-    return this.channelConfig.color;
   }
 
   get channelEmoji() {
@@ -81,19 +80,5 @@ export default class ChannelBadgeComponent extends Component {
 
   get channelIcon() {
     return this.channelConfig.icon;
-  }
-
-  get fontSize() {
-    const size = this.args.size || 'md';
-    return size === 'sm' ? '11px' : '13px';
-  }
-
-  get textColor() {
-    // TikTok e Snapchat hanno background chiaro, servono testo scuro
-    const platformType = this.args.channel?.platformType?.toLowerCase();
-    if (platformType === 'tiktok' || platformType === 'snapchat') {
-      return '#212529';
-    }
-    return 'white';
   }
 }

@@ -69,3 +69,62 @@
     opacity: 0.5;
   }
 }
+
+// Channel Badge Component
+.channel-badge {
+  font-weight: 500;
+
+  // Default size (md)
+  font-size: 13px;
+
+  // Small size
+  &.channel-badge-sm {
+    font-size: 11px;
+  }
+
+  // Check icon size
+  .channel-badge-check {
+    font-size: 10px;
+  }
+
+  // Platform colors
+  &.channel-badge-onlyfans {
+    background-color: #00aff0;
+    color: white;
+  }
+
+  &.channel-badge-fansly {
+    background-color: #7b68ee;
+    color: white;
+  }
+
+  &.channel-badge-instagram {
+    background-color: #e4405f;
+    color: white;
+  }
+
+  &.channel-badge-twitter {
+    background-color: #1da1f2;
+    color: white;
+  }
+
+  &.channel-badge-tiktok {
+    background-color: #000000;
+    color: white;
+  }
+
+  &.channel-badge-youtube {
+    background-color: #ff0000;
+    color: white;
+  }
+
+  &.channel-badge-snapchat {
+    background-color: #fffc00;
+    color: #212529; // Dark text for light background
+  }
+
+  &.channel-badge-other {
+    background-color: #6c757d;
+    color: white;
+  }
+}
