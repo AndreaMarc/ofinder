@@ -3,14 +3,9 @@
   class="channel-badge channel-badge-{{this.platformType}} channel-badge-{{@size}} ofinder-rounded-sm d-inline-flex align-items-center px-2 py-1"
   ...attributes
 >
-  {{!-- Emoji piattaforma --}}
-  <span class="mr-1">{{this.channelEmoji}}</span>
+  {{!-- Icona piattaforma con badge --}}
+  <span class="platform-icon-badge-inline mr-1">{{brand-icon this.platformType size=14}}</span>
 
   {{!-- Nome piattaforma --}}
   <span>{{this.channelName}}</span>
-
-  {{!-- Badge Verified (se verificato) --}}
-  {{#if @channel.verified}}
-    <i class="pe-7s-check ml-1 channel-badge-check"></i>
-  {{/if}}
 </span>

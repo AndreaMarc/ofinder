@@ -7,6 +7,34 @@
 .ofinder-performer-avatar {
   height: 300px;
   object-fit: cover;
+  width: 100%;
+}
+
+// Performer Card Bio (text truncation)
+.performer-bio-truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+// Performer Card Badge Overlays
+.ofinder-badge-overlay-tr {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.ofinder-badge-overlay-tl {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+// Performer Card Channels
+.performer-channels {
+  gap: 0.5rem;
 }
 
 // Rating Stars Component
@@ -58,15 +86,215 @@
 
   // Star states
   .star-filled {
-    opacity: 1;
+    // Colore gestito dalla classe colorClass (ofinder-text-accent - giallo)
   }
 
   .star-empty {
-    opacity: 1;
+    // Colore gestito dalla classe colorClass (text-muted - grigio)
   }
 
   .star-half {
-    opacity: 0.5;
+    opacity: 0.5; // Mezze stelle con opacity ridotta
+  }
+}
+
+// Search Page Specific Styles
+.filter-panel {
+  // Rimosso sticky per evitare sovrapposizioni con guest box
+
+  .card {
+    background-color: $ofinder-dark-surface;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  // Badge per icone piattaforme
+  .platform-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  // Header principale del pannello (collassabile su mobile)
+  .filter-panel-header {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $ofinder-primary !important;
+    }
+
+    i.fa-chevron-down {
+      transition: transform 0.3s ease;
+    }
+
+    &[aria-expanded="true"] i.fa-chevron-down {
+      transform: rotate(180deg);
+    }
+
+    // Su desktop, disabilita il comportamento di collapse
+    @media (min-width: 768px) {
+      cursor: default;
+      pointer-events: none;
+      margin-bottom: 1rem !important;
+      padding-bottom: 0 !important;
+    }
+  }
+
+  // Accordion filter sections
+  .filter-section {
+    h6[data-toggle="collapse"] {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $ofinder-primary !important;
+      }
+
+      i.fa-chevron-down {
+        transition: transform 0.3s ease;
+      }
+
+      &[aria-expanded="true"] i.fa-chevron-down {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  // Su desktop, i collapse delle sezioni interne sono sempre visibili
+  @media (min-width: 768px) {
+    .filter-section h6[data-toggle="collapse"] {
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+}
+
+.search-bar-container {
+  .input-group {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: $ofinder-dark-surface;
+
+    .input-group-text {
+      border: none;
+      background-color: transparent;
+
+      i {
+        font-size: 20px;
+        color: $ofinder-accent;
+      }
+    }
+
+    .form-control {
+      border: none;
+      font-size: 16px;
+      background-color: transparent;
+
+      &:focus {
+        box-shadow: none;
+        background-color: transparent;
+      }
+    }
+  }
+
+  .quick-filters {
+    gap: 0.5rem;
+
+    .text-muted {
+      color: $ofinder-gray-200 !important;
+      font-weight: 500;
+    }
+
+    // Quick filter buttons
+    .btn {
+      color: $ofinder-gray-100 !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+      background-color: transparent !important;
+      font-weight: 500;
+
+      &.btn-ofinder-primary {
+        background-color: $ofinder-primary !important;
+        border-color: $ofinder-primary !important;
+        color: white !important;
+      }
+
+      &.btn-outline-secondary {
+        &:hover {
+          background-color: $ofinder-dark-surface-light !important;
+          border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+      }
+    }
+  }
+}
+
+// Performer Card in Grid
+.performer-grid {
+  // Su desktop, le colonne usano flexbox per far sì che le card abbiano la stessa altezza
+  @media (min-width: 768px) {
+    > [class*="col-"] {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: $ofinder-dark-surface;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    // Su desktop, la card riempie l'altezza della colonna
+    @media (min-width: 768px) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(219, 39, 119, 0.3); // Pink glow on hover
+      background-color: $ofinder-dark-surface-light;
+      border-color: rgba(219, 39, 119, 0.3);
+    }
+
+    .card-body {
+      padding: 0.5rem 0.75rem !important; // Padding molto compatto (verticale ridotto)
+
+      // Su desktop, il body si espande per riempire lo spazio
+      @media (min-width: 768px) {
+        flex: 1;
+      }
+    }
+
+    .card-footer {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 0.75rem !important; // Padding compatto footer (verticale ridotto)
+    }
+  }
+}
+
+// Info boxes
+.info-box {
+  border-left: 4px solid;
+
+  &.info-box-primary {
+    border-color: #e91e63;
+    background-color: rgba(233, 30, 99, 0.05);
+  }
+
+  &.info-box-secondary {
+    border-color: #673ab7;
+    background-color: rgba(103, 58, 183, 0.05);
   }
 }
 
@@ -85,6 +313,18 @@
   // Check icon size
   .channel-badge-check {
     font-size: 10px;
+  }
+
+  // Badge per icone piattaforme inline (dentro i channel badge)
+  .platform-icon-badge-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 3px;
+    padding: 3px;
   }
 
   // Platform colors

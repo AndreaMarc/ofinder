@@ -22,6 +22,11 @@ export default class SearchBarComponent extends Component {
     );
   }
 
+  get responsivePlaceholder() {
+    // Usa il placeholder passato dal parent, altrimenti default più corto
+    return this.args.placeholder || 'Cerca performer...';
+  }
+
   get quickFilters() {
     return this.args.quickFilters || [];
   }

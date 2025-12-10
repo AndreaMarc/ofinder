@@ -33,6 +33,15 @@ module.exports = function (defaults) {
       alias: {
         fullcalendar: '@fullcalendar/core',
       },
+      webpack: {
+        node: {
+          global: true,
+        },
+        // Ensure simple-icons ES module is properly resolved
+        resolve: {
+          fullySpecified: false,
+        },
+      },
     },
   });
 

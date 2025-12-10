@@ -42,6 +42,13 @@ export default class ChannelModel extends Model {
   @attr('string') platform;
 
   /**
+   * Tipo di canale/attività
+   * ENUM: CamGirl, Performer, Escort
+   * DB: nvarchar(20)
+   */
+  @attr('string') channelType;
+
+  /**
    * Username/handle su quella piattaforma
    * Es: @username
    */

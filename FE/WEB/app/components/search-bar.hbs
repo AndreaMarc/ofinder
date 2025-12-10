@@ -2,13 +2,10 @@
 <div class="search-bar-container mb-4" ...attributes>
   {{!-- Input Group principale --}}
   <div class="input-group input-group-lg ofinder-shadow-sm ofinder-rounded">
-    {{!-- Icona Search --}}
-    <div class="input-group-prepend">
+    {{!-- Icona Search (solo desktop) --}}
+    <div class="input-group-prepend d-none d-md-flex">
       <span class="input-group-text bg-white border-0">
-        <i
-          class="fa fa-search ofinder-text-primary"
-          style="font-size: 20px;"
-        ></i>
+        <i class="fa fa-search ofinder-text-primary"></i>
       </span>
     </div>
 
@@ -16,32 +13,30 @@
     <input
       type="text"
       class="form-control border-0"
-      placeholder={{this.placeholder}}
+      placeholder={{this.responsivePlaceholder}}
       value={{this.searchQuery}}
       {{on "input" this.handleInput}}
       {{on "keydown" this.handleKeydown}}
     />
 
-    {{!-- Bottone Filtri Avanzati --}}
+    {{!-- Bottone Cerca --}}
     <div class="input-group-append">
       <button
         type="button"
-        class="btn btn-ofinder-secondary"
-        {{on "click" this.toggleFilters}}
+        class="btn btn-ofinder-primary"
+        {{on "click" this.performSearch}}
+        title="Cerca"
       >
-        <i class="fa fa-filter mr-2"></i>
-        Filtri
-        {{#if this.activeFiltersCount}}
-          <span class="badge badge-light ml-2">{{this.activeFiltersCount}}</span>
-        {{/if}}
+        <i class="fa fa-search"></i>
+        <span class="d-none d-md-inline ml-2">Cerca</span>
       </button>
     </div>
   </div>
 
   {{!-- Filtri Rapidi (chips) --}}
   {{#if this.quickFilters}}
-    <div class="mt-3 d-flex flex-wrap align-items-center" style="gap: 0.5rem;">
-      <span class="text-muted">Filtri rapidi:</span>
+    <div class="mt-3 d-flex flex-wrap align-items-center quick-filters">
+      <span class="text-muted mr-2">Filtri rapidi:</span>
 
       {{#each this.quickFilters as |filter|}}
         <button

@@ -4,28 +4,28 @@
 <div class="app-page-title ofinder-gradient-header">
   <div class="page-title-wrapper">
     <div class="page-title-heading">
-      <div class="page-title-icon">
-        <i class="fa fa-search icon-gradient ofinder-text-primary"></i>
+      <div class="page-title-icon d-none d-md-flex">
+        <i class="fa fa-search"></i>
       </div>
       <div>
         <div class="page-title-head">
           OFINDER
-          {{#unless @model.isLoggedIn}}
-            <span class="ofinder-badge-new ml-2">Guest Mode</span>
-          {{/unless}}
         </div>
         <div class="page-title-subheading">
-          Cerca e scopri i migliori content creator su OnlyFans, Fansly e altre
-          piattaforme
+          Scopri le migliori
+          <span class="ofinder-highlight-text">cam-girl</span>
+          del web e le migliori
+          <span class="ofinder-highlight-text">performer</span>
+          di OnlyFans, Fansly e molte altre piattaforme
         </div>
       </div>
     </div>
 
     {{#if @model.isLoggedIn}}
-      <div class="page-title-actions">
+      <div class="page-title-actions d-flex flex-wrap justify-content-center">
         <button
           type="button"
-          class="btn btn-ofinder-primary"
+          class="btn btn-ofinder-primary mb-1"
           {{on "click" this.goToProfile}}
         >
           <i class="fa fa-user mr-2"></i>
@@ -33,10 +33,10 @@
         </button>
       </div>
     {{else}}
-      <div class="page-title-actions">
+      <div class="page-title-actions d-flex flex-wrap justify-content-center">
         <button
           type="button"
-          class="btn btn-outline-primary mr-2"
+          class="btn btn-outline-primary mr-2 mb-1"
           {{on "click" this.goToLogin}}
         >
           <i class="fa fa-sign-in-alt mr-2"></i>
@@ -44,7 +44,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-ofinder-primary"
+          class="btn btn-ofinder-primary mb-1"
           {{on "click" this.goToRegistration}}
         >
           <i class="fa fa-user-plus mr-2"></i>
@@ -62,7 +62,7 @@
     <div class="col-md-3 mb-4">
       <FilterPanel
         @platformFilters={{@model.platformFilters}}
-        @categoryFilters={{@model.categoryFilters}}
+        @contentTypeFilters={{@model.contentTypeFilters}}
         @onFilterChange={{this.handleFilterChange}}
       />
 
@@ -93,7 +93,6 @@
     <div class="col-md-9">
       {{!-- Search Bar --}}
       <SearchBar
-        @placeholder="Cerca performer per nome, categoria o piattaforma..."
         @quickFilters={{@model.quickFilters}}
         @onSearch={{this.handleSearch}}
         @onFilterToggle={{this.handleQuickFilterToggle}}
@@ -143,7 +142,7 @@
       </div>
 
       {{!-- Performer Grid --}}
-      <div class="row">
+      <div class="row performer-grid">
         {{#each this.filteredPerformers as |performer|}}
           <div class="col-md-6 col-lg-4 mb-4">
             <PerformerCard

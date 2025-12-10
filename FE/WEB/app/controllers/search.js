@@ -13,7 +13,7 @@ export default class SearchController extends Controller {
   @tracked searchQuery = '';
   @tracked activeFilters = {
     platforms: [],
-    categories: [],
+    contentTypes: [],
     verified: false,
     premium: false,
     new: false,
@@ -191,7 +191,7 @@ export default class SearchController extends Controller {
     // Update activeFilters with all values from FilterPanel
     this.activeFilters = {
       platforms: filters.platforms || [],
-      categories: filters.categories || [],
+      contentTypes: filters.contentTypes || [],
       verified: filters.onlyVerified || false,
       premium: this.activeFilters.premium, // Keep quick filter state
       new: filters.onlyNew || false,
@@ -254,7 +254,9 @@ export default class SearchController extends Controller {
     console.log('View profile for performer:', performer.id);
     // TODO: Navigate to performer detail page
     // this.router.transitionTo('performer-detail', performer.id);
-    alert(`Profilo di ${performer.displayName} - TODO: Implementare pagina dettaglio`);
+    alert(
+      `Profilo di ${performer.displayName} - TODO: Implementare pagina dettaglio`
+    );
   }
 
   /**

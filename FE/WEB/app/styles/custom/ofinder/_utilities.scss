@@ -13,7 +13,7 @@
   color: white;
 }
 
-// Background Colors
+// Background Colors (Dark Theme)
 .ofinder-bg-primary {
   background-color: $ofinder-primary;
   color: white;
@@ -21,16 +21,22 @@
 
 .ofinder-bg-secondary {
   background-color: $ofinder-secondary;
-  color: white;
+  color: $ofinder-dark-bg;
 }
 
 .ofinder-bg-accent {
   background-color: $ofinder-accent;
-  color: $ofinder-gray-900;
+  color: $ofinder-dark-bg;
 }
 
-.ofinder-bg-light {
-  background-color: $ofinder-gray-100;
+.ofinder-bg-dark {
+  background-color: $ofinder-dark-bg;
+  color: $ofinder-gray-100;
+}
+
+.ofinder-bg-surface {
+  background-color: $ofinder-dark-surface;
+  color: $ofinder-gray-100;
 }
 
 // Shadows
@@ -105,10 +111,13 @@
 .btn-ofinder-secondary {
   background-color: $ofinder-secondary;
   border-color: $ofinder-secondary;
-  color: white;
+  color: $ofinder-dark-bg;
 
   &:hover {
     background-color: $ofinder-secondary-dark;
     border-color: $ofinder-secondary-dark;
+    color: $ofinder-dark-bg;
   }
 }
+
+// Note: .ofinder-gradient-header is defined in _base.scss

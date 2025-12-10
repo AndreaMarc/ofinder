@@ -1,28 +1,34 @@
 // ==================================
 // OFinder Design System - Variables
 // ==================================
+// Dark Theme (Cinema Mode) inspired by age-gate
 
-// PRIMARY COLORS
-$ofinder-primary: #E91E63;
-$ofinder-primary-dark: #C2185B;
-$ofinder-primary-light: #F8BBD0;
+// DARK THEME BASE
+$ofinder-dark-bg: #1a0a2e; // Deep dark purple (main background)
+$ofinder-dark-surface: #2d1b4e; // Lighter surface for cards/panels
+$ofinder-dark-surface-light: #3d2b5e; // Even lighter for hover states
+
+// PRIMARY COLORS (Pink accent - from age-gate)
+$ofinder-primary: #db2777; // Vibrant pink
+$ofinder-primary-dark: #be185d; // Darker pink
+$ofinder-primary-light: #ec4899; // Lighter pink
 $ofinder-primary-gradient: linear-gradient(135deg, $ofinder-primary 0%, $ofinder-primary-dark 100%);
 
-// SECONDARY COLORS
-$ofinder-secondary: #673AB7;
-$ofinder-secondary-dark: #512DA8;
-$ofinder-secondary-light: #D1C4E9;
+// SECONDARY COLORS (Gold accent - from age-gate)
+$ofinder-secondary: #f59e0b; // Vibrant gold
+$ofinder-secondary-dark: #d97706; // Darker gold
+$ofinder-secondary-light: #fbbf24; // Lighter gold
 
 // ACCENT COLORS (Premium Features)
-$ofinder-accent: #FFC107;
-$ofinder-accent-dark: #FFA000;
+$ofinder-accent: #f59e0b; // Gold (same as secondary for consistency)
+$ofinder-accent-dark: #d97706;
 
-// NEUTRAL GRAYS
-$ofinder-gray-100: #F5F5F5;
-$ofinder-gray-200: #EEEEEE;
-$ofinder-gray-300: #E0E0E0;
-$ofinder-gray-700: #616161;
-$ofinder-gray-900: #212121;
+// NEUTRAL COLORS (Dark Theme)
+$ofinder-gray-100: #f9fafb; // Very light (for text on dark)
+$ofinder-gray-200: #e5e7eb;
+$ofinder-gray-300: #d1d5db;
+$ofinder-gray-700: #9ca3af; // Medium gray for muted text
+$ofinder-gray-900: #111827; // Very dark (for accents)
 
 // SEMANTIC COLORS
 $ofinder-success: #4CAF50;
