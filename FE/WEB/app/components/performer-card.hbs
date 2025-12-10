@@ -1,5 +1,5 @@
 {{!-- PerformerCard Component Template --}}
-<div class="card ofinder-shadow ofinder-rounded overflow-hidden h-100" ...attributes>
+<div class="card ofinder-shadow ofinder-rounded overflow-hidden" ...attributes>
   {{!-- Avatar Container --}}
   <div class="position-relative">
     <img
@@ -28,12 +28,12 @@
   {{!-- Card Body --}}
   <div class="card-body">
     {{!-- Nome Performer --}}
-    <h5 class="ofinder-heading-md mb-2">
+    <h5 class="ofinder-heading-md mb-1">
       {{@performer.displayName}}
     </h5>
 
     {{!-- Rating Stars --}}
-    <div class="mb-2">
+    <div class="mb-1">
       <RatingStars
         @rating={{@performer.averageRating}}
         @reviewCount={{@performer.reviewCount}}
@@ -43,7 +43,7 @@
 
     {{!-- Channel Badges (Social Platforms) --}}
     {{#if @performer.channels}}
-      <div class="mb-2 d-flex flex-wrap performer-channels">
+      <div class="mb-1 d-flex flex-wrap performer-channels">
         {{#each @performer.channels as |channel|}}
           <ChannelBadge @channel={{channel}} @size="sm" />
         {{/each}}
@@ -52,7 +52,7 @@
 
     {{!-- Descrizione breve (troncata) --}}
     {{#if this.showBio}}
-      <p class="ofinder-text-sm ofinder-text-muted mb-2 performer-bio-truncated">
+      <p class="ofinder-text-sm ofinder-text-muted mb-1 performer-bio-truncated">
         {{this.truncatedBio}}
       </p>
     {{/if}}

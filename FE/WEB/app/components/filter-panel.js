@@ -12,6 +12,9 @@ import { action } from '@ember/object';
  * @param {Boolean} isMobile - Layout mobile
  */
 export default class FilterPanelComponent extends Component {
+  @tracked selectedCountry = 'italia';
+  @tracked selectedRegion = null;
+  @tracked selectedProvince = null;
   @tracked selectedPlatforms = [];
   @tracked selectedCategories = [];
   @tracked maxPrice = 25;
@@ -19,6 +22,65 @@ export default class FilterPanelComponent extends Component {
   @tracked onlyVerified = false;
   @tracked onlyNew = false;
   @tracked onlyActiveToday = false;
+
+  // Dati geolocalizzazione
+  countries = [{ id: 'italia', name: 'Italia' }];
+
+  regions = [
+    { id: 'abruzzo', name: 'Abruzzo' },
+    { id: 'basilicata', name: 'Basilicata' },
+    { id: 'calabria', name: 'Calabria' },
+    { id: 'campania', name: 'Campania' },
+    { id: 'emilia-romagna', name: 'Emilia-Romagna' },
+    { id: 'friuli-venezia-giulia', name: 'Friuli-Venezia Giulia' },
+    { id: 'lazio', name: 'Lazio' },
+    { id: 'liguria', name: 'Liguria' },
+    { id: 'lombardia', name: 'Lombardia' },
+    { id: 'marche', name: 'Marche' },
+    { id: 'molise', name: 'Molise' },
+    { id: 'piemonte', name: 'Piemonte' },
+    { id: 'puglia', name: 'Puglia' },
+    { id: 'sardegna', name: 'Sardegna' },
+    { id: 'sicilia', name: 'Sicilia' },
+    { id: 'toscana', name: 'Toscana' },
+    { id: 'trentino-alto-adige', name: 'Trentino-Alto Adige' },
+    { id: 'umbria', name: 'Umbria' },
+    { id: 'valle-daosta', name: "Valle d'Aosta" },
+    { id: 'veneto', name: 'Veneto' },
+  ];
+
+  // Mappa province per regione (alcune principali per esempio)
+  provincesByRegion = {
+    lombardia: [
+      { id: 'MI', name: 'Milano' },
+      { id: 'BG', name: 'Bergamo' },
+      { id: 'BS', name: 'Brescia' },
+      { id: 'CO', name: 'Como' },
+      { id: 'CR', name: 'Cremona' },
+      { id: 'LC', name: 'Lecco' },
+      { id: 'LO', name: 'Lodi' },
+      { id: 'MN', name: 'Mantova' },
+      { id: 'MB', name: 'Monza e Brianza' },
+      { id: 'PV', name: 'Pavia' },
+      { id: 'SO', name: 'Sondrio' },
+      { id: 'VA', name: 'Varese' },
+    ],
+    lazio: [
+      { id: 'RM', name: 'Roma' },
+      { id: 'FR', name: 'Frosinone' },
+      { id: 'LT', name: 'Latina' },
+      { id: 'RI', name: 'Rieti' },
+      { id: 'VT', name: 'Viterbo' },
+    ],
+    campania: [
+      { id: 'NA', name: 'Napoli' },
+      { id: 'AV', name: 'Avellino' },
+      { id: 'BN', name: 'Benevento' },
+      { id: 'CE', name: 'Caserta' },
+      { id: 'SA', name: 'Salerno' },
+    ],
+    // Aggiungi altre regioni secondo necessità
+  };
 
   // Use passed platformFilters from args, or fallback to defaults
   get platformFilters() {
@@ -47,8 +109,17 @@ export default class FilterPanelComponent extends Component {
     { value: 3, label: '3+ stelle' },
   ];
 
+  get availableProvinces() {
+    if (!this.selectedRegion) {
+      return [];
+    }
+    return this.provincesByRegion[this.selectedRegion] || [];
+  }
+
   get hasActiveFilters() {
     return (
+      this.selectedRegion !== null ||
+      this.selectedProvince !== null ||
       this.selectedPlatforms.length > 0 ||
       this.selectedCategories.length > 0 ||
       this.maxPrice < 50 ||
@@ -61,6 +132,8 @@ export default class FilterPanelComponent extends Component {
 
   get activeFiltersCount() {
     let count = 0;
+    if (this.selectedRegion) count++;
+    if (this.selectedProvince) count++;
     count += this.selectedPlatforms.length;
     count += this.selectedCategories.length;
     if (this.maxPrice < 50) count++;
@@ -69,6 +142,25 @@ export default class FilterPanelComponent extends Component {
     if (this.onlyNew) count++;
     if (this.onlyActiveToday) count++;
     return count;
+  }
+
+  @action
+  selectCountry(event) {
+    this.selectedCountry = event.target.value;
+  }
+
+  @action
+  selectRegion(event) {
+    const value = event.target.value;
+    this.selectedRegion = value === '' ? null : value;
+    // Reset provincia quando cambi regione
+    this.selectedProvince = null;
+  }
+
+  @action
+  selectProvince(event) {
+    const value = event.target.value;
+    this.selectedProvince = value === '' ? null : value;
   }
 
   @action
@@ -126,6 +218,8 @@ export default class FilterPanelComponent extends Component {
 
   @action
   clearAllFilters() {
+    this.selectedRegion = null;
+    this.selectedProvince = null;
     this.selectedPlatforms = [];
     this.selectedCategories = [];
     this.maxPrice = 25;
@@ -144,6 +238,9 @@ export default class FilterPanelComponent extends Component {
   notifyFilterChange() {
     if (this.args.onFilterChange) {
       this.args.onFilterChange({
+        country: this.selectedCountry,
+        region: this.selectedRegion,
+        province: this.selectedProvince,
         platforms: this.selectedPlatforms,
         categories: this.selectedCategories,
         maxPrice: this.maxPrice,

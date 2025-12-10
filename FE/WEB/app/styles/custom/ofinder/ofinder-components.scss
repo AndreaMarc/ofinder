@@ -106,6 +106,62 @@
     background-color: $ofinder-dark-surface;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  // Header principale del pannello (collassabile su mobile)
+  .filter-panel-header {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $ofinder-primary !important;
+    }
+
+    i.fa-chevron-down {
+      transition: transform 0.3s ease;
+    }
+
+    &[aria-expanded="true"] i.fa-chevron-down {
+      transform: rotate(180deg);
+    }
+
+    // Su desktop, disabilita il comportamento di collapse
+    @media (min-width: 768px) {
+      cursor: default;
+      pointer-events: none;
+      margin-bottom: 1rem !important;
+      padding-bottom: 0 !important;
+    }
+  }
+
+  // Accordion filter sections
+  .filter-section {
+    h6[data-toggle="collapse"] {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $ofinder-primary !important;
+      }
+
+      i.fa-chevron-down {
+        transition: transform 0.3s ease;
+      }
+
+      &[aria-expanded="true"] i.fa-chevron-down {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  // Su desktop, i collapse delle sezioni interne sono sempre visibili
+  @media (min-width: 768px) {
+    .filter-section h6[data-toggle="collapse"] {
+      cursor: default;
+      pointer-events: none;
+    }
+  }
 }
 
 .search-bar-container {
@@ -170,10 +226,25 @@
 
 // Performer Card in Grid
 .performer-grid {
+  // Su desktop, le colonne usano flexbox per far sì che le card abbiano la stessa altezza
+  @media (min-width: 768px) {
+    > [class*="col-"] {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
   .card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     background-color: $ofinder-dark-surface;
     border: 1px solid rgba(255, 255, 255, 0.1);
+
+    // Su desktop, la card riempie l'altezza della colonna
+    @media (min-width: 768px) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
     &:hover {
       transform: translateY(-4px);
@@ -183,13 +254,18 @@
     }
 
     .card-body {
-      padding: 0.75rem !important; // Padding compatto
+      padding: 0.5rem 0.75rem !important; // Padding molto compatto (verticale ridotto)
+
+      // Su desktop, il body si espande per riempire lo spazio
+      @media (min-width: 768px) {
+        flex: 1;
+      }
     }
 
     .card-footer {
       background-color: rgba(0, 0, 0, 0.2);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.75rem !important; // Padding compatto footer
+      padding: 0.5rem 0.75rem !important; // Padding compatto footer (verticale ridotto)
     }
   }
 }
