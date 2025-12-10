@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet test:*)",
+      "Bash(Select-String -Pattern \"error|warning CS\" -Context 0,2)",
+      "Bash(Select-String -Pattern \"Build succeeded|Build FAILED|error|warning CS\" -Context 0,2)",
+      "Bash(dotnet new:*)",
+      "Read(//c/tmp/**)",
+      "Bash(cat:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(Select-Object -First 100)",
+      "Bash(dotnet nuget list:*)",
+      "WebSearch",
+      "Bash(dotnet build:*)",
+      "Bash(tee:*)",
+      "WebFetch(domain:github.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

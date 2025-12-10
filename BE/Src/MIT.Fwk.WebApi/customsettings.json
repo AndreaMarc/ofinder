@@ -1,0 +1,84 @@
+{
+  "LaunchUrl": "http://0.0.0.0:7002",
+  "AllowedCorsOrigin": "*",
+  "EnableSwagger": true,
+  "EnableSSL": "false",
+  "SSLPort": "7003",
+  "Kestrel": {
+    "Certificates": {
+      "Default": {
+        "Path": "",
+        "Password": ""
+      }
+    }
+  },
+  "Authentication": {
+    "Jwt": {
+      "Enabled": "true",
+      "Issuer": "Maestrale Information Technology",
+      "Audience": "MICH2020",
+      "SecretKey": "MaeMich-2020-CHFWKSECS020:07051529-trps-5169-0744-kteyox29zxoy",
+      "AccessTokenExpiresIn": "480",
+      "RefreshTokenExpiresIn": "1440"
+    }
+  },
+  "SMTP": {
+    "Enabled": "true",
+    "Host": "smtp.eu.mailgun.org",
+    "Port": "25",
+    "Username": "dev@maeservices.it",
+    "Password": "Fwk-cosa?",
+    "Sender": "noreply@apptimesheet.it",
+    "NotifyTo": "andrea.marcelli@maestrale.it",
+    "BaseUrl": "https://test-app.maestrale.it:5000"
+  },
+  "Swagger": {
+    "Title": "MICH Web Api",
+    "Description": "MICH Web Api documentation",
+    "Owner": "Maestrale Information Technology S.r.l.",
+    "Email": "info@maestrale.it",
+    "Website": "http://www.maestrale.it",
+    "License": "Copyright(c) 2020 - Maestrale Information Technology S.r.l."
+  },
+  "EnableJobs": "false",
+  "EnableAutoMigrations": "true",
+  "DatabaseMigrationOrder": [
+    "JsonApiDbContext",
+    "OtherDbContext"
+  ],
+  "Scheduler": {
+    "ToStart": "MongoLogBusManager",
+    "QueueManager": "0 * * ? * * *" // fires every 1 minute
+  },
+  "UploadsPath": "./uploads",
+  "UnitTest": {
+    "LoginCreds": {
+      "email": "unit.test@maestrale.it",
+      "password": "28ec245edc1a1d9813acb28441ae4313"
+    }
+  },
+  "Logging": {
+    "LogWithBus": "true",
+    "LogCollection": "FwkLog",
+    "LogLevel": 10
+  },
+  "LegalTermsCodes": "privacyPolicy,termsEndConditions,cookiesAcceptance",
+  "WebSocket": {
+    "LaunchUrl": "http://*:7003/" //usare * invece che 0.0.0.0 e ricordarsi lo / finale
+  },
+  "SpecialUsers": "unit.test@maestrale.it",
+  "Travelers": "CanSeeAllCustomers,CapoArea",
+  "RolesByPassOtp": "", // CustomerAdmin
+  "Firebase": {
+    "type": "service_account",
+    "project_id": "timesheet-d43c1",
+    "private_key_id": "0db8561964c822b498c05ce44a2893e96119854e",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCz5fYJbvIJkwgt\ncnD1vohDKzgCDpw7+Sd8XNZ9Nivp7xNjjNqJCaBwnbb1G27Mz6APn0BDKDyZhNZY\nn8Hc75V3Y2zz6zJYQ71qgrduChvac/8DwDo0YkXadxI55JyPOuoi+WqDVTvNYPO8\njpdUE9h3BrTN5/Ozy1qZSRAAtRnPEIc5Kx1psuohvC8shMNZTRQuUrDMn1WS1Jv+\nH+eOKHNEI9oQ/XG742qfFAcmdYCf53IKp75f9XI6cZ/NqwNo1lSunHV0fYhaRFxz\nbIwmClBOHKo9ejzy6p1e2vnH3Ud437aUAAb/cW5GXUeO3/U3CcAtUWA8+rCpAqkL\nN0C1LQfTAgMBAAECggEADzlEquOyo9DHfmES4hjvmw+LO9FUs1aQWtvYYtw0tyU+\nNMx0qeggpacTFobtx3NCjk/htk0vY6Z0JSfP1gyIT4QgcjvTFNkWrG7Haw578O6k\nBAM+abRvSN+OsUuBXDWWHsOQmfCakPTFa419jOXpCZmNr2cTnoF090fRjN3Gg1k0\nYptKE8kMKleVcUIZHgAew2OaK4xgtygkBTaxlb3MnaD6/ivxeSAvTK0BJgKFTd+E\npOp8hh6GVngdDlvxtZl9GLHJpsoDjd7gC/MDxie+2ogghAvJKCVyHz6RVizpe9h2\nacVpyhQWj/BGQ6T8SHn7JrR3SBhp4qxajSyUaVtNgQKBgQDcdy0QjBfnWnLCfgbX\n1xwaKDuT4jlVQFCBv5syPEHnj++qNdNBREwYDqCBudW44MV6HsOzdLDSafLDQbQa\ng9lDCbgBd2k96WiUClHtPInAPWjkhyVKOYu7pIxgejqCVu8Nd/bwrfCb5e652yrA\n4wBbYK5CTggW+3VBXqI9oLlQ4QKBgQDQ5OdmjMZPhgdtMlgk7SG1dB4OpTnz+Rym\nsN5QHlKicNRsdNUWeeo0hVvlS/VkNXKJ8yG8yhPEPAavMkbaynAQ5ajMlodN3KrD\n8PLAdk9+sk6ih+Gtw93+CataNxk7FL2wTLINBIPWtuVbwuH7fBdCPY+LxE95UPIR\neF6nx5BLMwKBgDoMhykcOg8Imb7sQBEE6rlYbpd5sW7pCEmhkdOgWhoGpCxFD+LX\ngNG0yD5gGA4d4OFOyGiwCP7eNrWCz1FL9iDYpkJ8lpFeq9KPBRNaJUsg4EWL8B2j\nGU/G+89LX6yCB1+cfsDQi9IAsOLu+krfenCU/E0pDqg+fZlAuadQcnsBAoGAOs7W\nXkZvZd/jo1gy/GJNxRmlhJX7VLXi3QKZ85A1z0lYZBgYDTXRO2v3zPuvX8C0OCXc\nb5usKOiFMTlEPUAUgI1HEiGmgcMHyBXDIW+tPYvRG2yJmjO0AVqThNhSIBHcvQ86\naPPGceIXe9fHatcqbRmLmdtwTET/gO+UJkPGWYUCgYEA1uRpyoDbcY47G7wpHbKE\nLQiM4pjuefIQzEJrdorTtRRXwR8ucVgpHwf9vnYwhIuZc+uRg+MK1q+VaKt409JV\nP724qXcX1/1ww4pmTxSB9gq7dDnIjs2U0US4Z2W6u8WwzVBOCtsxXCSvupgH5iX0\nIM+p2nUHs8nQrVXHJXEAaYg=\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-9jeta@timesheet-d43c1.iam.gserviceaccount.com",
+    "client_id": "103033994753444225534",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-9jeta%40timesheet-d43c1.iam.gserviceaccount.com"
+  }
+}

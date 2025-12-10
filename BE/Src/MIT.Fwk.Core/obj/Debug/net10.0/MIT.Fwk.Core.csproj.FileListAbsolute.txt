@@ -1,0 +1,12 @@
+C:\Projects\OFinder\Src\MIT.Fwk.Core\bin\Debug\net10.0\MIT.Fwk.Core.deps.json
+C:\Projects\OFinder\Src\MIT.Fwk.Core\bin\Debug\net10.0\MIT.Fwk.Core.dll
+C:\Projects\OFinder\Src\MIT.Fwk.Core\bin\Debug\net10.0\MIT.Fwk.Core.pdb
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.csproj.AssemblyReference.cache
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.AssemblyInfoInputs.cache
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.AssemblyInfo.cs
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.csproj.CoreCompileInputs.cache
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.dll
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\refint\MIT.Fwk.Core.dll
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\MIT.Fwk.Core.pdb
+C:\Projects\OFinder\Src\MIT.Fwk.Core\obj\Debug\net10.0\ref\MIT.Fwk.Core.dll

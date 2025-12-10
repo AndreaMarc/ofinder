@@ -1,0 +1,228 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Projects\\OFinder\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|c:\\projects\\ofinder\\src\\mit.fwk.webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|solutionrelative:src\\mit.fwk.webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|c:\\projects\\ofinder\\src\\mit.fwk.webapi\\dbconnections.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|solutionrelative:src\\mit.fwk.webapi\\dbconnections.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{46034C87-98A0-432B-B02E-FAB5D1827A5C}|Src\\MIT.Fwk.Infrastructure\\MIT.Fwk.Infrastructure.csproj|c:\\projects\\ofinder\\src\\mit.fwk.infrastructure\\data\\mitapplicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{46034C87-98A0-432B-B02E-FAB5D1827A5C}|Src\\MIT.Fwk.Infrastructure\\MIT.Fwk.Infrastructure.csproj|solutionrelative:src\\mit.fwk.infrastructure\\data\\mitapplicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{46034C87-98A0-432B-B02E-FAB5D1827A5C}|Src\\MIT.Fwk.Infrastructure\\MIT.Fwk.Infrastructure.csproj|c:\\projects\\ofinder\\src\\mit.fwk.infrastructure\\data\\jsonapidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{46034C87-98A0-432B-B02E-FAB5D1827A5C}|Src\\MIT.Fwk.Infrastructure\\MIT.Fwk.Infrastructure.csproj|solutionrelative:src\\mit.fwk.infrastructure\\data\\jsonapidbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF7DF2C6-F5A4-4004-96ED-5ED649B733DD}|Src\\MIT.Fwk.Core\\MIT.Fwk.Core.csproj|c:\\projects\\ofinder\\src\\mit.fwk.core\\options\\databaseoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DF7DF2C6-F5A4-4004-96ED-5ED649B733DD}|Src\\MIT.Fwk.Core\\MIT.Fwk.Core.csproj|solutionrelative:src\\mit.fwk.core\\options\\databaseoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|c:\\projects\\ofinder\\src\\mit.fwk.codegenerator\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|solutionrelative:src\\mit.fwk.codegenerator\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|c:\\projects\\ofinder\\src\\mit.fwk.codegenerator\\models\\generatoroptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|solutionrelative:src\\mit.fwk.codegenerator\\models\\generatoroptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|c:\\projects\\ofinder\\src\\mit.fwk.codegenerator\\models\\databaseengine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|solutionrelative:src\\mit.fwk.codegenerator\\models\\databaseengine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|c:\\projects\\ofinder\\src\\mit.fwk.codegenerator\\mit.fwk.codegenerator.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|solutionrelative:src\\mit.fwk.codegenerator\\mit.fwk.codegenerator.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|c:\\projects\\ofinder\\src\\mit.fwk.codegenerator\\services\\dbcontextgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A60B0E93-5062-1A37-6FC5-C189D1E0BF9C}|Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj|solutionrelative:src\\mit.fwk.codegenerator\\services\\dbcontextgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|c:\\projects\\ofinder\\src\\mit.fwk.webapi\\controllers\\performerreviewscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|solutionrelative:src\\mit.fwk.webapi\\controllers\\performerreviewscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|c:\\projects\\ofinder\\src\\mit.fwk.webapi\\controllers\\performerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4A45DA53-B05B-4121-AD01-F60BD1DDC827}|Src\\MIT.Fwk.WebApi\\MIT.Fwk.WebApi.csproj|solutionrelative:src\\mit.fwk.webapi\\controllers\\performerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "JsonApiDbContext.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.Infrastructure\\Data\\JsonApiDbContext.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.Infrastructure\\Data\\JsonApiDbContext.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.Infrastructure\\Data\\JsonApiDbContext.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.Infrastructure\\Data\\JsonApiDbContext.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAvwCIAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:40:22.877Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DatabaseOptions.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.Core\\Options\\DatabaseOptions.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.Core\\Options\\DatabaseOptions.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.Core\\Options\\DatabaseOptions.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.Core\\Options\\DatabaseOptions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:40:17.603Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Program.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.CodeGenerator\\Program.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Program.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.CodeGenerator\\Program.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAvwCAAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:39:46.853Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GeneratorOptions.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Models\\GeneratorOptions.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.CodeGenerator\\Models\\GeneratorOptions.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Models\\GeneratorOptions.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.CodeGenerator\\Models\\GeneratorOptions.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAvwA8AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:39:44.706Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DatabaseEngine.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Models\\DatabaseEngine.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.CodeGenerator\\Models\\DatabaseEngine.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Models\\DatabaseEngine.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.CodeGenerator\\Models\\DatabaseEngine.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAvwA0AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:39:39.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MIT.Fwk.CodeGenerator",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj",
+              "RelativeToolTip": "Src\\MIT.Fwk.CodeGenerator\\MIT.Fwk.CodeGenerator.csproj",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAcwBEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-12-09T15:39:37.405Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\appsettings.json",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.WebApi\\appsettings.json",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\appsettings.json",
+              "RelativeToolTip": "Src\\MIT.Fwk.WebApi\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-09T15:23:38.981Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DbContextGenerator.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Services\\DbContextGenerator.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.CodeGenerator\\Services\\DbContextGenerator.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.CodeGenerator\\Services\\DbContextGenerator.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.CodeGenerator\\Services\\DbContextGenerator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:39:26.751Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "dbconnections.json",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\dbconnections.json",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.WebApi\\dbconnections.json",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\dbconnections.json",
+              "RelativeToolTip": "Src\\MIT.Fwk.WebApi\\dbconnections.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-09T15:10:31.983Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MITApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.Infrastructure\\Data\\MITApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.Infrastructure\\Data\\MITApplicationDbContext.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.Infrastructure\\Data\\MITApplicationDbContext.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.Infrastructure\\Data\\MITApplicationDbContext.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAnwDEAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T15:41:02.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PerformerReviewsController.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\Controllers\\PerformerReviewsController.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.WebApi\\Controllers\\PerformerReviewsController.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\Controllers\\PerformerReviewsController.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.WebApi\\Controllers\\PerformerReviewsController.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T14:23:49.242Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "PerformersController.cs",
+              "DocumentMoniker": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\Controllers\\PerformersController.cs",
+              "RelativeDocumentMoniker": "Src\\MIT.Fwk.WebApi\\Controllers\\PerformersController.cs",
+              "ToolTip": "C:\\Projects\\OFinder\\Src\\MIT.Fwk.WebApi\\Controllers\\PerformersController.cs",
+              "RelativeToolTip": "Src\\MIT.Fwk.WebApi\\Controllers\\PerformersController.cs",
+              "ViewState": "AgIAAKoAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-09T14:23:26.69Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
