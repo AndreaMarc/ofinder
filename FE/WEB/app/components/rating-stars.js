@@ -24,7 +24,7 @@ export default class RatingStarsComponent extends Component {
         // Stella piena
         stars.push({
           index: i,
-          iconClass: 'pe-7s-star',
+          iconClass: 'fas fa-star',
           colorClass: 'ofinder-text-accent',
           filled: true,
         });
@@ -32,16 +32,16 @@ export default class RatingStarsComponent extends Component {
         // Mezza stella (mostrata con opacity via CSS)
         stars.push({
           index: i,
-          iconClass: 'pe-7s-star',
+          iconClass: 'fas fa-star',
           colorClass: 'ofinder-text-accent',
           filled: true,
           isHalf: true,
         });
       } else {
-        // Stella vuota
+        // Stella vuota (grigia)
         stars.push({
           index: i,
-          iconClass: 'pe-7s-star',
+          iconClass: 'fas fa-star',
           colorClass: 'text-muted',
           filled: false,
         });

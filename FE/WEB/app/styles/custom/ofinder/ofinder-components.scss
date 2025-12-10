@@ -86,15 +86,15 @@
 
   // Star states
   .star-filled {
-    opacity: 1;
+    // Colore gestito dalla classe colorClass (ofinder-text-accent - giallo)
   }
 
   .star-empty {
-    opacity: 1;
+    // Colore gestito dalla classe colorClass (text-muted - grigio)
   }
 
   .star-half {
-    opacity: 0.5;
+    opacity: 0.5; // Mezze stelle con opacity ridotta
   }
 }
 
@@ -105,6 +105,19 @@
   .card {
     background-color: $ofinder-dark-surface;
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  // Badge per icone piattaforme
+  .platform-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   // Header principale del pannello (collassabile su mobile)
@@ -300,6 +313,18 @@
   // Check icon size
   .channel-badge-check {
     font-size: 10px;
+  }
+
+  // Badge per icone piattaforme inline (dentro i channel badge)
+  .platform-icon-badge-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 3px;
+    padding: 3px;
   }
 
   // Platform colors

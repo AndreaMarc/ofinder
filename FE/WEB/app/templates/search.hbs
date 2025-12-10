@@ -22,10 +22,10 @@
     </div>
 
     {{#if @model.isLoggedIn}}
-      <div class="page-title-actions">
+      <div class="page-title-actions d-flex flex-wrap justify-content-center">
         <button
           type="button"
-          class="btn btn-ofinder-primary"
+          class="btn btn-ofinder-primary mb-1"
           {{on "click" this.goToProfile}}
         >
           <i class="fa fa-user mr-2"></i>
@@ -33,10 +33,10 @@
         </button>
       </div>
     {{else}}
-      <div class="page-title-actions">
+      <div class="page-title-actions d-flex flex-wrap justify-content-center">
         <button
           type="button"
-          class="btn btn-outline-primary mr-2"
+          class="btn btn-outline-primary mr-2 mb-1"
           {{on "click" this.goToLogin}}
         >
           <i class="fa fa-sign-in-alt mr-2"></i>
@@ -44,7 +44,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-ofinder-primary"
+          class="btn btn-ofinder-primary mb-1"
           {{on "click" this.goToRegistration}}
         >
           <i class="fa fa-user-plus mr-2"></i>
@@ -62,7 +62,7 @@
     <div class="col-md-3 mb-4">
       <FilterPanel
         @platformFilters={{@model.platformFilters}}
-        @categoryFilters={{@model.categoryFilters}}
+        @contentTypeFilters={{@model.contentTypeFilters}}
         @onFilterChange={{this.handleFilterChange}}
       />
 

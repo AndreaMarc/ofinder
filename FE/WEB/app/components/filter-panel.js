@@ -16,7 +16,7 @@ export default class FilterPanelComponent extends Component {
   @tracked selectedRegion = null;
   @tracked selectedProvince = null;
   @tracked selectedPlatforms = [];
-  @tracked selectedCategories = [];
+  @tracked selectedContentTypes = [];
   @tracked maxPrice = 25;
   @tracked selectedRating = null;
   @tracked onlyVerified = false;
@@ -84,23 +84,27 @@ export default class FilterPanelComponent extends Component {
 
   // Use passed platformFilters from args, or fallback to defaults
   get platformFilters() {
-    return this.args.platformFilters || [
-      { id: 'onlyfans', name: 'OnlyFans', emoji: '🔵', count: 1234 },
-      { id: 'fansly', name: 'Fansly', emoji: '🟣', count: 567 },
-      { id: 'instagram', name: 'Instagram', emoji: '📸', count: 890 },
-      { id: 'tiktok', name: 'TikTok', emoji: '🎵', count: 456 },
-    ];
+    return (
+      this.args.platformFilters || [
+        { id: 'onlyfans', name: 'OnlyFans', emoji: '🔵', count: 1234 },
+        { id: 'fansly', name: 'Fansly', emoji: '🟣', count: 567 },
+        { id: 'instagram', name: 'Instagram', emoji: '📸', count: 890 },
+        { id: 'tiktok', name: 'TikTok', emoji: '🎵', count: 456 },
+      ]
+    );
   }
 
-  // Use passed categoryFilters from args, or fallback to defaults
-  get categoryFilters() {
-    return this.args.categoryFilters || [
-      { id: 'fitness', name: 'Fitness', count: 234 },
-      { id: 'gaming', name: 'Gaming', count: 156 },
-      { id: 'lifestyle', name: 'Lifestyle', count: 345 },
-      { id: 'cosplay', name: 'Cosplay', count: 123 },
-      { id: 'art', name: 'Art & Design', count: 89 },
-    ];
+  // Use passed contentTypeFilters from args, or fallback to defaults
+  get contentTypeFilters() {
+    return (
+      this.args.contentTypeFilters || [
+        { id: 'foto', name: 'Foto', count: 234 },
+        { id: 'video', name: 'Video', count: 189 },
+        { id: 'live', name: 'Live', count: 156 },
+        { id: 'abbigliamento', name: 'Abbigliamento', count: 45 },
+        { id: 'contenuti-extra', name: 'Contenuti Extra', count: 78 },
+      ]
+    );
   }
 
   ratingFilters = [
@@ -121,7 +125,7 @@ export default class FilterPanelComponent extends Component {
       this.selectedRegion !== null ||
       this.selectedProvince !== null ||
       this.selectedPlatforms.length > 0 ||
-      this.selectedCategories.length > 0 ||
+      this.selectedContentTypes.length > 0 ||
       this.maxPrice < 50 ||
       this.selectedRating !== null ||
       this.onlyVerified ||
@@ -135,7 +139,7 @@ export default class FilterPanelComponent extends Component {
     if (this.selectedRegion) count++;
     if (this.selectedProvince) count++;
     count += this.selectedPlatforms.length;
-    count += this.selectedCategories.length;
+    count += this.selectedContentTypes.length;
     if (this.maxPrice < 50) count++;
     if (this.selectedRating) count++;
     if (this.onlyVerified) count++;
@@ -175,13 +179,13 @@ export default class FilterPanelComponent extends Component {
   }
 
   @action
-  toggleCategory(category) {
-    if (this.selectedCategories.includes(category.id)) {
-      this.selectedCategories = this.selectedCategories.filter(
-        (id) => id !== category.id
+  toggleContentType(contentType) {
+    if (this.selectedContentTypes.includes(contentType.id)) {
+      this.selectedContentTypes = this.selectedContentTypes.filter(
+        (id) => id !== contentType.id
       );
     } else {
-      this.selectedCategories = [...this.selectedCategories, category.id];
+      this.selectedContentTypes = [...this.selectedContentTypes, contentType.id];
     }
   }
 
@@ -221,7 +225,7 @@ export default class FilterPanelComponent extends Component {
     this.selectedRegion = null;
     this.selectedProvince = null;
     this.selectedPlatforms = [];
-    this.selectedCategories = [];
+    this.selectedContentTypes = [];
     this.maxPrice = 25;
     this.selectedRating = null;
     this.onlyVerified = false;
@@ -242,7 +246,7 @@ export default class FilterPanelComponent extends Component {
         region: this.selectedRegion,
         province: this.selectedProvince,
         platforms: this.selectedPlatforms,
-        categories: this.selectedCategories,
+        contentTypes: this.selectedContentTypes,
         maxPrice: this.maxPrice,
         minRating: this.selectedRating,
         onlyVerified: this.onlyVerified,
@@ -256,7 +260,7 @@ export default class FilterPanelComponent extends Component {
     return (platformId) => this.selectedPlatforms.includes(platformId);
   }
 
-  get isCategorySelected() {
-    return (categoryId) => this.selectedCategories.includes(categoryId);
+  get isContentTypeSelected() {
+    return (contentTypeId) => this.selectedContentTypes.includes(contentTypeId);
   }
 }

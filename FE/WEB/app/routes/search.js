@@ -18,7 +18,7 @@ export default class SearchRoute extends Route {
       performers: this.getMockPerformers(),
       quickFilters: this.getQuickFilters(),
       platformFilters: this.getPlatformFilters(),
-      categoryFilters: this.getCategoryFilters(),
+      contentTypeFilters: this.getContentTypeFilters(),
       isLoggedIn: this.session.isAuthenticated,
     };
   }
@@ -40,9 +40,21 @@ export default class SearchRoute extends Route {
         minPrice: 9.99,
         bio: 'Content creator specializzata in lifestyle e fashion. Contenuti esclusivi ogni giorno.',
         channels: [
-          { platformType: 'onlyfans', verified: true, url: 'https://onlyfans.com/sofia' },
-          { platformType: 'fansly', verified: false, url: 'https://fansly.com/sofia' },
-          { platformType: 'instagram', verified: true, url: 'https://instagram.com/sofia' },
+          {
+            platformType: 'onlyfans',
+            verified: true,
+            url: 'https://onlyfans.com/sofia',
+          },
+          {
+            platformType: 'fansly',
+            verified: false,
+            url: 'https://fansly.com/sofia',
+          },
+          {
+            platformType: 'instagram',
+            verified: true,
+            url: 'https://instagram.com/sofia',
+          },
         ],
       },
       {
@@ -56,8 +68,16 @@ export default class SearchRoute extends Route {
         minPrice: 4.99,
         bio: 'Modella e influencer. Contenuti glamour e lifestyle esclusivi.',
         channels: [
-          { platformType: 'onlyfans', verified: true, url: 'https://onlyfans.com/emma' },
-          { platformType: 'twitter', verified: false, url: 'https://twitter.com/emma' },
+          {
+            platformType: 'onlyfans',
+            verified: true,
+            url: 'https://onlyfans.com/emma',
+          },
+          {
+            platformType: 'twitter',
+            verified: false,
+            url: 'https://twitter.com/emma',
+          },
         ],
       },
       {
@@ -71,10 +91,26 @@ export default class SearchRoute extends Route {
         minPrice: 19.99,
         bio: 'Premium content creator. Contenuti esclusivi e personalizzati.',
         channels: [
-          { platformType: 'onlyfans', verified: false, url: 'https://onlyfans.com/luna' },
-          { platformType: 'fansly', verified: true, url: 'https://fansly.com/luna' },
-          { platformType: 'tiktok', verified: false, url: 'https://tiktok.com/@luna' },
-          { platformType: 'instagram', verified: true, url: 'https://instagram.com/luna' },
+          {
+            platformType: 'onlyfans',
+            verified: false,
+            url: 'https://onlyfans.com/luna',
+          },
+          {
+            platformType: 'fansly',
+            verified: true,
+            url: 'https://fansly.com/luna',
+          },
+          {
+            platformType: 'tiktok',
+            verified: false,
+            url: 'https://tiktok.com/@luna',
+          },
+          {
+            platformType: 'instagram',
+            verified: true,
+            url: 'https://instagram.com/luna',
+          },
         ],
       },
       {
@@ -88,9 +124,21 @@ export default class SearchRoute extends Route {
         minPrice: 7.99,
         bio: 'Fitness model e lifestyle influencer. Contenuti motivazionali e lifestyle.',
         channels: [
-          { platformType: 'onlyfans', verified: true, url: 'https://onlyfans.com/mia' },
-          { platformType: 'instagram', verified: true, url: 'https://instagram.com/mia' },
-          { platformType: 'youtube', verified: false, url: 'https://youtube.com/mia' },
+          {
+            platformType: 'onlyfans',
+            verified: true,
+            url: 'https://onlyfans.com/mia',
+          },
+          {
+            platformType: 'instagram',
+            verified: true,
+            url: 'https://instagram.com/mia',
+          },
+          {
+            platformType: 'youtube',
+            verified: false,
+            url: 'https://youtube.com/mia',
+          },
         ],
       },
     ];
@@ -103,8 +151,8 @@ export default class SearchRoute extends Route {
     return [
       { id: 'verified', label: 'Verificati', icon: '✓', active: false },
       { id: 'premium', label: 'Premium', icon: '⭐', active: false },
-      { id: 'new', label: 'Nuovi', icon: '🆕', active: false },
-      { id: 'top-rated', label: 'Top Rated', icon: '🔥', active: false },
+      { id: 'new', label: 'Nuovi', icon: '✨', active: false },
+      { id: 'topRated', label: 'Più votati', icon: '🏆', active: false },
     ];
   }
 
@@ -122,15 +170,15 @@ export default class SearchRoute extends Route {
   }
 
   /**
-   * Category filters for filter panel
+   * Content Type filters for filter panel
    */
-  getCategoryFilters() {
+  getContentTypeFilters() {
     return [
-      { id: 'lifestyle', name: 'Lifestyle', count: 145 },
-      { id: 'fitness', name: 'Fitness', count: 89 },
-      { id: 'fashion', name: 'Fashion', count: 112 },
-      { id: 'glamour', name: 'Glamour', count: 203 },
-      { id: 'cosplay', name: 'Cosplay', count: 56 },
+      { id: 'foto', name: 'Foto', count: 234 },
+      { id: 'video', name: 'Video', count: 189 },
+      { id: 'live', name: 'Live', count: 156 },
+      { id: 'abbigliamento', name: 'Abbigliamento', count: 45 },
+      { id: 'contenuti-extra', name: 'Contenuti Extra', count: 78 },
     ];
   }
 }

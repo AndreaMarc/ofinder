@@ -140,7 +140,7 @@
                 class="custom-control-label ofinder-text-sm"
                 for="platform-{{platform.id}}"
               >
-                {{platform.emoji}}
+                <span class="platform-icon-badge mr-2">{{brand-icon platform.id size=14}}</span>
                 {{platform.name}}
                 <span class="ofinder-text-muted">({{platform.count}})</span>
               </label>
@@ -149,35 +149,35 @@
         </div>
       </div>
 
-      {{!-- Categorie --}}
+      {{!-- Tipi di Contenuto --}}
       <div class="filter-section mb-3">
         <h6
           class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
           data-toggle="collapse"
-          data-target="#collapseCategories"
+          data-target="#collapseContentTypes"
           role="button"
           aria-expanded="false"
-          aria-controls="collapseCategories"
+          aria-controls="collapseContentTypes"
         >
-          <span>Categorie</span>
+          <span>Tipi di Contenuto</span>
           <i class="fa fa-chevron-down d-md-none"></i>
         </h6>
-        <div id="collapseCategories" class="collapse d-md-block" data-parent="#filterAccordion">
-          {{#each this.categoryFilters as |category|}}
+        <div id="collapseContentTypes" class="collapse d-md-block" data-parent="#filterAccordion">
+          {{#each this.contentTypeFilters as |contentType|}}
             <div class="custom-control custom-checkbox mb-2">
               <input
                 type="checkbox"
                 class="custom-control-input"
-                id="category-{{category.id}}"
-                checked={{this.isCategorySelected category.id}}
-                {{on "change" (fn this.toggleCategory category)}}
+                id="contentType-{{contentType.id}}"
+                checked={{this.isContentTypeSelected contentType.id}}
+                {{on "change" (fn this.toggleContentType contentType)}}
               />
               <label
                 class="custom-control-label ofinder-text-sm"
-                for="category-{{category.id}}"
+                for="contentType-{{contentType.id}}"
               >
-                {{category.name}}
-                <span class="ofinder-text-muted">({{category.count}})</span>
+                {{contentType.name}}
+                <span class="ofinder-text-muted">({{contentType.count}})</span>
               </label>
             </div>
           {{/each}}
