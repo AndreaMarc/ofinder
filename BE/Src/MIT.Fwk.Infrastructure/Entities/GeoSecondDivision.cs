@@ -1,10 +1,14 @@
 ﻿using JsonApiDotNetCore.Resources;
 using JsonApiDotNetCore.Resources.Annotations;
+using MIT.Fwk.Core.Attributes;
 using System.Collections.Generic;
 
 namespace MIT.Fwk.Infrastructure.Entities
 {
     [Resource]
+    [SkipJwtAuthentication]
+    [SkipClaimsValidation]
+    [SkipRequestLogging]
     public class GeoSecondDivision : Identifiable<int>
     {
         [Attr]
