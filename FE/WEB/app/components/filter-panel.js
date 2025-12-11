@@ -14,6 +14,7 @@ import { inject as service } from '@ember/service';
  */
 export default class FilterPanelComponent extends Component {
   @service store;
+  @service jsonApi;
 
   @tracked searchType = null; // 'CamGirl', 'Performer', 'Escort'
   @tracked selectedCountryId = null; // ID del paese selezionato
@@ -160,10 +161,18 @@ export default class FilterPanelComponent extends Component {
       const italyId = 107;
       this.selectedCountryId = italyId;
 
-      const regions = await this.store.query('geo-first-division', {
-        filter: { geoCountry: italyId },
+      const queryParams = this.jsonApi.queryBuilder({
+        filter: [
+          {
+            function: 'equals',
+            column: 'geoCountry',
+            value: italyId,
+          },
+        ],
         sort: 'name',
       });
+
+      const regions = await this.store.query('geo-first-division', queryParams);
 
       this.regions = regions.toArray();
     } catch (error) {
@@ -177,10 +186,18 @@ export default class FilterPanelComponent extends Component {
    */
   async loadProvinces(regionId) {
     try {
-      const provinces = await this.store.query('geo-second-division', {
-        filter: { geoFirstDivision: regionId },
+      const queryParams = this.jsonApi.queryBuilder({
+        filter: [
+          {
+            function: 'equals',
+            column: 'geoFirstDivision',
+            value: regionId,
+          },
+        ],
         sort: 'name',
       });
+
+      const provinces = await this.store.query('geo-second-division', queryParams);
 
       this.provinces = provinces.toArray();
     } catch (error) {
