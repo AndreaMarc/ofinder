@@ -9,9 +9,135 @@ SOVRASCRIVE GLI STILI DELLE LIBRERIE JS
   z-index: 10000;
 }
 
-/* SELECT2 - Bootstrap4 */
-.select2-container--bootstrap4 .select2-selection--single {
-  padding: 0rem 1.125rem 0.75rem 0.375rem;
+/* SELECT2 - Bootstrap4 - OFinder Dark Theme */
+.select2-container--bootstrap4 {
+  // Selection box (main input)
+  .select2-selection--single {
+    padding: 0rem 1.125rem 0.75rem 0.375rem;
+    background-color: #2d1b4e; // ofinder-dark-surface
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f9fafb; // ofinder-gray-100
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    &:focus,
+    &.select2-selection--focus {
+      border-color: #f59e0b; // ofinder-accent (gold)
+      box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+    }
+
+    // Text inside selection
+    .select2-selection__rendered {
+      color: #f9fafb; // ofinder-gray-100
+    }
+
+    // Arrow icon
+    .select2-selection__arrow b {
+      border-color: #f59e0b transparent transparent transparent; // ofinder-accent (gold)
+    }
+  }
+
+  // Dropdown container
+  .select2-dropdown {
+    background-color: #2d1b4e; // ofinder-dark-surface
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  // Search input inside dropdown
+  .select2-search--dropdown {
+    .select2-search__field {
+      background-color: #3d2b5e; // ofinder-dark-surface-light
+      border-color: rgba(255, 255, 255, 0.1);
+      color: #f9fafb; // ofinder-gray-100
+
+      &:focus {
+        border-color: #f59e0b; // ofinder-accent (gold)
+        box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.15);
+        outline: none;
+      }
+
+      &::placeholder {
+        color: #9ca3af; // ofinder-gray-700
+      }
+    }
+  }
+
+  // Results list
+  .select2-results {
+    background-color: #2d1b4e; // ofinder-dark-surface
+
+    .select2-results__options {
+      .select2-results__option {
+        color: #f9fafb; // ofinder-gray-100
+        padding: 0.5rem 0.75rem;
+
+        // Hover state
+        &--highlighted {
+          background-color: #3d2b5e !important; // ofinder-dark-surface-light
+          color: #fbbf24 !important; // ofinder-secondary-light (lighter gold)
+        }
+
+        // Selected state
+        &--selected,
+        &[aria-selected="true"] {
+          background-color: #f59e0b !important; // ofinder-accent (gold)
+          color: #1a0a2e !important; // ofinder-dark-bg (dark text on gold)
+          font-weight: 500;
+        }
+      }
+    }
+
+    // "No results found" message
+    .select2-results__message {
+      color: #9ca3af; // ofinder-gray-700
+    }
+  }
+
+  // Loading indicator
+  .select2-results__option--loading {
+    color: #9ca3af !important; // ofinder-gray-700
+  }
+}
+
+// Select2 with focus (when container has focus)
+.select2-container--bootstrap4.select2-container--focus {
+  .select2-selection {
+    border-color: #f59e0b; // ofinder-accent (gold)
+    box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+  }
+}
+
+// Select2 in open state
+.select2-container--bootstrap4.select2-container--open {
+  .select2-selection {
+    border-color: #f59e0b; // ofinder-accent (gold)
+  }
+
+  .select2-selection__arrow b {
+    border-color: transparent transparent #f59e0b transparent; // Flip arrow when open
+  }
+}
+
+// Select2 in disabled state
+.select2-container--bootstrap4.select2-container--disabled {
+  .select2-selection--single {
+    background-color: #1a0a2e; // ofinder-dark-bg (darker than normal)
+    border-color: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    .select2-selection__rendered {
+      color: #6b7280; // darker gray for disabled text
+    }
+
+    .select2-selection__arrow b {
+      border-color: #6b7280 transparent transparent transparent; // darker arrow
+    }
+  }
 }
 
 /* #region FANCY TREE */

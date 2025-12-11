@@ -12,7 +12,7 @@
     aria-expanded="false"
     aria-controls="filterPanelContent"
   >
-    <h5 class="ofinder-heading-md mb-0">Filtri</h5>
+    <h5 class="ofinder-heading-md ofinder-filter-panel-title mb-0">FILTRI</h5>
 
     <div class="d-flex align-items-center">
       {{#if this.hasActiveFilters}}
@@ -34,6 +34,44 @@
 
     {{!-- Accordion container per sezioni interne --}}
     <div id="filterAccordion">
+      {{!-- Cosa cerchi? (Tipo di ricerca) - FILTRO PRINCIPALE --}}
+      <div class="filter-section ofinder-filter-section-primary mb-4">
+        <h6
+          class="ofinder-text-sm ofinder-filter-section-heading-primary font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
+          data-toggle="collapse"
+          data-target="#collapseSearchType"
+          role="button"
+          aria-expanded="true"
+          aria-controls="collapseSearchType"
+        >
+          <span>Cosa cerchi?</span>
+          <i class="fa fa-chevron-down d-md-none"></i>
+        </h6>
+        <div id="collapseSearchType" class="collapse show" data-parent="#filterAccordion">
+          {{#each this.searchTypes as |searchType|}}
+            <div class="custom-control custom-radio mb-2">
+              <input
+                type="radio"
+                class="custom-control-input"
+                id="searchType-{{searchType.id}}"
+                name="searchTypeFilter"
+                checked={{eq this.searchType searchType.id}}
+                {{on "change" (fn this.selectSearchType searchType.id)}}
+              />
+              <label
+                class="custom-control-label ofinder-text-sm"
+                for="searchType-{{searchType.id}}"
+              >
+                {{searchType.label}}
+              </label>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+
+      {{!-- Mostra i filtri seguenti solo se è stato selezionato un tipo di ricerca --}}
+      {{#if this.searchType}}
+
       {{!-- Geolocalizzazione --}}
       <div class="filter-section mb-3">
         <h6
@@ -48,45 +86,16 @@
           <i class="fa fa-chevron-down d-md-none"></i>
         </h6>
         <div id="collapseLocation" class="collapse show" data-parent="#filterAccordion">
-          {{!-- Nazione --}}
-          <div class="form-group mb-3">
-            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-1">
-              Nazione
-            </label>
-            <select
-              class="form-control form-control-sm"
-              {{on "change" this.selectCountry}}
-            >
-              {{#each this.countries as |country|}}
-                <option
-                  value={{country.id}}
-                  selected={{eq this.selectedCountry country.id}}
-                >
-                  {{country.name}}
-                </option>
-              {{/each}}
-            </select>
-          </div>
-
           {{!-- Regione --}}
           <div class="form-group mb-3">
             <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-1">
               Regione
             </label>
-            <select
-              class="form-control form-control-sm"
-              {{on "change" this.selectRegion}}
-            >
-              <option value="" selected={{not this.selectedRegion}}>--</option>
-              {{#each this.regions as |region|}}
-                <option
-                  value={{region.id}}
-                  selected={{eq this.selectedRegion region.id}}
-                >
-                  {{region.name}}
-                </option>
-              {{/each}}
-            </select>
+            <Standard::SelectTwo
+              @addEmptyOption="1"
+              @options={{this.regionsOptions}}
+              @changeCB={{this.onRegionChange}}
+            />
           </div>
 
           {{!-- Provincia --}}
@@ -94,26 +103,18 @@
             <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-1">
               Provincia
             </label>
-            <select
-              class="form-control form-control-sm"
-              {{on "change" this.selectProvince}}
-              disabled={{not this.selectedRegion}}
-            >
-              <option value="" selected={{not this.selectedProvince}}>--</option>
-              {{#each this.availableProvinces as |province|}}
-                <option
-                  value={{province.id}}
-                  selected={{eq this.selectedProvince province.id}}
-                >
-                  {{province.name}}
-                </option>
-              {{/each}}
-            </select>
+            <Standard::SelectTwo
+              @addEmptyOption="1"
+              @options={{this.provincesOptions}}
+              @select2Options={{this.provincesSelect2Options}}
+              @changeCB={{this.onProvinceChange}}
+            />
           </div>
         </div>
       </div>
 
-      {{!-- Piattaforme --}}
+      {{!-- Piattaforme (solo per Performer) --}}
+      {{#if this.showPlatformsFilter}}
       <div class="filter-section mb-3">
         <h6
           class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
@@ -148,8 +149,10 @@
           {{/each}}
         </div>
       </div>
+      {{/if}}
 
-      {{!-- Tipi di Contenuto --}}
+      {{!-- Tipi di Contenuto (per CamGirl e Performer) --}}
+      {{#if this.showContentTypesFilter}}
       <div class="filter-section mb-3">
         <h6
           class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
@@ -163,26 +166,97 @@
           <i class="fa fa-chevron-down d-md-none"></i>
         </h6>
         <div id="collapseContentTypes" class="collapse d-md-block" data-parent="#filterAccordion">
-          {{#each this.contentTypeFilters as |contentType|}}
-            <div class="custom-control custom-checkbox mb-2">
-              <input
-                type="checkbox"
-                class="custom-control-input"
-                id="contentType-{{contentType.id}}"
-                checked={{this.isContentTypeSelected contentType.id}}
-                {{on "change" (fn this.toggleContentType contentType)}}
-              />
-              <label
-                class="custom-control-label ofinder-text-sm"
-                for="contentType-{{contentType.id}}"
-              >
-                {{contentType.name}}
-                <span class="ofinder-text-muted">({{contentType.count}})</span>
-              </label>
+          {{#each this.contentTypesByCategory as |categoryGroup|}}
+            <div class="content-type-category mb-3">
+              <h6 class="content-type-category-title ofinder-text-xs text-uppercase mb-2">
+                {{categoryGroup.name}}
+              </h6>
+              <div class="filter-section-two-columns">
+                {{#each categoryGroup.items as |contentType|}}
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      class="custom-control-input"
+                      id="contentType-{{contentType.id}}"
+                      checked={{this.isContentTypeSelected contentType.id}}
+                      {{on "change" (fn this.toggleContentType contentType)}}
+                    />
+                    <label
+                      class="custom-control-label ofinder-text-sm"
+                      for="contentType-{{contentType.id}}"
+                    >
+                      {{contentType.name}}
+                      <span class="ofinder-text-muted">({{contentType.count}})</span>
+                    </label>
+                  </div>
+                {{/each}}
+              </div>
             </div>
           {{/each}}
         </div>
       </div>
+      {{/if}}
+
+      {{!-- Orari Live (per CamGirl e Performer con live) --}}
+      {{#if this.showScheduleFilter}}
+      <div class="filter-section mb-3">
+        <h6
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
+          data-toggle="collapse"
+          data-target="#collapseSchedule"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseSchedule"
+        >
+          <span>Orari Live</span>
+          <i class="fa fa-chevron-down d-md-none"></i>
+        </h6>
+        <div id="collapseSchedule" class="collapse d-md-block" data-parent="#filterAccordion">
+          {{!-- Giorni della settimana --}}
+          <div class="mb-3">
+            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
+              Giorni
+            </label>
+            <div class="d-flex flex-wrap">
+              {{#each this.weekDays as |day|}}
+                <button
+                  type="button"
+                  class="btn btn-sm mr-2 mb-2 {{if (this.isScheduleDaySelected day.id) 'btn-ofinder-primary' 'btn-outline-secondary'}}"
+                  {{on "click" (fn this.toggleScheduleDay day.id)}}
+                >
+                  {{day.shortName}}
+                </button>
+              {{/each}}
+            </div>
+          </div>
+
+          {{!-- Fascia oraria --}}
+          <div class="mb-0">
+            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
+              Fascia oraria
+            </label>
+            {{#each this.timeSlots as |slot|}}
+              <div class="custom-control custom-radio mb-2">
+                <input
+                  type="radio"
+                  class="custom-control-input"
+                  id="timeSlot-{{slot.id}}"
+                  name="timeSlotFilter"
+                  checked={{this.isTimeSlotSelected slot.id}}
+                  {{on "change" (fn this.selectTimeSlot slot.id)}}
+                />
+                <label
+                  class="custom-control-label ofinder-text-sm"
+                  for="timeSlot-{{slot.id}}"
+                >
+                  {{slot.label}}
+                </label>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      {{/if}}
 
       {{!-- Range Slider Prezzo --}}
       <div class="filter-section mb-3">
@@ -312,6 +386,10 @@
           </div>
         </div>
       </div>
+
+      {{!-- Fine condizione: mostra filtri solo se searchType è selezionato --}}
+      {{/if}}
+
     </div>
 
     {{!-- Bottoni Azione --}}
