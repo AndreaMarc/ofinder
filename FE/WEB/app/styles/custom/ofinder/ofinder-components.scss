@@ -221,6 +221,14 @@
     &:last-child {
       margin-bottom: 0 !important; // Remove margin on last category
     }
+
+    // Style for labels with tooltips
+    .custom-control-label {
+      span[data-toggle="tooltip"] {
+        border-bottom: 1px dotted rgba(249, 250, 251, 0.3);
+        cursor: help;
+      }
+    }
   }
 }
 

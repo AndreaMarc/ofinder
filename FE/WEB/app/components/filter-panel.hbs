@@ -185,8 +185,13 @@
                       class="custom-control-label ofinder-text-sm"
                       for="contentType-{{contentType.id}}"
                     >
-                      {{contentType.name}}
-                      <span class="ofinder-text-muted">({{contentType.count}})</span>
+                      {{#if contentType.tooltip}}
+                        <Standard::ToolTip @title={{contentType.tooltip}}>
+                          {{contentType.name}}
+                        </Standard::ToolTip>
+                      {{else}}
+                        {{contentType.name}}
+                      {{/if}}
                     </label>
                   </div>
                 {{/each}}

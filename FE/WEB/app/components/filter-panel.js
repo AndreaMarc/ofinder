@@ -56,56 +56,56 @@ export default class FilterPanelComponent extends Component {
     { id: 'contenuti-extra', name: 'Contenuti extra', count: 78 },
   ];
 
-  // Content types per CamGirl (con categorie)
+  // Content types per CamGirl (con categorie e tooltip)
   camGirlContentTypes = [
     // Aspetto & Performance
-    { id: 'face', name: 'Face', count: 145, category: 'Aspetto & Performance' },
-    { id: 'body', name: 'Body', count: 230, category: 'Aspetto & Performance' },
-    { id: 'dance', name: 'Dance', count: 156, category: 'Aspetto & Performance' },
-    { id: 'cosplay', name: 'Cosplay', count: 45, category: 'Aspetto & Performance' },
+    { id: 'face', name: 'Face', category: 'Aspetto & Performance' },
+    { id: 'body', name: 'Body', category: 'Aspetto & Performance' },
+    { id: 'dance', name: 'Dance', category: 'Aspetto & Performance' },
+    { id: 'cosplay', name: 'Cosplay', category: 'Aspetto & Performance' },
 
     // Formato Show
-    { id: 'public-show', name: 'Public Show', count: 320, category: 'Formato Show' },
-    { id: 'private-show', name: 'Private Show', count: 285, category: 'Formato Show' },
-    { id: 'tip-controlled', name: 'Tip Controlled', count: 178, category: 'Formato Show' },
-    { id: 'interactive-toy', name: 'Interactive Toy', count: 195, category: 'Formato Show' },
+    { id: 'public-show', name: 'Public Show', category: 'Formato Show' },
+    { id: 'private-show', name: 'Private Show', category: 'Formato Show' },
+    { id: 'tip-controlled', name: 'Tip Controlled', tooltip: 'Show controllato dai tips degli spettatori', category: 'Formato Show' },
+    { id: 'interactive-toy', name: 'Interactive Toy', tooltip: 'Toys interattivi controllati dagli spettatori', category: 'Formato Show' },
 
     // Interazione & Esperienza
-    { id: 'vge', name: 'VGE (Virtual Girlfriend)', count: 87, category: 'Interazione & Esperienza' },
-    { id: 'asmr', name: 'ASMR', count: 64, category: 'Interazione & Esperienza' },
-    { id: 'custom-request', name: 'Custom Request', count: 142, category: 'Interazione & Esperienza' },
-    { id: 'roleplay', name: 'Roleplay', count: 134, category: 'Interazione & Esperienza' },
+    { id: 'vge', name: 'VGE', tooltip: 'Virtual Girlfriend Experience - chiacchiere e interazioni romantiche simulate', category: 'Interazione & Esperienza' },
+    { id: 'asmr', name: 'ASMR', tooltip: 'Suoni, sussurri, esperienza sensoriale', category: 'Interazione & Esperienza' },
+    { id: 'custom-request', name: 'Custom Request', tooltip: 'Richieste personalizzate', category: 'Interazione & Esperienza' },
+    { id: 'roleplay', name: 'Roleplay', category: 'Interazione & Esperienza' },
 
     // Numero Partecipanti
-    { id: 'single', name: 'Single', count: 412, category: 'Numero Partecipanti' },
-    { id: 'couple', name: 'Couple', count: 78, category: 'Numero Partecipanti' },
-    { id: 'lesbo', name: 'Lesbo', count: 93, category: 'Numero Partecipanti' },
-    { id: 'group', name: 'Group', count: 41, category: 'Numero Partecipanti' },
+    { id: 'single', name: 'Single', category: 'Numero Partecipanti' },
+    { id: 'couple', name: 'Couple', category: 'Numero Partecipanti' },
+    { id: 'lesbo', name: 'Lesbo', category: 'Numero Partecipanti' },
+    { id: 'group', name: 'Group', category: 'Numero Partecipanti' },
 
     // Atti Sessuali Base
-    { id: 'oral', name: 'Oral', count: 267, category: 'Atti Sessuali Base' },
-    { id: 'anal', name: 'Anal', count: 89, category: 'Atti Sessuali Base' },
-    { id: 'squirt', name: 'Squirt', count: 92, category: 'Atti Sessuali Base' },
+    { id: 'oral', name: 'Oral', category: 'Atti Sessuali Base' },
+    { id: 'anal', name: 'Anal', category: 'Atti Sessuali Base' },
+    { id: 'squirt', name: 'Squirt', category: 'Atti Sessuali Base' },
 
     // Atti Sessuali Intensi
-    { id: 'deep-penetration', name: 'Deep Penetration', count: 123, category: 'Atti Sessuali Intensi' },
-    { id: 'double-penetration', name: 'Double Penetration', count: 67, category: 'Atti Sessuali Intensi' },
-    { id: 'large-toys', name: 'Large Toys', count: 98, category: 'Atti Sessuali Intensi' },
-    { id: 'fisting', name: 'Fisting', count: 34, category: 'Atti Sessuali Intensi' },
+    { id: 'deep-penetration', name: 'Deep Penetration', category: 'Atti Sessuali Intensi' },
+    { id: 'double-penetration', name: 'Double Penetration', category: 'Atti Sessuali Intensi' },
+    { id: 'large-toys', name: 'Large Toys', category: 'Atti Sessuali Intensi' },
+    { id: 'fisting', name: 'Fisting', category: 'Atti Sessuali Intensi' },
 
     // Setting & Fetish
-    { id: 'foot', name: 'Foot', count: 103, category: 'Setting & Fetish' },
-    { id: 'oil-cream', name: 'Oil/Cream', count: 88, category: 'Setting & Fetish' },
-    { id: 'shower-bath', name: 'Shower/Bath', count: 112, category: 'Setting & Fetish' },
-    { id: 'outdoor', name: 'Outdoor', count: 56, category: 'Setting & Fetish' },
+    { id: 'foot', name: 'Foot', category: 'Setting & Fetish' },
+    { id: 'oil-cream', name: 'Oil/Cream', category: 'Setting & Fetish' },
+    { id: 'shower-bath', name: 'Shower/Bath', category: 'Setting & Fetish' },
+    { id: 'outdoor', name: 'Outdoor', category: 'Setting & Fetish' },
 
     // Dominazione Verbale & Taboo
-    { id: 'dom-sub', name: 'Dom/Sub', count: 87, category: 'Dominazione Verbale & Taboo' },
-    { id: 'dirty-talk', name: 'Dirty Talk', count: 201, category: 'Dominazione Verbale & Taboo' },
-    { id: 'joi', name: 'JOI (Jerk Off Instructions)', count: 72, category: 'Dominazione Verbale & Taboo' },
-    { id: 'sph', name: 'SPH (Small Penis Humiliation)', count: 34, category: 'Dominazione Verbale & Taboo' },
-    { id: 'cei', name: 'CEI (Cum Eating Instructions)', count: 28, category: 'Dominazione Verbale & Taboo' },
-    { id: 'golden-shower-scat', name: 'Golden Shower/Scat', count: 19, category: 'Dominazione Verbale & Taboo' },
+    { id: 'dom-sub', name: 'Dom/Sub', tooltip: 'Dominazione e sottomissione', category: 'Dominazione Verbale & Taboo' },
+    { id: 'dirty-talk', name: 'Dirty Talk', category: 'Dominazione Verbale & Taboo' },
+    { id: 'joi', name: 'JOI', tooltip: 'Jerk Off Instructions', category: 'Dominazione Verbale & Taboo' },
+    { id: 'sph', name: 'SPH', tooltip: 'Small Penis Humiliation', category: 'Dominazione Verbale & Taboo' },
+    { id: 'cei', name: 'CEI', tooltip: 'Cum Eating Instructions', category: 'Dominazione Verbale & Taboo' },
+    { id: 'golden-shower-scat', name: 'Golden Shower/Scat', tooltip: 'Giochi con urina e feci', category: 'Dominazione Verbale & Taboo' },
   ];
 
   // Giorni della settimana per filtro orari
