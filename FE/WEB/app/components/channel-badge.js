@@ -53,6 +53,18 @@ const CHANNEL_CONFIG = {
     emoji: '👻',
     icon: null,
   },
+  telegram: {
+    name: 'Telegram',
+    color: '#0088CC',
+    emoji: '✈️',
+    icon: null,
+  },
+  threads: {
+    name: 'Threads',
+    color: '#000000',
+    emoji: '🧵',
+    icon: null,
+  },
   other: {
     name: 'Other',
     color: '#6C757D',

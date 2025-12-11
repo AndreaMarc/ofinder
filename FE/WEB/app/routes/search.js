@@ -55,6 +55,16 @@ export default class SearchRoute extends Route {
             verified: true,
             url: 'https://instagram.com/sofia',
           },
+          {
+            platformType: 'telegram',
+            verified: false,
+            url: 'https://t.me/sofia',
+          },
+          {
+            platformType: 'snapchat',
+            verified: false,
+            url: 'https://snapchat.com/add/sofia',
+          },
         ],
       },
       {
@@ -77,6 +87,11 @@ export default class SearchRoute extends Route {
             platformType: 'twitter',
             verified: false,
             url: 'https://twitter.com/emma',
+          },
+          {
+            platformType: 'threads',
+            verified: true,
+            url: 'https://threads.net/@emma',
           },
         ],
       },
@@ -111,6 +126,16 @@ export default class SearchRoute extends Route {
             verified: true,
             url: 'https://instagram.com/luna',
           },
+          {
+            platformType: 'telegram',
+            verified: true,
+            url: 'https://t.me/luna',
+          },
+          {
+            platformType: 'threads',
+            verified: false,
+            url: 'https://threads.net/@luna',
+          },
         ],
       },
       {
@@ -139,6 +164,11 @@ export default class SearchRoute extends Route {
             verified: false,
             url: 'https://youtube.com/mia',
           },
+          {
+            platformType: 'snapchat',
+            verified: true,
+            url: 'https://snapchat.com/add/mia',
+          },
         ],
       },
     ];
@@ -163,9 +193,7 @@ export default class SearchRoute extends Route {
     return [
       { id: 'onlyfans', name: 'OnlyFans', emoji: '🔵', count: 234 },
       { id: 'fansly', name: 'Fansly', emoji: '🟣', count: 156 },
-      { id: 'instagram', name: 'Instagram', emoji: '📸', count: 189 },
-      { id: 'twitter', name: 'Twitter/X', emoji: '🐦', count: 98 },
-      { id: 'tiktok', name: 'TikTok', emoji: '🎵', count: 67 },
+      { id: 'other', name: 'Altro', emoji: '🌐', count: 354 },
     ];
   }
 

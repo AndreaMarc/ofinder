@@ -59,7 +59,7 @@
                 {{on "change" (fn this.selectSearchType searchType.id)}}
               />
               <label
-                class="custom-control-label ofinder-text-sm"
+                class="custom-control-label ofinder-text-sm ofinder-search-type-label"
                 for="searchType-{{searchType.id}}"
               >
                 {{searchType.label}}
@@ -112,6 +112,117 @@
           </div>
         </div>
       </div>
+
+      {{!-- Età --}}
+      <div class="filter-section mb-3">
+        <h6
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
+          data-toggle="collapse"
+          data-target="#collapseAge"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseAge"
+        >
+          <span>
+            Età
+            <span class="ofinder-text-primary">{{this.minAge}}-{{this.maxAge}}</span>
+          </span>
+          <i class="fa fa-chevron-down d-md-none"></i>
+        </h6>
+        <div id="collapseAge" class="collapse d-md-block" data-parent="#filterAccordion">
+          {{!-- Età minima --}}
+          <div class="mb-3">
+            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-1">
+              Età minima: {{this.minAge}}
+            </label>
+            <input
+              type="range"
+              class="custom-range"
+              min="18"
+              max="60"
+              step="1"
+              value={{this.minAge}}
+              {{on "input" this.updateMinAge}}
+            />
+          </div>
+
+          {{!-- Età massima --}}
+          <div class="mb-0">
+            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-1">
+              Età massima: {{this.maxAge}}
+            </label>
+            <input
+              type="range"
+              class="custom-range"
+              min="18"
+              max="60"
+              step="1"
+              value={{this.maxAge}}
+              {{on "input" this.updateMaxAge}}
+            />
+          </div>
+        </div>
+      </div>
+
+      {{!-- Orari Live (per CamGirl e Performer con live) --}}
+      {{#if this.showScheduleFilter}}
+      <div class="filter-section mb-3">
+        <h6
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
+          data-toggle="collapse"
+          data-target="#collapseSchedule"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseSchedule"
+        >
+          <span>Orari Live</span>
+          <i class="fa fa-chevron-down d-md-none"></i>
+        </h6>
+        <div id="collapseSchedule" class="collapse d-md-block" data-parent="#filterAccordion">
+          {{!-- Giorni della settimana --}}
+          <div class="mb-3">
+            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
+              Giorni
+            </label>
+            <div class="d-flex flex-wrap">
+              {{#each this.weekDays as |day|}}
+                <button
+                  type="button"
+                  class="btn btn-sm mr-2 mb-2 {{if (this.isScheduleDaySelected day.id) 'btn-ofinder-primary' 'btn-outline-secondary'}}"
+                  {{on "click" (fn this.toggleScheduleDay day.id)}}
+                >
+                  {{day.shortName}}
+                </button>
+              {{/each}}
+            </div>
+          </div>
+
+          {{!-- Fascia oraria --}}
+          <div class="mb-0">
+            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
+              Fascia oraria
+              {{#if this.selectedTimeSlotLabel}}
+                <span class="ofinder-text-primary ml-2">{{this.selectedTimeSlotLabel}}</span>
+              {{/if}}
+            </label>
+            <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+              {{#each this.timeSlots as |slot|}}
+                <label class="btn btn-sm {{if (this.isTimeSlotSelected slot.id) 'btn-ofinder-primary active' 'btn-outline-secondary'}}">
+                  <input
+                    type="radio"
+                    name="timeSlotFilter"
+                    id="timeSlot-{{slot.id}}"
+                    checked={{this.isTimeSlotSelected slot.id}}
+                    {{on "change" (fn this.selectTimeSlot slot.id)}}
+                  />
+                  {{slot.shortLabel}}
+                </label>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/if}}
 
       {{!-- Piattaforme (solo per Performer) --}}
       {{#if this.showPlatformsFilter}}
@@ -197,67 +308,6 @@
               </div>
             </div>
           {{/each}}
-        </div>
-      </div>
-      {{/if}}
-
-      {{!-- Orari Live (per CamGirl e Performer con live) --}}
-      {{#if this.showScheduleFilter}}
-      <div class="filter-section mb-3">
-        <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseSchedule"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseSchedule"
-        >
-          <span>Orari Live</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
-        </h6>
-        <div id="collapseSchedule" class="collapse d-md-block" data-parent="#filterAccordion">
-          {{!-- Giorni della settimana --}}
-          <div class="mb-3">
-            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
-              Giorni
-            </label>
-            <div class="d-flex flex-wrap">
-              {{#each this.weekDays as |day|}}
-                <button
-                  type="button"
-                  class="btn btn-sm mr-2 mb-2 {{if (this.isScheduleDaySelected day.id) 'btn-ofinder-primary' 'btn-outline-secondary'}}"
-                  {{on "click" (fn this.toggleScheduleDay day.id)}}
-                >
-                  {{day.shortName}}
-                </button>
-              {{/each}}
-            </div>
-          </div>
-
-          {{!-- Fascia oraria --}}
-          <div class="mb-0">
-            <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
-              Fascia oraria
-            </label>
-            {{#each this.timeSlots as |slot|}}
-              <div class="custom-control custom-radio mb-2">
-                <input
-                  type="radio"
-                  class="custom-control-input"
-                  id="timeSlot-{{slot.id}}"
-                  name="timeSlotFilter"
-                  checked={{this.isTimeSlotSelected slot.id}}
-                  {{on "change" (fn this.selectTimeSlot slot.id)}}
-                />
-                <label
-                  class="custom-control-label ofinder-text-sm"
-                  for="timeSlot-{{slot.id}}"
-                >
-                  {{slot.label}}
-                </label>
-              </div>
-            {{/each}}
-          </div>
         </div>
       </div>
       {{/if}}

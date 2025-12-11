@@ -24,6 +24,8 @@ export default helper(function brandIcon(
     tiktok: 'siTiktok',
     youtube: 'siYoutube',
     snapchat: 'siSnapchat',
+    telegram: 'siTelegram',
+    threads: 'siThreads',
   };
 
   const simpleIconName =
@@ -34,6 +36,9 @@ export default helper(function brandIcon(
     // Fallback: usa FontAwesome icons per piattaforme non supportate
     const fallbackIcons = {
       fansly: { icon: 'fa-star', color: '#7b68ee' },
+      telegram: { icon: 'fa-paper-plane', color: '#0088cc' },
+      threads: { icon: 'fa-at', color: '#000000' },
+      other: { icon: 'fa-globe', color: '#6c757d' },
       default: { icon: 'fa-globe', color: '#6c757d' },
     };
 

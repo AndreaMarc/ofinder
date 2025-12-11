@@ -165,9 +165,10 @@ The OFinder design system uses a dark theme with vibrant accent colors:
 
 | Class | Description |
 |-------|-------------|
-| `.filter-section` | Container for each filter section |
-| `.ofinder-filter-section-primary` | Primary filter section (e.g., "Cosa cerchi?") with gold bottom border |
+| `.filter-section` | Container for each filter section with 1px semi-transparent gold bottom border (41% opacity) and increased spacing |
+| `.ofinder-filter-section-primary` | Primary filter section (e.g., "Cosa cerchi?") with 2px solid gold bottom border (thicker and opaque) |
 | `.ofinder-filter-section-heading-primary` | Heading for primary filter section with gold color |
+| `.ofinder-search-type-label` | Label for search type radiobuttons (uppercase, no bold, gold only when selected) |
 | `.filter-section-two-columns` | 2-column grid layout for long filter lists (e.g., content types) |
 | `.content-type-category` | Container for categorized content type groups |
 | `.content-type-category-title` | Category title with gold color and bottom border |
@@ -376,6 +377,8 @@ When using these classes, follow these principles:
 | 1.1.0 | 2025-12-11 | Added filter panel specific classes (`.ofinder-filter-panel-title`, `.ofinder-filter-section-primary`, `.ofinder-filter-section-heading-primary`) |
 | 1.2.0 | 2025-12-11 | Added 2-column grid layout class (`.filter-section-two-columns`) for content types filter |
 | 1.3.0 | 2025-12-11 | Added categorized content type classes (`.content-type-category`, `.content-type-category-title`) |
+| 1.4.0 | 2025-12-11 | Added search type label class (`.ofinder-search-type-label`) for "Cosa cerchi?" radiobuttons |
+| 1.5.0 | 2025-12-11 | Added visual separation to filter sections: 1px semi-transparent gold border (41% opacity) with increased spacing |
 
 ---
 

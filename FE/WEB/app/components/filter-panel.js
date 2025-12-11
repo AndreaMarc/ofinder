@@ -21,6 +21,8 @@ export default class FilterPanelComponent extends Component {
   @tracked selectedProvinceId = null; // ID della provincia selezionata
   @tracked regions = []; // Lista regioni caricate dal DB
   @tracked provinces = []; // Liste province caricate dal DB
+  @tracked minAge = 18; // Età minima (default: nessun filtro)
+  @tracked maxAge = 60; // Età massima (default: nessun filtro)
   @tracked selectedPlatforms = [];
   @tracked selectedContentTypes = [];
   @tracked selectedScheduleDays = []; // Giorni per filtro orari live
@@ -58,23 +60,15 @@ export default class FilterPanelComponent extends Component {
 
   // Content types per CamGirl (con categorie e tooltip)
   camGirlContentTypes = [
-    // Aspetto & Performance
-    { id: 'face', name: 'Face', category: 'Aspetto & Performance' },
-    { id: 'body', name: 'Body', category: 'Aspetto & Performance' },
-    { id: 'dance', name: 'Dance', category: 'Aspetto & Performance' },
-    { id: 'cosplay', name: 'Cosplay', category: 'Aspetto & Performance' },
+    // Aspetto
+    { id: 'face', name: 'Face', category: 'Aspetto' },
+    { id: 'body', name: 'Body', category: 'Aspetto' },
 
-    // Formato Show
-    { id: 'public-show', name: 'Public Show', category: 'Formato Show' },
-    { id: 'private-show', name: 'Private Show', category: 'Formato Show' },
-    { id: 'tip-controlled', name: 'Tip Controlled', tooltip: 'Show controllato dai tips degli spettatori', category: 'Formato Show' },
-    { id: 'interactive-toy', name: 'Interactive Toy', tooltip: 'Toys interattivi controllati dagli spettatori', category: 'Formato Show' },
-
-    // Interazione & Esperienza
-    { id: 'vge', name: 'VGE', tooltip: 'Virtual Girlfriend Experience - chiacchiere e interazioni romantiche simulate', category: 'Interazione & Esperienza' },
-    { id: 'asmr', name: 'ASMR', tooltip: 'Suoni, sussurri, esperienza sensoriale', category: 'Interazione & Esperienza' },
-    { id: 'custom-request', name: 'Custom Request', tooltip: 'Richieste personalizzate', category: 'Interazione & Esperienza' },
-    { id: 'roleplay', name: 'Roleplay', category: 'Interazione & Esperienza' },
+    // Formato dello Show
+    { id: 'public-show', name: 'Public Show', category: 'Formato dello Show' },
+    { id: 'private-show', name: 'Private Show', category: 'Formato dello Show' },
+    { id: 'tip-controlled', name: 'Tip Controlled', tooltip: 'Show controllato dai tips degli spettatori', category: 'Formato dello Show' },
+    { id: 'interactive-toy', name: 'Interactive Toy', tooltip: 'Toys interattivi controllati dagli spettatori', category: 'Formato dello Show' },
 
     // Numero Partecipanti
     { id: 'single', name: 'Single', category: 'Numero Partecipanti' },
@@ -83,9 +77,15 @@ export default class FilterPanelComponent extends Component {
     { id: 'group', name: 'Group', category: 'Numero Partecipanti' },
 
     // Atti Sessuali Base
+    { id: 'masturbation', name: 'Masturbation', category: 'Atti Sessuali Base' },
     { id: 'oral', name: 'Oral', category: 'Atti Sessuali Base' },
-    { id: 'anal', name: 'Anal', category: 'Atti Sessuali Base' },
+    { id: '69', name: '69', category: 'Atti Sessuali Base' },
+    { id: 'vaginal', name: 'Vaginal', category: 'Atti Sessuali Base' },
+    { id: 'anal-finger', name: 'Anal Finger', category: 'Atti Sessuali Base' },
+    { id: 'anal-dildo-sex', name: 'Anal Dildo/Sex', category: 'Atti Sessuali Base' },
     { id: 'squirt', name: 'Squirt', category: 'Atti Sessuali Base' },
+    { id: 'facial', name: 'Facial', category: 'Atti Sessuali Base' },
+    { id: 'tit-cum', name: 'Tit Cum', category: 'Atti Sessuali Base' },
 
     // Atti Sessuali Intensi
     { id: 'deep-penetration', name: 'Deep Penetration', category: 'Atti Sessuali Intensi' },
@@ -93,11 +93,11 @@ export default class FilterPanelComponent extends Component {
     { id: 'large-toys', name: 'Large Toys', category: 'Atti Sessuali Intensi' },
     { id: 'fisting', name: 'Fisting', category: 'Atti Sessuali Intensi' },
 
-    // Setting & Fetish
-    { id: 'foot', name: 'Foot', category: 'Setting & Fetish' },
-    { id: 'oil-cream', name: 'Oil/Cream', category: 'Setting & Fetish' },
-    { id: 'shower-bath', name: 'Shower/Bath', category: 'Setting & Fetish' },
-    { id: 'outdoor', name: 'Outdoor', category: 'Setting & Fetish' },
+    // Ambientazioni e Fetish
+    { id: 'foot', name: 'Foot', category: 'Ambientazioni e Fetish' },
+    { id: 'oil-cream', name: 'Oil/Cream', category: 'Ambientazioni e Fetish' },
+    { id: 'shower-bath', name: 'Shower/Bath', category: 'Ambientazioni e Fetish' },
+    { id: 'outdoor', name: 'Outdoor', category: 'Ambientazioni e Fetish' },
 
     // Dominazione Verbale & Taboo
     { id: 'dom-sub', name: 'Dom/Sub', tooltip: 'Dominazione e sottomissione', category: 'Dominazione Verbale & Taboo' },
@@ -106,6 +106,10 @@ export default class FilterPanelComponent extends Component {
     { id: 'sph', name: 'SPH', tooltip: 'Small Penis Humiliation', category: 'Dominazione Verbale & Taboo' },
     { id: 'cei', name: 'CEI', tooltip: 'Cum Eating Instructions', category: 'Dominazione Verbale & Taboo' },
     { id: 'golden-shower-scat', name: 'Golden Shower/Scat', tooltip: 'Giochi con urina e feci', category: 'Dominazione Verbale & Taboo' },
+
+    // Interazione & Esperienza (ultima sezione)
+    { id: 'vge', name: 'VGE', tooltip: 'Virtual Girlfriend Experience - chiacchiere e interazioni romantiche simulate', category: 'Interazione & Esperienza' },
+    { id: 'roleplay', name: 'Roleplay', category: 'Interazione & Esperienza' },
   ];
 
   // Giorni della settimana per filtro orari
@@ -122,24 +126,33 @@ export default class FilterPanelComponent extends Component {
   // Fasce orarie
   timeSlots = [
     {
+      id: 'night',
+      label: 'Notte 0:00 ÷ 6:00',
+      shortLabel: '0÷6',
+      start: '00:00',
+      end: '06:00',
+    },
+    {
       id: 'morning',
-      label: 'Mattina (06:00-12:00)',
+      label: 'Mattina 6:00 ÷ 12:00',
+      shortLabel: '6÷12',
       start: '06:00',
       end: '12:00',
     },
     {
       id: 'afternoon',
-      label: 'Pomeriggio (12:00-18:00)',
+      label: 'Pomeriggio 12:00 ÷ 18:00',
+      shortLabel: '12÷18',
       start: '12:00',
       end: '18:00',
     },
     {
       id: 'evening',
-      label: 'Sera (18:00-00:00)',
+      label: 'Sera 18:00 ÷ 0:00',
+      shortLabel: '18÷24',
       start: '18:00',
       end: '00:00',
     },
-    { id: 'night', label: 'Notte (00:00-06:00)', start: '00:00', end: '06:00' },
   ];
 
   /**
@@ -161,11 +174,11 @@ export default class FilterPanelComponent extends Component {
       this.selectedCountryId = italyId;
 
       const regions = await this.store.query('geo-first-division', {
-        filter: `equals(geoCountry,'${italyId}')`,
+        filter: `equals(geoCountryId,'${italyId}')`,
         sort: 'name',
       });
 
-      this.regions = regions.toArray();
+      this.regions = regions.slice();
     } catch (error) {
       console.error('Errore nel caricamento delle regioni:', error);
       this.regions = [];
@@ -178,11 +191,11 @@ export default class FilterPanelComponent extends Component {
   async loadProvinces(regionId) {
     try {
       const provinces = await this.store.query('geo-second-division', {
-        filter: `equals(geoFirstDivision,'${regionId}')`,
+        filter: `equals(geoFirstDivisionId,'${regionId}')`,
         sort: 'name',
       });
 
-      this.provinces = provinces.toArray();
+      this.provinces = provinces.slice();
     } catch (error) {
       console.error('Errore nel caricamento delle province:', error);
       this.provinces = [];
@@ -232,8 +245,7 @@ export default class FilterPanelComponent extends Component {
       this.args.platformFilters || [
         { id: 'onlyfans', name: 'OnlyFans', emoji: '🔵', count: 1234 },
         { id: 'fansly', name: 'Fansly', emoji: '🟣', count: 567 },
-        { id: 'instagram', name: 'Instagram', emoji: '📸', count: 890 },
-        { id: 'tiktok', name: 'TikTok', emoji: '🎵', count: 456 },
+        { id: 'other', name: 'Altro', emoji: '🌐', count: 890 },
       ]
     );
   }
@@ -334,6 +346,8 @@ export default class FilterPanelComponent extends Component {
       this.searchType !== null ||
       this.selectedRegionId !== null ||
       this.selectedProvinceId !== null ||
+      this.minAge > 18 ||
+      this.maxAge < 60 ||
       this.selectedPlatforms.length > 0 ||
       this.selectedContentTypes.length > 0 ||
       this.selectedScheduleDays.length > 0 ||
@@ -351,6 +365,7 @@ export default class FilterPanelComponent extends Component {
     if (this.searchType) count++;
     if (this.selectedRegionId) count++;
     if (this.selectedProvinceId) count++;
+    if (this.minAge > 18 || this.maxAge < 60) count++;
     count += this.selectedPlatforms.length;
     count += this.selectedContentTypes.length;
     count += this.selectedScheduleDays.length;
@@ -409,6 +424,26 @@ export default class FilterPanelComponent extends Component {
         ...this.selectedContentTypes,
         contentType.id,
       ];
+    }
+  }
+
+  @action
+  updateMinAge(event) {
+    const newMin = parseInt(event.target.value);
+    this.minAge = newMin;
+    // Assicura che minAge non superi maxAge
+    if (this.minAge > this.maxAge) {
+      this.maxAge = this.minAge;
+    }
+  }
+
+  @action
+  updateMaxAge(event) {
+    const newMax = parseInt(event.target.value);
+    this.maxAge = newMax;
+    // Assicura che maxAge non sia inferiore a minAge
+    if (this.maxAge < this.minAge) {
+      this.minAge = this.maxAge;
     }
   }
 
@@ -475,6 +510,8 @@ export default class FilterPanelComponent extends Component {
     this.selectedRegionId = null;
     this.selectedProvinceId = null;
     this.provinces = []; // Svuota lista province
+    this.minAge = 18; // Reset età minima
+    this.maxAge = 60; // Reset età massima
     this.selectedPlatforms = [];
     this.selectedContentTypes = [];
     this.selectedScheduleDays = [];
@@ -499,6 +536,8 @@ export default class FilterPanelComponent extends Component {
         countryId: this.selectedCountryId,
         regionId: this.selectedRegionId,
         provinceId: this.selectedProvinceId,
+        minAge: this.minAge,
+        maxAge: this.maxAge,
         platforms: this.selectedPlatforms,
         contentTypes: this.selectedContentTypes,
         scheduleDays: this.selectedScheduleDays,
@@ -526,5 +565,13 @@ export default class FilterPanelComponent extends Component {
 
   get isTimeSlotSelected() {
     return (slotId) => this.selectedTimeSlot === slotId;
+  }
+
+  get selectedTimeSlotLabel() {
+    if (!this.selectedTimeSlot) {
+      return null;
+    }
+    const slot = this.timeSlots.find((s) => s.id === this.selectedTimeSlot);
+    return slot ? slot.label : null;
   }
 }

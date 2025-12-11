@@ -153,8 +153,24 @@
     }
   }
 
+  // Label dei radiobutton del filtro principale "Cosa cerchi?"
+  .ofinder-search-type-label {
+    text-transform: uppercase;
+    font-weight: normal !important;
+  }
+
+  // Solo la label selezionata è gold
+  .custom-control-input:checked ~ .ofinder-search-type-label {
+    color: $ofinder-accent !important;
+  }
+
   // Accordion filter sections
   .filter-section {
+    // Separazione visiva con spazio e linea dorata semi-trasparente
+    padding-bottom: $ofinder-spacing-md;
+    margin-bottom: $ofinder-spacing-lg; // Spaziatura più ampia
+    border-bottom: 1px solid rgba(245, 158, 11, 0.41); // Linea dorata semi-trasparente (41% opacity)
+
     h6[data-toggle="collapse"] {
       cursor: pointer;
       user-select: none;
@@ -419,7 +435,33 @@
 
   &.channel-badge-snapchat {
     background-color: #fffc00;
-    color: #212529; // Dark text for light background
+    color: #000000 !important; // Black text for better contrast on yellow
+    font-weight: 600; // Slightly bolder for better readability
+
+    // Force black text on all children
+    span, div, p {
+      color: #000000 !important;
+    }
+
+    // Force black color on icon
+    .platform-icon-badge-inline {
+      svg, i {
+        fill: #000000 !important;
+        color: #000000 !important;
+      }
+    }
+  }
+
+  &.channel-badge-telegram {
+    background-color: #0088cc;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3); // Subtle border for visibility on dark backgrounds
+  }
+
+  &.channel-badge-threads {
+    background-color: #000000;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2); // Subtle border for visibility
   }
 
   &.channel-badge-other {
