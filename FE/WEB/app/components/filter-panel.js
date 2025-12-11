@@ -161,7 +161,7 @@ export default class FilterPanelComponent extends Component {
       this.selectedCountryId = italyId;
 
       const regions = await this.store.query('geo-first-division', {
-        filter: { geoCountryId: italyId },
+        filter: { geoCountry: italyId },
         sort: 'name',
       });
 
@@ -178,7 +178,7 @@ export default class FilterPanelComponent extends Component {
   async loadProvinces(regionId) {
     try {
       const provinces = await this.store.query('geo-second-division', {
-        filter: { geoFirstDivisionId: regionId },
+        filter: { geoFirstDivision: regionId },
         sort: 'name',
       });
 
