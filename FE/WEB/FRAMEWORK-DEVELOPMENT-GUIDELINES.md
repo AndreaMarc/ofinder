@@ -22,14 +22,29 @@ const data = await this.store.query('model-name', {
 });
 ```
 
-**✅ CORRETTO - Query Semplici:**
+**✅ CORRETTO - Query Semplici (1 solo filtro):**
 ```javascript
+// Per query semplici con un solo filtro, scrivi direttamente la stringa
+const data = await this.store.query('model-name', {
+  filter: `equals(relationshipName,'${value}')`,  // Usa il nome della relazione
+  sort: 'name',
+});
+```
+
+**✅ CORRETTO - Query Complesse (2+ filtri):**
+```javascript
+// Per query con più filtri o complesse, usa il servizio json-api
 const queryParams = this.jsonApi.queryBuilder({
   filter: [
     {
       function: 'equals',
-      column: 'relationshipName',  // Nome della relazione, NON l'attributo ID
+      column: 'relationshipName',
       value: valueToFilter,
+    },
+    {
+      function: 'contains',
+      column: 'name',
+      value: 'searchText',
     },
   ],
   sort: 'name',
@@ -54,21 +69,14 @@ Secondo lo standard JSON:API implementato da JsonApiDotNetCore ([documentazione]
 
 ### Esempi
 
-#### Filtro Singolo
+#### Filtro Singolo (Query Diretta)
 ```javascript
 // Carica tutte le regioni dell'Italia (ID: 107)
-const queryParams = this.jsonApi.queryBuilder({
-  filter: [
-    {
-      function: 'equals',
-      column: 'geoCountry',
-      value: 107,
-    },
-  ],
+// Query semplice -> scrivi direttamente la stringa
+const regions = await this.store.query('geo-first-division', {
+  filter: `equals(geoCountry,'107')`,
   sort: 'name',
 });
-
-const regions = await this.store.query('geo-first-division', queryParams);
 ```
 
 #### Filtri Multipli (AND automatico)
@@ -151,10 +159,14 @@ const queryParams = this.jsonApi.queryBuilder({
 
 ### Quando Usare il Servizio json-api
 
-**SEMPRE usare il servizio `json-api` quando:**
-1. Hai filtri JSON:API da applicare
-2. Hai query con più di 2-3 parametri
-3. Vuoi rendere le query più leggibili e manutenibili
+**Usare il servizio `json-api` quando:**
+1. Hai **2 o più filtri** da combinare (AND/OR automatico)
+2. Hai query con **molti parametri complessi** (filtri + paginazione + sort + include)
+3. Hai query con **operatori logici annidati** (AND/OR/NOT complessi)
+
+**NON usare il servizio per:**
+1. **Query semplici con 1 solo filtro** - scrivi direttamente la stringa
+2. **Solo ordinamento o paginazione** senza filtri - usa parametri diretti
 
 ### Struttura Completa dei Parametri
 
