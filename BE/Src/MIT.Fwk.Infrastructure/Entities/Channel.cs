@@ -24,6 +24,10 @@ namespace MIT.Fwk.Infrastructure.Entities
         public PlatformType Platform { get; set; }
 
         [Attr]
+        [Required]
+        public ChannelType ChannelType { get; set; }
+
+        [Attr]
         [MaxLength(50)]
         public string UsernameHandle { get; set; }
 

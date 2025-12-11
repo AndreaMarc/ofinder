@@ -159,6 +159,10 @@ namespace MIT.Fwk.Infrastructure.Data
                     .HasConversion<string>()
                     .HasMaxLength(20);
 
+                entity.Property(e => e.ChannelType)
+                    .HasConversion<string>()
+                    .HasMaxLength(20);
+
                 entity.HasOne(e => e.Performer)
                     .WithMany(p => p.Channels)
                     .HasForeignKey(e => e.PerformerId)

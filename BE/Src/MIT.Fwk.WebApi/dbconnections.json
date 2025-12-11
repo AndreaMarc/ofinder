@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "Default": "server=193.70.84.182;port=3306;database=OffertaJob_Prod;User ID=offertajob;Password=Maestrale2004!;",
+    "Default": "server=193.70.84.182;port=3306;database=TestMigrationNewFramework;User ID=offertajob;Password=Maestrale2004!;",
     "JsonApiDbContext": "server=193.70.84.182;port=3306;database=TestMigrationNewFramework;User ID=offertajob;Password=Maestrale2004!;",
     "NoSQLConnection": "mongodb://192.168.200.225:27017/FWK9",
     "OtherDbContext": "server=193.70.84.182;port=3306;database=TestMigrationNewFramework;User ID=offertajob;Password=Maestrale2004!;"
