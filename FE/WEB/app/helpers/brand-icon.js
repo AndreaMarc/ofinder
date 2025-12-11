@@ -11,7 +11,10 @@ import * as simpleIcons from 'simple-icons';
  * {{brand-icon "instagram" size=24}} - Custom size
  * {{brand-icon "twitter" size=20 color="#1DA1F2"}} - Custom color
  */
-export default helper(function brandIcon([iconName], { size = 16, color } = {}) {
+export default helper(function brandIcon(
+  [iconName],
+  { size = 16, color } = {}
+) {
   // Mappa nomi personalizzati ai nomi Simple Icons
   const iconMapping = {
     onlyfans: 'siOnlyfans',
@@ -23,7 +26,8 @@ export default helper(function brandIcon([iconName], { size = 16, color } = {}) 
     snapchat: 'siSnapchat',
   };
 
-  const simpleIconName = iconMapping[iconName?.toLowerCase()] || `si${iconName}`;
+  const simpleIconName =
+    iconMapping[iconName?.toLowerCase()] || `si${iconName}`;
   const icon = simpleIcons[simpleIconName];
 
   if (!icon) {
@@ -33,7 +37,8 @@ export default helper(function brandIcon([iconName], { size = 16, color } = {}) 
       default: { icon: 'fa-globe', color: '#6c757d' },
     };
 
-    const fallback = fallbackIcons[iconName?.toLowerCase()] || fallbackIcons.default;
+    const fallback =
+      fallbackIcons[iconName?.toLowerCase()] || fallbackIcons.default;
     const fallbackColor = color || fallback.color;
 
     const fallbackSvg = `
