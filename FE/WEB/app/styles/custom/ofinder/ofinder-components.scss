@@ -222,11 +222,15 @@
       margin-bottom: 0 !important; // Remove margin on last category
     }
 
-    // Style for labels with tooltips
-    .custom-control-label {
-      span[data-toggle="tooltip"] {
-        border-bottom: 1px dotted rgba(249, 250, 251, 0.3);
-        cursor: help;
+    // Help icon for tooltips
+    .content-type-help-icon {
+      color: rgba(156, 163, 175, 0.6); // Subtle gray
+      font-size: 0.75rem;
+      cursor: help;
+      vertical-align: middle;
+
+      &:hover {
+        color: $ofinder-secondary; // Gold on hover
       }
     }
   }
