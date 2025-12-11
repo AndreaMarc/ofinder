@@ -16,5 +16,5 @@
   /**
     Porta di sviluppo locale. Default 4200
   */
-  "port": 4200
+  "port": 4212
 }

@@ -17,8 +17,7 @@ export default class SearchBarComponent extends Component {
 
   get placeholder() {
     return (
-      this.args.placeholder ||
-      'Cerca performer per nome, categoria, tag...'
+      this.args.placeholder || 'Cerca performer per nome, categoria, tag...'
     );
   }
 
