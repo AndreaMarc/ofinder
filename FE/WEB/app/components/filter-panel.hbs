@@ -265,56 +265,6 @@
       </div>
       {{/if}}
 
-      {{!-- Tipi di Show Live (per CamGirl sempre, per Performer sempre) --}}
-      {{#if this.showLiveShowTypesFilter}}
-      <div class="filter-section mb-3">
-        <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseLiveShowTypes"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseLiveShowTypes"
-        >
-          <span>Tipi di Show Live</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
-        </h6>
-        <div id="collapseLiveShowTypes" class="collapse d-md-block" data-parent="#filterAccordion">
-          {{#each this.liveShowTypesByCategory as |categoryGroup|}}
-            <div class="content-type-category mb-3">
-              <h6 class="content-type-category-title ofinder-text-xs text-uppercase mb-2">
-                {{categoryGroup.name}}
-              </h6>
-              <div class="filter-section-two-columns">
-                {{#each categoryGroup.items as |contentType|}}
-                  <div class="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                      class="custom-control-input"
-                      id="liveShowType-{{contentType.id}}"
-                      checked={{this.isContentTypeSelected contentType.id}}
-                      {{on "change" (fn this.toggleContentType contentType)}}
-                    />
-                    <label
-                      class="custom-control-label ofinder-text-sm"
-                      for="liveShowType-{{contentType.id}}"
-                    >
-                      {{contentType.name}}
-                      {{#if contentType.tooltip}}
-                        <Standard::ToolTip @title={{contentType.tooltip}}>
-                          <i class="fa fa-question-circle content-type-help-icon ml-1"></i>
-                        </Standard::ToolTip>
-                      {{/if}}
-                    </label>
-                  </div>
-                {{/each}}
-              </div>
-            </div>
-          {{/each}}
-        </div>
-      </div>
-      {{/if}}
-
       {{!-- Tipi di Contenuto Performer (solo per Performer) --}}
       {{#if this.showPerformerContentTypesFilter}}
       <div class="filter-section mb-3">
@@ -348,6 +298,56 @@
                     <label
                       class="custom-control-label ofinder-text-sm"
                       for="performerContentType-{{contentType.id}}"
+                    >
+                      {{contentType.name}}
+                      {{#if contentType.tooltip}}
+                        <Standard::ToolTip @title={{contentType.tooltip}}>
+                          <i class="fa fa-question-circle content-type-help-icon ml-1"></i>
+                        </Standard::ToolTip>
+                      {{/if}}
+                    </label>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- Tipi di Show Live (per CamGirl sempre, per Performer solo se selezionato live-public o live-private) --}}
+      {{#if this.showLiveShowTypesFilter}}
+      <div class="filter-section mb-3">
+        <h6
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
+          data-toggle="collapse"
+          data-target="#collapseLiveShowTypes"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseLiveShowTypes"
+        >
+          <span>Tipi di Show Live</span>
+          <i class="fa fa-chevron-down d-md-none"></i>
+        </h6>
+        <div id="collapseLiveShowTypes" class="collapse d-md-block" data-parent="#filterAccordion">
+          {{#each this.liveShowTypesByCategory as |categoryGroup|}}
+            <div class="content-type-category mb-3">
+              <h6 class="content-type-category-title ofinder-text-xs text-uppercase mb-2">
+                {{categoryGroup.name}}
+              </h6>
+              <div class="filter-section-two-columns">
+                {{#each categoryGroup.items as |contentType|}}
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      class="custom-control-input"
+                      id="liveShowType-{{contentType.id}}"
+                      checked={{this.isContentTypeSelected contentType.id}}
+                      {{on "change" (fn this.toggleContentType contentType)}}
+                    />
+                    <label
+                      class="custom-control-label ofinder-text-sm"
+                      for="liveShowType-{{contentType.id}}"
                     >
                       {{contentType.name}}
                       {{#if contentType.tooltip}}

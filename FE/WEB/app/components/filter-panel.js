@@ -352,10 +352,19 @@ export default class FilterPanelComponent extends Component {
   /**
    * Mostra filtro Tipi di Show Live
    * - Sempre per CamGirl
-   * - Sempre per Performer
+   * - Per Performer solo se è selezionato live-public o live-private
    */
   get showLiveShowTypesFilter() {
-    return this.searchType === 'CamGirl' || this.searchType === 'Performer';
+    if (this.searchType === 'CamGirl') {
+      return true;
+    }
+    if (this.searchType === 'Performer') {
+      return (
+        this.selectedContentTypes.includes('live-public') ||
+        this.selectedContentTypes.includes('live-private')
+      );
+    }
+    return false;
   }
 
   /**
