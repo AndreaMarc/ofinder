@@ -66,6 +66,14 @@ export default class SearchRoute extends Route {
             url: 'https://snapchat.com/add/sofia',
           },
         ],
+        schedules: [
+          { dayOfWeek: 1, timeSlots: ['14-18', '20-23'] }, // Lunedì: 7h
+          { dayOfWeek: 2, timeSlots: ['15-19', '21-24'] }, // Martedì: 7h
+          { dayOfWeek: 3, timeSlots: ['14-18'] }, // Mercoledì: 4h
+          { dayOfWeek: 4, timeSlots: ['20-24'] }, // Giovedì: 4h
+          { dayOfWeek: 5, timeSlots: ['18-22'] }, // Venerdì: 4h
+          { dayOfWeek: 6, timeSlots: ['10-14', '20-24'] }, // Sabato: 8h
+        ],
       },
       {
         id: 2,
@@ -93,6 +101,11 @@ export default class SearchRoute extends Route {
             verified: true,
             url: 'https://threads.net/@emma',
           },
+        ],
+        schedules: [
+          { dayOfWeek: 2, timeSlots: ['20-23'] }, // Martedì: 3h
+          { dayOfWeek: 4, timeSlots: ['21-24'] }, // Giovedì: 3h
+          { dayOfWeek: 6, timeSlots: ['14-18', '21-24'] }, // Sabato: 7h
         ],
       },
       {
@@ -137,6 +150,15 @@ export default class SearchRoute extends Route {
             url: 'https://threads.net/@luna',
           },
         ],
+        schedules: [
+          { dayOfWeek: 0, timeSlots: ['18-24'] }, // Domenica: 6h
+          { dayOfWeek: 1, timeSlots: ['19-24'] }, // Lunedì: 5h
+          { dayOfWeek: 2, timeSlots: ['19-24'] }, // Martedì: 5h
+          { dayOfWeek: 3, timeSlots: ['19-24'] }, // Mercoledì: 5h
+          { dayOfWeek: 4, timeSlots: ['19-24'] }, // Giovedì: 5h
+          { dayOfWeek: 5, timeSlots: ['18-24'] }, // Venerdì: 6h
+          { dayOfWeek: 6, timeSlots: ['14-24'] }, // Sabato: 10h
+        ],
       },
       {
         id: 4,
@@ -169,6 +191,12 @@ export default class SearchRoute extends Route {
             verified: true,
             url: 'https://snapchat.com/add/mia',
           },
+        ],
+        schedules: [
+          { dayOfWeek: 1, timeSlots: ['6-8', '18-20'] }, // Lunedì: 4h (mattina + sera)
+          { dayOfWeek: 3, timeSlots: ['6-8', '18-20'] }, // Mercoledì: 4h
+          { dayOfWeek: 5, timeSlots: ['6-8', '18-22'] }, // Venerdì: 6h
+          { dayOfWeek: 0, timeSlots: ['10-12'] }, // Domenica: 2h
         ],
       },
     ];

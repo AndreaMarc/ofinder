@@ -50,6 +50,13 @@
       </div>
     {{/if}}
 
+    {{!-- Weekly Schedule Chart (for CamGirl and Performer) --}}
+    {{#if this.showScheduleChart}}
+      <div class="mb-2">
+        <WeeklyScheduleChart @schedules={{@performer.schedules}} @height={{100}} />
+      </div>
+    {{/if}}
+
     {{!-- Descrizione breve (troncata) --}}
     {{#if this.showBio}}
       <p class="ofinder-text-sm ofinder-text-muted mb-1 performer-bio-truncated">

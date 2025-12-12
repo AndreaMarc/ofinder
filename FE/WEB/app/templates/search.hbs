@@ -148,6 +148,7 @@
             <PerformerCard
               @performer={{performer}}
               @showBio={{@model.isLoggedIn}}
+              @searchType={{this.activeFilters.searchType}}
               @onViewProfile={{fn this.handleViewProfile performer}}
             />
           </div>
