@@ -59,7 +59,8 @@ export default class FilterPanelComponent extends Component {
   ];
 
   // Content types per CamGirl (con categorie e tooltip)
-  camGirlContentTypes = [
+  // Tipi di Show Live (channelType = CamGirl)
+  liveShowContentTypes = [
     // Aspetto
     { id: 'face', name: 'Face', category: 'Aspetto' },
     { id: 'body', name: 'Body', category: 'Aspetto' },
@@ -110,6 +111,24 @@ export default class FilterPanelComponent extends Component {
     // Interazione & Esperienza (ultima sezione)
     { id: 'vge', name: 'VGE', tooltip: 'Virtual Girlfriend Experience - chiacchiere e interazioni romantiche simulate', category: 'Interazione & Esperienza' },
     { id: 'roleplay', name: 'Roleplay', category: 'Interazione & Esperienza' },
+  ];
+
+  // Tipi di Contenuto Performer (channelType = Performer)
+  performerContentTypes = [
+    // Foto & Video
+    { id: 'foto', name: 'Foto', category: 'Foto & Video' },
+    { id: 'video', name: 'Video', category: 'Foto & Video' },
+    { id: 'video-custom', name: 'Video Custom', category: 'Foto & Video' },
+
+    // Merchandise
+    { id: 'abbigliamento', name: 'Abbigliamento', category: 'Merchandise' },
+    { id: 'gadget', name: 'Gadget', category: 'Merchandise' },
+    { id: 'sex-toys', name: 'Sex Toys', category: 'Merchandise' },
+
+    // Servizi
+    { id: 'messaggi-personalizzati', name: 'Messaggi Personalizzati', category: 'Servizi' },
+    { id: 'videocall', name: 'Videocall', category: 'Servizi' },
+    { id: 'sexting', name: 'Sexting', category: 'Servizi' },
   ];
 
   // Giorni della settimana per filtro orari
@@ -292,8 +311,33 @@ export default class FilterPanelComponent extends Component {
   /**
    * Content types raggruppati per categoria
    */
-  get contentTypesByCategory() {
-    const types = this.contentTypeFilters;
+  /**
+   * Raggruppa i tipi di show live per categoria
+   */
+  get liveShowTypesByCategory() {
+    const types = this.liveShowContentTypes;
+    const grouped = {};
+
+    types.forEach((type) => {
+      const category = type.category || 'Altri';
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(type);
+    });
+
+    // Converti in array di oggetti per facilitare l'iterazione nel template
+    return Object.keys(grouped).map((categoryName) => ({
+      name: categoryName,
+      items: grouped[categoryName],
+    }));
+  }
+
+  /**
+   * Raggruppa i tipi di contenuto performer per categoria
+   */
+  get performerContentTypesByCategory() {
+    const types = this.performerContentTypes;
     const grouped = {};
 
     types.forEach((type) => {
@@ -319,10 +363,19 @@ export default class FilterPanelComponent extends Component {
   }
 
   /**
-   * Mostra filtro Tipi di Contenuto per CamGirl e Performer
+   * Mostra filtro Tipi di Show Live
+   * - Sempre per CamGirl
+   * - Sempre per Performer
    */
-  get showContentTypesFilter() {
+  get showLiveShowTypesFilter() {
     return this.searchType === 'CamGirl' || this.searchType === 'Performer';
+  }
+
+  /**
+   * Mostra filtro Tipi di Contenuto (solo per Performer)
+   */
+  get showPerformerContentTypesFilter() {
+    return this.searchType === 'Performer';
   }
 
   /**
