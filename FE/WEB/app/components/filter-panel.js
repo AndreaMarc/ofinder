@@ -48,7 +48,6 @@ export default class FilterPanelComponent extends Component {
     { id: 'Escort', label: 'Escort', description: 'Servizi escort' },
   ];
 
-
   // Content types per CamGirl (con categorie e tooltip)
   // Tipi di Show Live (channelType = CamGirl)
   liveShowContentTypes = [
@@ -58,9 +57,23 @@ export default class FilterPanelComponent extends Component {
 
     // Formato dello Show
     { id: 'public-show', name: 'Public Show', category: 'Formato dello Show' },
-    { id: 'private-show', name: 'Private Show', category: 'Formato dello Show' },
-    { id: 'tip-controlled', name: 'Tip Controlled', tooltip: 'Show controllato dai tips degli spettatori', category: 'Formato dello Show' },
-    { id: 'interactive-toy', name: 'Interactive Toy', tooltip: 'Toys interattivi controllati dagli spettatori', category: 'Formato dello Show' },
+    {
+      id: 'private-show',
+      name: 'Private Show',
+      category: 'Formato dello Show',
+    },
+    {
+      id: 'tip-controlled',
+      name: 'Tip Controlled',
+      tooltip: 'Show controllato dai tips degli spettatori',
+      category: 'Formato dello Show',
+    },
+    {
+      id: 'interactive-toy',
+      name: 'Interactive Toy',
+      tooltip: 'Toys interattivi controllati dagli spettatori',
+      category: 'Formato dello Show',
+    },
 
     // Numero Partecipanti
     { id: 'single', name: 'Single', category: 'Numero Partecipanti' },
@@ -69,38 +82,93 @@ export default class FilterPanelComponent extends Component {
     { id: 'group', name: 'Group', category: 'Numero Partecipanti' },
 
     // Atti Sessuali Base
-    { id: 'masturbation', name: 'Masturbation', category: 'Atti Sessuali Base' },
+    {
+      id: 'masturbation',
+      name: 'Masturbation',
+      category: 'Atti Sessuali Base',
+    },
     { id: 'oral', name: 'Oral', category: 'Atti Sessuali Base' },
     { id: '69', name: '69', category: 'Atti Sessuali Base' },
     { id: 'vaginal', name: 'Vaginal', category: 'Atti Sessuali Base' },
     { id: 'anal-finger', name: 'Anal Finger', category: 'Atti Sessuali Base' },
-    { id: 'anal-dildo-sex', name: 'Anal Dildo/Sex', category: 'Atti Sessuali Base' },
+    {
+      id: 'anal-dildo-sex',
+      name: 'Anal Dildo/Sex',
+      category: 'Atti Sessuali Base',
+    },
     { id: 'squirt', name: 'Squirt', category: 'Atti Sessuali Base' },
     { id: 'facial', name: 'Facial', category: 'Atti Sessuali Base' },
     { id: 'tit-cum', name: 'Tit Cum', category: 'Atti Sessuali Base' },
 
     // Atti Sessuali Intensi
-    { id: 'deep-penetration', name: 'Deep Penetration', category: 'Atti Sessuali Intensi' },
-    { id: 'double-penetration', name: 'Double Penetration', category: 'Atti Sessuali Intensi' },
+    {
+      id: 'deep-penetration',
+      name: 'Deep Penetration',
+      category: 'Atti Sessuali Intensi',
+    },
+    {
+      id: 'double-penetration',
+      name: 'Double Penetration',
+      category: 'Atti Sessuali Intensi',
+    },
     { id: 'large-toys', name: 'Large Toys', category: 'Atti Sessuali Intensi' },
     { id: 'fisting', name: 'Fisting', category: 'Atti Sessuali Intensi' },
 
     // Ambientazioni e Fetish
     { id: 'foot', name: 'Foot', category: 'Ambientazioni e Fetish' },
     { id: 'oil-cream', name: 'Oil/Cream', category: 'Ambientazioni e Fetish' },
-    { id: 'shower-bath', name: 'Shower/Bath', category: 'Ambientazioni e Fetish' },
+    {
+      id: 'shower-bath',
+      name: 'Shower/Bath',
+      category: 'Ambientazioni e Fetish',
+    },
     { id: 'outdoor', name: 'Outdoor', category: 'Ambientazioni e Fetish' },
 
     // Dominazione Verbale & Taboo
-    { id: 'dom-sub', name: 'Dom/Sub', tooltip: 'Dominazione e sottomissione', category: 'Dominazione Verbale & Taboo' },
-    { id: 'dirty-talk', name: 'Dirty Talk', category: 'Dominazione Verbale & Taboo' },
-    { id: 'joi', name: 'JOI', tooltip: 'Jerk Off Instructions', category: 'Dominazione Verbale & Taboo' },
-    { id: 'sph', name: 'SPH', tooltip: 'Small Penis Humiliation', category: 'Dominazione Verbale & Taboo' },
-    { id: 'cei', name: 'CEI', tooltip: 'Cum Eating Instructions', category: 'Dominazione Verbale & Taboo' },
-    { id: 'golden-shower-scat', name: 'Golden Shower/Scat', tooltip: 'Giochi con urina e feci', category: 'Dominazione Verbale & Taboo' },
+    {
+      id: 'dom-sub',
+      name: 'Dom/Sub',
+      tooltip: 'Dominazione e sottomissione',
+      category: 'Dominazione Verbale & Taboo',
+    },
+    {
+      id: 'dirty-talk',
+      name: 'Dirty Talk',
+      category: 'Dominazione Verbale & Taboo',
+    },
+    {
+      id: 'joi',
+      name: 'JOI',
+      tooltip: 'Jerk Off Instructions',
+      category: 'Dominazione Verbale & Taboo',
+    },
+    {
+      id: 'sph',
+      name: 'SPH',
+      tooltip: 'Small Penis Humiliation',
+      category: 'Dominazione Verbale & Taboo',
+    },
+    {
+      id: 'cei',
+      name: 'CEI',
+      tooltip: 'Cum Eating Instructions',
+      category: 'Dominazione Verbale & Taboo',
+    },
+    {
+      id: 'golden-shower-scat',
+      name: 'Golden Shower/Scat',
+      tooltip: 'Giochi con urina e feci',
+      category: 'Dominazione Verbale & Taboo',
+    },
 
     // Interazione & Esperienza (ultima sezione)
-    { id: 'vge', name: 'VGE', tooltip: 'Virtual Girlfriend Experience - chiacchiere e interazioni romantiche simulate', category: 'Interazione & Esperienza' },
+    {
+      id: 'vge',
+      name: 'VGE',
+      tooltip:
+        'Virtual Girlfriend Experience - chiacchiere e interazioni romantiche simulate',
+      category: 'Interazione & Esperienza',
+    },
     { id: 'roleplay', name: 'Roleplay', category: 'Interazione & Esperienza' },
   ];
 
@@ -114,7 +182,11 @@ export default class FilterPanelComponent extends Component {
     { id: 'live-private', name: 'Live Private', category: 'Foto & Video' },
 
     // Altro
-    { id: 'vendita-abbigliamento', name: 'Vendita Abbigliamento', category: 'Altro' },
+    {
+      id: 'vendita-abbigliamento',
+      name: 'Vendita Abbigliamento',
+      category: 'Altro',
+    },
     { id: 'contenuti-extra', name: 'Contenuti Extra', category: 'Altro' },
   ];
 
@@ -215,20 +287,33 @@ export default class FilterPanelComponent extends Component {
     const options = this.regions.map((region) => ({
       id: region.id,
       value: region.name,
-      selected: this.selectedRegionId === region.id,
+      selected: String(this.selectedRegionId) === String(region.id),
     }));
     return JSON.stringify(options);
   }
 
   /**
    * Opzioni province in formato JSON per SelectTwo
+   * Include selectedRegionId come marker per forzare il re-render quando cambia la regione
    */
   get provincesOptions() {
     const options = this.provinces.map((province) => ({
       id: province.id,
       value: province.name,
-      selected: this.selectedProvinceId === province.id,
+      selected: String(this.selectedProvinceId) === String(province.id),
     }));
+
+    // Se non ci sono province ma c'è una regione selezionata,
+    // aggiungi un marker per forzare il re-render e applicare il nuovo stato disabled
+    // Il marker ha id univoco basato su regionId per rendere unica la stringa JSON
+    if (this.provinces.length === 0 && this.selectedRegionId) {
+      options.push({
+        id: `_loading_${this.selectedRegionId}`,
+        value: 'Caricamento...',
+        _marker: true
+      });
+    }
+
     return JSON.stringify(options);
   }
 
