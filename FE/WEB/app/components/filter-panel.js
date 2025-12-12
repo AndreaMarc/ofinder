@@ -48,15 +48,6 @@ export default class FilterPanelComponent extends Component {
     { id: 'Escort', label: 'Escort', description: 'Servizi escort' },
   ];
 
-  // Content types per Performer
-  performerContentTypes = [
-    { id: 'foto-erotiche', name: 'Foto erotiche', count: 234 },
-    { id: 'video-gallery', name: 'Video gallery', count: 189 },
-    { id: 'live-public', name: 'Live public', count: 156 },
-    { id: 'live-private', name: 'Live private', count: 98 },
-    { id: 'vendita-abbigliamento', name: 'Vendita abbigliamento', count: 45 },
-    { id: 'contenuti-extra', name: 'Contenuti extra', count: 78 },
-  ];
 
   // Content types per CamGirl (con categorie e tooltip)
   // Tipi di Show Live (channelType = CamGirl)
@@ -119,16 +110,12 @@ export default class FilterPanelComponent extends Component {
     { id: 'foto', name: 'Foto', category: 'Foto & Video' },
     { id: 'video', name: 'Video', category: 'Foto & Video' },
     { id: 'video-custom', name: 'Video Custom', category: 'Foto & Video' },
+    { id: 'live-public', name: 'Live Public', category: 'Foto & Video' },
+    { id: 'live-private', name: 'Live Private', category: 'Foto & Video' },
 
-    // Merchandise
-    { id: 'abbigliamento', name: 'Abbigliamento', category: 'Merchandise' },
-    { id: 'gadget', name: 'Gadget', category: 'Merchandise' },
-    { id: 'sex-toys', name: 'Sex Toys', category: 'Merchandise' },
-
-    // Servizi
-    { id: 'messaggi-personalizzati', name: 'Messaggi Personalizzati', category: 'Servizi' },
-    { id: 'videocall', name: 'Videocall', category: 'Servizi' },
-    { id: 'sexting', name: 'Sexting', category: 'Servizi' },
+    // Altro
+    { id: 'vendita-abbigliamento', name: 'Vendita Abbigliamento', category: 'Altro' },
+    { id: 'contenuti-extra', name: 'Contenuti Extra', category: 'Altro' },
   ];
 
   // Giorni della settimana per filtro orari
