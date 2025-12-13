@@ -16,7 +16,10 @@
       "Skill(frontend-design)",
       "Bash(ls:*)",
       "Bash(xargs:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(lsof:*)",
+      "Bash(git restore:*)",
+      "Bash(find:*)"
     ]
   }
 }

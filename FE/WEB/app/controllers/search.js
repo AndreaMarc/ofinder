@@ -9,11 +9,15 @@ import { action } from '@ember/object';
  */
 export default class SearchController extends Controller {
   @service router;
+  @service performerFilter;
 
   @tracked searchQuery = '';
   @tracked activeFilters = {
+    searchType: null, // 'CamGirl', 'Performer', 'Escort'
     platforms: [],
     contentTypes: [],
+    scheduleDays: [], // Giorni della settimana
+    timeSlot: null, // Fascia oraria
     verified: false,
     premium: false,
     new: false,
@@ -27,102 +31,37 @@ export default class SearchController extends Controller {
 
   /**
    * Filtered performers based on search query and active filters
+   * Delegates filtering logic to performerFilter service
    */
   get filteredPerformers() {
-    let performers = this.model.performers || [];
+    const performers = this.model.performers || [];
 
-    // Apply search query filter
-    if (this.searchQuery && this.searchQuery.length > 0) {
-      const query = this.searchQuery.toLowerCase();
-      performers = performers.filter((p) => {
-        return (
-          p.displayName.toLowerCase().includes(query) ||
-          (p.bio && p.bio.toLowerCase().includes(query))
-        );
-      });
-    }
+    // Use service to filter performers
+    const filtered = this.performerFilter.filterPerformers(
+      performers,
+      this.activeFilters,
+      this.searchQuery
+    );
 
-    // Apply verified filter
-    if (this.activeFilters.verified) {
-      performers = performers.filter((p) => p.verified === true);
-    }
-
-    // Apply premium filter
-    if (this.activeFilters.premium) {
-      performers = performers.filter((p) => p.isPremium === true);
-    }
-
-    // Apply top-rated filter
-    if (this.activeFilters.topRated) {
-      performers = performers.filter((p) => p.averageRating >= 4.5);
-    }
-
-    // Apply platform filters
-    if (this.activeFilters.platforms.length > 0) {
-      performers = performers.filter((p) => {
-        return p.channels?.some((ch) =>
-          this.activeFilters.platforms.includes(ch.platformType)
-        );
-      });
-    }
-
-    // Apply rating filter
-    if (this.activeFilters.minRating > 0) {
-      performers = performers.filter(
-        (p) => p.averageRating >= this.activeFilters.minRating
-      );
-    }
-
-    // Apply price filter
-    if (this.activeFilters.maxPrice < 50) {
-      performers = performers.filter(
-        (p) => p.minPrice <= this.activeFilters.maxPrice
-      );
-    }
-
-    // Pagination
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return performers.slice(startIndex, endIndex);
+    // Apply pagination
+    return this.performerFilter.paginatePerformers(
+      filtered,
+      this.currentPage,
+      this.itemsPerPage
+    );
   }
 
   /**
    * Total count of filtered performers (before pagination)
+   * Delegates counting to performerFilter service
    */
   get filteredPerformersCount() {
-    let performers = this.model.performers || [];
-
-    if (this.searchQuery && this.searchQuery.length > 0) {
-      const query = this.searchQuery.toLowerCase();
-      performers = performers.filter((p) => {
-        return (
-          p.displayName.toLowerCase().includes(query) ||
-          (p.bio && p.bio.toLowerCase().includes(query))
-        );
-      });
-    }
-
-    if (this.activeFilters.verified) {
-      performers = performers.filter((p) => p.verified === true);
-    }
-
-    if (this.activeFilters.premium) {
-      performers = performers.filter((p) => p.isPremium === true);
-    }
-
-    if (this.activeFilters.topRated) {
-      performers = performers.filter((p) => p.averageRating >= 4.5);
-    }
-
-    if (this.activeFilters.platforms.length > 0) {
-      performers = performers.filter((p) => {
-        return p.channels?.some((ch) =>
-          this.activeFilters.platforms.includes(ch.platformType)
-        );
-      });
-    }
-
-    return performers.length;
+    const performers = this.model.performers || [];
+    return this.performerFilter.countFilteredPerformers(
+      performers,
+      this.activeFilters,
+      this.searchQuery
+    );
   }
 
   /**
@@ -134,9 +73,13 @@ export default class SearchController extends Controller {
 
   /**
    * Calculate total pages
+   * Delegates calculation to performerFilter service
    */
   get totalPages() {
-    return Math.ceil(this.filteredPerformersCount / this.itemsPerPage);
+    return this.performerFilter.calculateTotalPages(
+      this.filteredPerformersCount,
+      this.itemsPerPage
+    );
   }
 
   /**
@@ -190,8 +133,11 @@ export default class SearchController extends Controller {
   handleFilterChange(filters) {
     // Update activeFilters with all values from FilterPanel
     this.activeFilters = {
+      searchType: filters.searchType || null,
       platforms: filters.platforms || [],
       contentTypes: filters.contentTypes || [],
+      scheduleDays: filters.scheduleDays || [],
+      timeSlot: filters.timeSlot || null,
       verified: filters.onlyVerified || false,
       premium: this.activeFilters.premium, // Keep quick filter state
       new: filters.onlyNew || false,

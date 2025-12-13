@@ -1,0 +1,29 @@
+{{!-- Weekly Schedule Chart --}}
+<div class="weekly-schedule-chart">
+  {{#if this.topDays}}
+    <div class="d-flex align-items-center mb-2">
+      <i class="pe-7s-clock ofinder-text-accent mr-2"></i>
+      <span class="ofinder-text-xs ofinder-text-muted">
+        Disponibilità:
+        {{#each this.topDays as |day index|}}
+          <span class="ofinder-text-accent font-weight-bold">{{day.name}}</span>
+          {{#if (lt index 2)}}
+            {{#unless (eq index (sub this.topDays.length 1))}}
+              ,
+            {{/unless}}
+          {{/if}}
+        {{/each}}
+      </span>
+    </div>
+    <div
+      id={{this.chartId}}
+      {{did-insert this.setupChart}}
+      {{will-destroy this.teardownChart}}
+    ></div>
+  {{else}}
+    <div class="text-center ofinder-text-xs ofinder-text-muted py-2">
+      <i class="pe-7s-info mr-1"></i>
+      Orari non disponibili
+    </div>
+  {{/if}}
+</div>

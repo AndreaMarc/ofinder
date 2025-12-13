@@ -11,7 +11,10 @@ import * as simpleIcons from 'simple-icons';
  * {{brand-icon "instagram" size=24}} - Custom size
  * {{brand-icon "twitter" size=20 color="#1DA1F2"}} - Custom color
  */
-export default helper(function brandIcon([iconName], { size = 16, color } = {}) {
+export default helper(function brandIcon(
+  [iconName],
+  { size = 16, color } = {}
+) {
   // Mappa nomi personalizzati ai nomi Simple Icons
   const iconMapping = {
     onlyfans: 'siOnlyfans',
@@ -21,19 +24,26 @@ export default helper(function brandIcon([iconName], { size = 16, color } = {}) 
     tiktok: 'siTiktok',
     youtube: 'siYoutube',
     snapchat: 'siSnapchat',
+    telegram: 'siTelegram',
+    threads: 'siThreads',
   };
 
-  const simpleIconName = iconMapping[iconName?.toLowerCase()] || `si${iconName}`;
+  const simpleIconName =
+    iconMapping[iconName?.toLowerCase()] || `si${iconName}`;
   const icon = simpleIcons[simpleIconName];
 
   if (!icon) {
     // Fallback: usa FontAwesome icons per piattaforme non supportate
     const fallbackIcons = {
       fansly: { icon: 'fa-star', color: '#7b68ee' },
+      telegram: { icon: 'fa-paper-plane', color: '#0088cc' },
+      threads: { icon: 'fa-at', color: '#000000' },
+      other: { icon: 'fa-globe', color: '#6c757d' },
       default: { icon: 'fa-globe', color: '#6c757d' },
     };
 
-    const fallback = fallbackIcons[iconName?.toLowerCase()] || fallbackIcons.default;
+    const fallback =
+      fallbackIcons[iconName?.toLowerCase()] || fallbackIcons.default;
     const fallbackColor = color || fallback.color;
 
     const fallbackSvg = `

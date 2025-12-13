@@ -20,8 +20,9 @@ export default class ChannelContentTypeModel extends Model {
 
   /**
    * Tipo di contenuto
-   * Es: "foto erotiche", "video gallery", "live public", "live private",
+   * Es nel caso di Performer: "foto erotiche", "video gallery", "live public", "live private",
    * "vendita abbigliamento", "contenuti extra", ecc.
+   * Es nel caso di camgirl: "face", "anal", "lush", ecc
    */
   @attr('string') contentType;
 
