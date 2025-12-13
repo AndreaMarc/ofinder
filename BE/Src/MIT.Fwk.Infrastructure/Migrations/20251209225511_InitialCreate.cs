@@ -2413,11 +2413,11 @@ namespace MIT.Fwk.Infrastructure.Migrations
                 values: new object[,]
                 {
                     {
-                        "207d02ef-7baa-4dca-a118-320f3ab0e853", 0, "77579746-3a2f-4fa0-b67e-a93fcec317c3", "unit.test@maestrale.it", true, true,
+                        "207d02ef-7baa-4dca-a118-320f3ab0e853", 0, "77579746-3a2f-4fa0-b67e-a93fcec317c3", "dpellerucci@gmail.com", true, true,
                         new DateTime(2023, 9, 20, 14, 49, 42, 944, DateTimeKind.Utc),
-                        "UNIT.TEST@MAESTRALE.IT", "UNIT.TEST@MAESTRALE.IT",
-                        "AQAAAAEAACcQAAAAEK0RfXbmugblTgu0DB6i2MPm2f4Ii0wxQD70/rTSx3+mVcm66Hk1IDJv69/b6yubdw==", null, false,
-                        "JJV4LCMSOQXE2QWYNBJTFOZHRYX2PYZ4", false, "unit.test@maestrale.it", null,
+                        "DPELLERUCCI@GMAIL.COM", "DPELLERUCCI@GMAIL.COM",
+                        "AQAAAAIAAYagAAAAENIIc5qWvp+54alBPJFcL9O7/kizFcYg27+x1mGz8RZxUEvAMn8+KPrqC8bWOILAVA==", null, false,
+                        "JJV4LCMSOQXE2QWYNBJTFOZHRYX2PYZ4", false, "dpellerucci@gmail.com", null,
                         new DateTime(2024, 2, 2, 13, 33, 41, 303, DateTimeKind.Utc), 1,
                         new DateTime(2023, 9, 4, 10, 8, 36, 383, DateTimeKind.Utc), null, null, null, null, null, null, null, true, false, null
                     },
@@ -3198,7 +3198,7 @@ namespace MIT.Fwk.Infrastructure.Migrations
                 {
                     {
                         "7686c9d5-6f73-4f81-b764-075efd3ce609", "207d02ef-7baa-4dca-a118-320f3ab0e853", "Unit", "Test", "", "", "", "", "",
-                        DateTime.Parse("2023-07-04 00:00:00.000"), "", "", "", "", "", "", "", "", "", "", "", "", "unit.test@maestrale.it",
+                        DateTime.Parse("2023-07-04 00:00:00.000"), "", "", "", "", "", "", "", "", "", "", "", "", "dpellerucci@gmail.com",
                         "", "", "", "", 0, 0, DateTime.Parse("2023-07-04 08:07:40.367"), false, null, null, null, null, null, null, null,
                         DateTime.Parse("1900-01-01 00:00:00.000"), null
                     },

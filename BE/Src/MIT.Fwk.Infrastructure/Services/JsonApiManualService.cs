@@ -700,7 +700,19 @@ namespace MIT.Fwk.Infrastructure.Services
 
         public List<RoleClaim> GetAllRoleClaimsInRoles(List<Role> roles)
         {
-            return [.. _context.RoleClaims.Where(x => roles.Select(x => x.Id).Contains(x.RoleId))];
+            // Fix MySQL: Materializza prima gli ID per evitare type mapping error
+            List<string> roleIds = roles.Select(x => x.Id).ToList();
+
+            // Query separata per ogni role - MySQL gestisce facilmente query semplici con indici
+            List<RoleClaim> allClaims = new List<RoleClaim>();
+            foreach (string roleId in roleIds)
+            {
+                List<RoleClaim> claims = _context.RoleClaims
+                    .Where(x => x.RoleId == roleId)
+                    .ToList();
+                allClaims.AddRange(claims);
+            }
+            return allClaims;
         }
 
         public Task<List<Role>> RolesFromParent(Tenant tenant)
@@ -727,8 +739,6 @@ namespace MIT.Fwk.Infrastructure.Services
                 {
                     List<Role> rolesFromParent = await RolesFromParent(parentTenant);
 
-                    IQueryable<RoleClaim> allClaims = _context.RoleClaims.Where(x => rolesFromParent.Select(x => x.Id).Contains(x.RoleId));
-
                     //copio tutti i ruoli di sistema e relativi claims
                     foreach (Role role in rolesFromParent)
                     {
@@ -741,7 +751,10 @@ namespace MIT.Fwk.Infrastructure.Services
 
                         await CreateAsync<Role, string>(newRole);
 
-                        IQueryable<RoleClaim> roleClaims = allClaims.Where(x => x.RoleId == role.Id);
+                        // Query separata per ogni role - MySQL gestisce facilmente query semplici
+                        List<RoleClaim> roleClaims = await _context.RoleClaims
+                            .Where(x => x.RoleId == role.Id)
+                            .ToListAsync();
 
                         foreach (RoleClaim roleClaim in roleClaims)
                         {
@@ -992,22 +1005,44 @@ namespace MIT.Fwk.Infrastructure.Services
         {
             User user = await GetUserById(id);
 
-            IEnumerable<UserRole> userRoles = (await GetAllUserRolesByEmail(user.Email)).Where(x => x.TenantId == 1);
+            List<UserRole> userRoles = (await GetAllUserRolesByEmail(user.Email))
+                .Where(x => x.TenantId == 1)
+                .ToList();
 
-            IQueryable<RoleClaim> allClaims = _context.RoleClaims.Where(x => userRoles.Select(x => x.RoleId).Contains(x.RoleId));
+            if (!userRoles.Any()) return false;
 
-            return userRoles.Any(role => allClaims.Any(x => x.RoleId == role.RoleId && x.ClaimValue == "isSuperAdmin"));
+            // Query separata per ogni role - MySQL gestisce facilmente query semplici
+            foreach (var userRole in userRoles)
+            {
+                bool hasClaim = await _context.RoleClaims
+                    .AnyAsync(x => x.RoleId == userRole.RoleId && x.ClaimValue == "isSuperAdmin");
+
+                if (hasClaim) return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> CheckIsOwner(string id)
         {
             User user = await GetUserById(id);
 
-            IEnumerable<UserRole> userRoles = (await GetAllUserRolesByEmail(user.Email)).Where(x => x.TenantId == 1);
+            List<UserRole> userRoles = (await GetAllUserRolesByEmail(user.Email))
+                .Where(x => x.TenantId == 1)
+                .ToList();
 
-            IQueryable<RoleClaim> allClaims = _context.RoleClaims.Where(x => userRoles.Select(x => x.RoleId).Contains(x.RoleId));
+            if (!userRoles.Any()) return false;
 
-            return userRoles.Any(role => allClaims.Any(x => x.RoleId == role.RoleId && x.ClaimValue == "isOwner"));
+            // Query separata per ogni role - MySQL gestisce facilmente query semplici
+            foreach (var userRole in userRoles)
+            {
+                bool hasClaim = await _context.RoleClaims
+                    .AnyAsync(x => x.RoleId == userRole.RoleId && x.ClaimValue == "isOwner");
+
+                if (hasClaim) return true;
+            }
+
+            return false;
         }
 
         public Task<List<Category>> GetAllCategoriesByTenantId(int tenantId)
@@ -1024,7 +1059,7 @@ namespace MIT.Fwk.Infrastructure.Services
         {
             Template res = null;
 
-            IQueryable<Template> templates = _context.Templates.Where(x => x.Code == code && x.Language == language);
+            List<Template> templates = _context.Templates.Where(x => x.Code == code && x.Language == language).ToList();
 
             foreach (Template template in templates)
             {
@@ -1078,7 +1113,7 @@ namespace MIT.Fwk.Infrastructure.Services
 
             if (oldCategory is { Type: "album" })
             {
-                IQueryable<MediaFile> filesToMove = _context.MediaFiles.Where(x => x.album == oldCategory.Id);
+                List<MediaFile> filesToMove = _context.MediaFiles.Where(x => x.album == oldCategory.Id).ToList();
 
                 foreach (MediaFile file in filesToMove)
                 {
@@ -1100,17 +1135,17 @@ namespace MIT.Fwk.Infrastructure.Services
                 return true;
             }
 
-            IQueryable<MediaCategory> directChildren = _context.MediaCategories.Where(x => x.ParentMediaCategory == oldCategory.Id);
+            List<MediaCategory> directChildren = _context.MediaCategories.Where(x => x.ParentMediaCategory == oldCategory.Id).ToList();
 
             foreach (MediaCategory child in directChildren)
             {
                 if (child.Type == "category")
                 {
-                    IQueryable<MediaCategory> albumDirectChildren = _context.MediaCategories.Where(x => x.ParentMediaCategory == child.Id);
+                    List<MediaCategory> albumDirectChildren = _context.MediaCategories.Where(x => x.ParentMediaCategory == child.Id).ToList();
 
                     foreach (MediaCategory albumDirectChild in albumDirectChildren)
                     {
-                        IQueryable<MediaFile> filesToMove = _context.MediaFiles.Where(x => x.album == albumDirectChild.Id);
+                        List<MediaFile> filesToMove = _context.MediaFiles.Where(x => x.album == albumDirectChild.Id).ToList();
 
                         foreach (MediaFile file in filesToMove)
                         {
@@ -1129,7 +1164,7 @@ namespace MIT.Fwk.Infrastructure.Services
                 }
                 else
                 {
-                    IQueryable<MediaFile> filesToMove = _context.MediaFiles.Where(x => x.album == child.Id);
+                    List<MediaFile> filesToMove = _context.MediaFiles.Where(x => x.album == child.Id).ToList();
 
                     foreach (MediaFile file in filesToMove)
                     {
@@ -1256,7 +1291,8 @@ namespace MIT.Fwk.Infrastructure.Services
 
         public async Task<bool> DeleteTenantReferiments(int id, int alternativeTenant = 0)
         {
-            IQueryable<User> users = _context.Users.Where(x => x.TenantId == id);
+            // Materializza query per evitare "open DataReader" error con MySQL
+            List<User> users = _context.Users.Where(x => x.TenantId == id).ToList();
 
             Tenant recoveryTenant = _context.Tenants.FirstOrDefault(x => x.isRecovery);
 
@@ -1287,52 +1323,60 @@ namespace MIT.Fwk.Infrastructure.Services
                 _context.Entry(user).State = EntityState.Modified;
             }
 
-            IQueryable<Category> categories = _context.Categories.Where(x => x.TenantId == id);
+            List<Category> categories = _context.Categories.Where(x => x.TenantId == id).ToList();
 
             foreach (Category category in categories)
             {
-                IQueryable<Template> templates = _context.Templates.Where(x => x.CategoryId == category.Id);
+                List<Template> templates = _context.Templates.Where(x => x.CategoryId == category.Id).ToList();
 
                 _context.Templates.RemoveRange(templates);
             }
 
             _context.Categories.RemoveRange(categories);
 
-            IQueryable<MediaCategory> mediaCategories = _context.MediaCategories.Where(x => x.TenantId == id);
+            List<MediaCategory> mediaCategories = _context.MediaCategories.Where(x => x.TenantId == id).ToList();
 
             foreach (MediaCategory mediaCategory in mediaCategories)
             {
-                IQueryable<MediaFile> files = _context.MediaFiles.Where(x => x.album == mediaCategory.Id || x.category == mediaCategory.Id || x.typologyArea == mediaCategory.Id);
+                List<MediaFile> files = _context.MediaFiles.Where(x => x.album == mediaCategory.Id || x.category == mediaCategory.Id || x.typologyArea == mediaCategory.Id).ToList();
 
                 _context.MediaFiles.RemoveRange(files);
             }
 
             _context.MediaCategories.RemoveRange(mediaCategories);
 
-            IQueryable<Role> roles = _context.Roles.Where(x => x.TenantId == id);
+            List<Role> roles = _context.Roles.Where(x => x.TenantId == id).ToList();
 
-            IQueryable<RoleClaim> allClaims = _context.RoleClaims.Where(x => roles.Select(x => x.Id).Contains(x.RoleId));
+            // Fix MySQL: Materializza prima gli ID per evitare type mapping error
+            List<string> roleIds = roles.Select(x => x.Id).ToList();
+            List<RoleClaim> allClaims = new List<RoleClaim>();
+            foreach (string roleId in roleIds)
+            {
+                List<RoleClaim> claims = _context.RoleClaims.Where(x => x.RoleId == roleId).ToList();
+                allClaims.AddRange(claims);
+            }
 
             foreach (Role role in roles)
             {
-                IQueryable<UserRole> userRoles = _context.UserRoles.Where(x => x.RoleId == role.Id);
+                List<UserRole> userRoles = _context.UserRoles.Where(x => x.RoleId == role.Id).ToList();
 
                 _context.UserRoles.RemoveRange(userRoles);
 
-                IQueryable<RoleClaim> roleClaims = allClaims.Where(x => x.RoleId == role.Id);
+                List<RoleClaim> roleClaims = allClaims.Where(x => x.RoleId == role.Id).ToList();
 
                 _context.RoleClaims.RemoveRange(roleClaims);
             }
 
             _context.Roles.RemoveRange(roles);
 
-            _context.UserRoles.RemoveRange(_context.UserRoles.Where(x => x.TenantId == id));
+            List<UserRole> userRolesToDelete = _context.UserRoles.Where(x => x.TenantId == id).ToList();
+            _context.UserRoles.RemoveRange(userRolesToDelete);
 
-            IQueryable<UserTenant> userTenants = _context.UserTenants.Where(x => x.TenantId == id);
+            List<UserTenant> userTenants = _context.UserTenants.Where(x => x.TenantId == id).ToList();
 
             _context.UserTenants.RemoveRange(userTenants);
 
-            IQueryable<Tenant> figli = _context.Tenants.Where(x => x.ParentTenant == id);
+            List<Tenant> figli = _context.Tenants.Where(x => x.ParentTenant == id).ToList();
 
             foreach (Tenant tenant in figli)
             {
@@ -1578,35 +1622,39 @@ namespace MIT.Fwk.Infrastructure.Services
             User user = _context.Users.FirstOrDefault(x => x.UserName == username);
             if (user == null) { return Task.FromResult(new List<Tenant>()); }
 
-            IQueryable<UserTenant> userTenants = _context.UserTenants.Where(x => x.UserId == user.Id && (x.State == "accepted" || x.State == "selfCreated" || x.State == "ownerCreated"));
-
-            List<Tenant> tenants = [];
-
-            foreach (UserTenant userTenant in userTenants)
-            {
-                tenants.Add(_context.Tenants.FirstOrDefault(x => x.Id == userTenant.TenantId));
-            }
+            // Ottimizzazione: usa JOIN invece di loop + N query separate (fix open DataReader + N+1 problem)
+            List<Tenant> tenants = _context.UserTenants
+                .Where(x => x.UserId == user.Id && (x.State == "accepted" || x.State == "selfCreated" || x.State == "ownerCreated"))
+                .Select(x => x.TenantId)
+                .Distinct()
+                .Join(_context.Tenants,
+                      tenantId => tenantId,
+                      tenant => tenant.Id,
+                      (tenantId, tenant) => tenant)
+                .ToList();
 
             return Task.FromResult(tenants);
         }
 
         public Task<List<Tenant>> GetNonBlockedTenantsByUserId(string userId)
         {
-            IQueryable<int> bannedTenantsId = _context.BannedUsers.Where(x =>
-                    x.UserId == userId && x.LockActive && x.LockEnd > DateTime.UtcNow && x.LockStart < DateTime.UtcNow)
-                .Select(x => x.TenantId);
+            // Materializza le query prima di usarle per evitare "open DataReader" error con MySQL
+            List<int> bannedTenantsId = _context.BannedUsers
+                .Where(x => x.UserId == userId && x.LockActive && x.LockEnd > DateTime.UtcNow && x.LockStart < DateTime.UtcNow)
+                .Select(x => x.TenantId)
+                .ToList();
 
-            IQueryable<UserTenant> userTenants = _context.UserTenants.Where(x => x.UserId == userId && (x.State == "accepted" || x.State == "selfCreated" || x.State == "ownerCreated"));
-
-            List<Tenant> tenants = [];
-
-            foreach (UserTenant userTenant in userTenants)
-            {
-                if (!bannedTenantsId.Contains(userTenant.TenantId))
-                {
-                    tenants.Add(_context.Tenants.FirstOrDefault(x => x.Id == userTenant.TenantId));
-                }
-            }
+            // Ottimizzazione: carica tenants con JOIN invece di N query separate (fix N+1 problem)
+            List<Tenant> tenants = _context.UserTenants
+                .Where(x => x.UserId == userId && (x.State == "accepted" || x.State == "selfCreated" || x.State == "ownerCreated"))
+                .Where(x => !bannedTenantsId.Contains(x.TenantId))
+                .Select(x => x.TenantId)
+                .Distinct()
+                .Join(_context.Tenants,
+                      tenantId => tenantId,
+                      tenant => tenant.Id,
+                      (tenantId, tenant) => tenant)
+                .ToList();
 
             return Task.FromResult(tenants);
         }
@@ -1643,16 +1691,24 @@ namespace MIT.Fwk.Infrastructure.Services
             query = query.Where(u => u.UserRoles.Any(ut => ut.Tenant.Id == 1));
             if (user == null) { return Task.FromResult(false); }
 
-            IQueryable<UserRole> userRoles = tenantId == ""
+            // Fix MySQL: Materializza userRoles per evitare DataReader error
+            List<UserRole> userRoles = (tenantId == ""
                 ? _context.UserRoles.Where(x => x.UserId == user.Id)
-                : _context.UserRoles.Where(x => x.UserId == user.Id && (x.TenantId.ToString() == tenantId || x.TenantId == 1));
+                : _context.UserRoles.Where(x => x.UserId == user.Id && (x.TenantId.ToString() == tenantId || x.TenantId == 1)))
+                .ToList();
+
             List<string> claimNames = [];
-            IQueryable<RoleClaim> allRoleClaims = _context.RoleClaims.Where(x => userRoles.Select(x => x.RoleId).Contains(x.RoleId));
+
+            // Fix MySQL: Query separata per ogni role invece di usare Select().Contains()
             foreach (UserRole userRole in userRoles)
             {
                 Role role = _context.Roles.FirstOrDefault(x => x.Id == userRole.RoleId);
                 if (role == null) { continue; }
-                IQueryable<RoleClaim> roleClaims = allRoleClaims.Where(x => x.RoleId == role.Id);
+
+                // Query separata materializzata - MySQL gestisce facilmente query semplici con indici
+                List<RoleClaim> roleClaims = _context.RoleClaims
+                    .Where(x => x.RoleId == role.Id)
+                    .ToList();
 
                 foreach (RoleClaim claim in roleClaims)
                 {

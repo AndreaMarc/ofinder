@@ -70,7 +70,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             result = result.OrderBy(x => x).ToList();
 
-            return Ok(result);
+            return Ok(new { success = true, data = result });
         }
 
 
