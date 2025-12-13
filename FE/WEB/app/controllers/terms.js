@@ -1,5 +1,6 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 
 export default class TermsController extends Controller {
   @service session;
@@ -9,6 +10,11 @@ export default class TermsController extends Controller {
   loginAreaClass = 'col-lg-12';
 
   siteSetup = {};
+
+  @action
+  goBack() {
+    window.history.back();
+  }
 
   constructor(...attributes) {
     super(...attributes);

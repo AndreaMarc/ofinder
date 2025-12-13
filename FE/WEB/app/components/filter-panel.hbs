@@ -6,25 +6,29 @@
   {{!-- Header cliccabile su mobile --}}
   <div
     class="filter-panel-header d-flex justify-content-between align-items-center mb-0 pb-0"
-    data-toggle="collapse"
-    data-target="#filterPanelContent"
-    role="button"
-    aria-expanded="false"
-    aria-controls="filterPanelContent"
   >
     <h5 class="ofinder-heading-md ofinder-filter-panel-title mb-0">FILTRI</h5>
 
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center" style="pointer-events: auto;">
       {{#if this.hasActiveFilters}}
         <button
           type="button"
           class="btn btn-link btn-sm ofinder-text-primary p-0 mr-3 d-none d-md-inline"
-          {{on "click" this.clearAllFilters}}
+          style="position: relative; z-index: 10; cursor: pointer; pointer-events: auto;"
+          {{on "click" this.clearAllFilters capture=false}}
         >
           Cancella tutto
         </button>
       {{/if}}
-      <i class="fa fa-chevron-down d-md-none"></i>
+      <i
+        class="fa fa-chevron-down d-md-none"
+        style="cursor: pointer;"
+        data-toggle="collapse"
+        data-target="#filterPanelContent"
+        role="button"
+        aria-expanded="false"
+        aria-controls="filterPanelContent"
+      ></i>
     </div>
   </div>
 
@@ -37,17 +41,33 @@
       {{!-- Cosa cerchi? (Tipo di ricerca) - FILTRO PRINCIPALE --}}
       <div class="filter-section ofinder-filter-section-primary mb-4">
         <h6
-          class="ofinder-text-sm ofinder-filter-section-heading-primary font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseSearchType"
-          role="button"
-          aria-expanded="true"
-          aria-controls="collapseSearchType"
+          class="ofinder-text-sm ofinder-filter-section-heading-primary font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Cosa cerchi?</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Cosa cerchi?
+            {{#if this.selectedSearchTypeLabel}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearSearchType}}
+                role="button"
+              >
+                {{this.selectedSearchTypeLabel}}
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down d-md-none"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseSearchType"
+            role="button"
+            aria-expanded="true"
+            aria-controls="collapseSearchType"
+          ></i>
         </h6>
-        <div id="collapseSearchType" class="collapse show" data-parent="#filterAccordion">
+        <div id="collapseSearchType" class="collapse show d-md-block" data-parent="#filterAccordion">
           {{#each this.searchTypes as |searchType|}}
             <div class="custom-control custom-radio mb-2">
               <input
@@ -75,15 +95,31 @@
       {{!-- Geolocalizzazione --}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseLocation"
-          role="button"
-          aria-expanded="true"
-          aria-controls="collapseLocation"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Posizione</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Posizione
+            {{#if this.locationLabel}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearLocation}}
+                role="button"
+              >
+                {{this.locationLabel}}
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseLocation"
+            role="button"
+            aria-expanded="true"
+            aria-controls="collapseLocation"
+          ></i>
         </h6>
         <div id="collapseLocation" class="collapse show" data-parent="#filterAccordion">
           {{!-- Regione --}}
@@ -106,8 +142,8 @@
             <Standard::SelectTwo
               @addEmptyOption="1"
               @options={{this.provincesOptions}}
-              @select2Options={{this.provincesSelect2Options}}
               @changeCB={{this.onProvinceChange}}
+              disabled={{unless this.selectedRegionId true}}
             />
           </div>
         </div>
@@ -116,20 +152,23 @@
       {{!-- Età --}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseAge"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseAge"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
           <span>
             Età
             <span class="ofinder-text-primary">{{this.minAge}}-{{this.maxAge}}</span>
           </span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseAge"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseAge"
+          ></i>
         </h6>
-        <div id="collapseAge" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapseAge" class="collapse" data-parent="#filterAccordion">
           {{!-- Età minima --}}
           <div class="mb-3">
             <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-1">
@@ -168,31 +207,47 @@
       {{#if this.showScheduleFilter}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseSchedule"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseSchedule"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Orari Live</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Orari Live
+            {{#if this.scheduleSummaryLabel}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearSchedule}}
+                role="button"
+              >
+                {{this.scheduleSummaryLabel}}
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseSchedule"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseSchedule"
+          ></i>
         </h6>
-        <div id="collapseSchedule" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapseSchedule" class="collapse" data-parent="#filterAccordion">
           {{!-- Giorni della settimana --}}
           <div class="mb-3">
             <label class="ofinder-text-xs text-uppercase ofinder-text-muted mb-2">
-              Giorni
+              Giorno
             </label>
             <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
               {{#each this.weekDays as |day|}}
                 <label class="btn btn-sm {{if (this.isScheduleDaySelected day.id) 'btn-ofinder-primary active' 'btn-outline-secondary'}}">
                   <input
-                    type="checkbox"
+                    type="radio"
                     name="scheduleDayFilter"
                     id="scheduleDay-{{day.id}}"
                     checked={{this.isScheduleDaySelected day.id}}
-                    {{on "change" (fn this.toggleScheduleDay day.id)}}
+                    {{on "change" (fn this.selectScheduleDay day.id)}}
                   />
                   {{day.shortName}}
                 </label>
@@ -231,17 +286,33 @@
       {{#if this.showPlatformsFilter}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapsePlatforms"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapsePlatforms"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Piattaforme</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Piattaforme
+            {{#if (gt this.selectedPlatformsCount 0)}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearPlatforms}}
+                role="button"
+              >
+                ({{this.selectedPlatformsCount}})
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapsePlatforms"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapsePlatforms"
+          ></i>
         </h6>
-        <div id="collapsePlatforms" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapsePlatforms" class="collapse" data-parent="#filterAccordion">
           {{#each this.platformFilters as |platform|}}
             <div class="custom-control custom-checkbox mb-2">
               <input
@@ -269,17 +340,33 @@
       {{#if this.showPerformerContentTypesFilter}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapsePerformerContentTypes"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapsePerformerContentTypes"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Tipi di Contenuto</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Tipi di Contenuto
+            {{#if (gt this.selectedPerformerContentTypesCount 0)}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearPerformerContentTypes}}
+                role="button"
+              >
+                ({{this.selectedPerformerContentTypesCount}})
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapsePerformerContentTypes"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapsePerformerContentTypes"
+          ></i>
         </h6>
-        <div id="collapsePerformerContentTypes" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapsePerformerContentTypes" class="collapse" data-parent="#filterAccordion">
           {{#each this.performerContentTypesByCategory as |categoryGroup|}}
             <div class="content-type-category mb-3">
               <h6 class="content-type-category-title ofinder-text-xs text-uppercase mb-2">
@@ -319,17 +406,33 @@
       {{#if this.showLiveShowTypesFilter}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseLiveShowTypes"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseLiveShowTypes"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Tipi di Show Live</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Tipi di Show Live
+            {{#if (gt this.selectedLiveShowTypesCount 0)}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearLiveShowTypes}}
+                role="button"
+              >
+                ({{this.selectedLiveShowTypesCount}})
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseLiveShowTypes"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseLiveShowTypes"
+          ></i>
         </h6>
-        <div id="collapseLiveShowTypes" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapseLiveShowTypes" class="collapse" data-parent="#filterAccordion">
           {{#each this.liveShowTypesByCategory as |categoryGroup|}}
             <div class="content-type-category mb-3">
               <h6 class="content-type-category-title ofinder-text-xs text-uppercase mb-2">
@@ -368,20 +471,23 @@
       {{!-- Range Slider Prezzo --}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapsePrice"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapsePrice"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
           <span>
-            Prezzo ($/mese)
-            <span class="ofinder-text-primary">${{this.maxPrice}}</span>
+            {{this.priceLabel}}
+            <span class="ofinder-text-primary">€{{this.maxPrice}}</span>
           </span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapsePrice"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapsePrice"
+          ></i>
         </h6>
-        <div id="collapsePrice" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapsePrice" class="collapse" data-parent="#filterAccordion">
           <input
             type="range"
             class="custom-range"
@@ -395,7 +501,7 @@
             class="d-flex justify-content-between ofinder-text-xs ofinder-text-muted mt-2"
           >
             <span>Free</span>
-            <span>$50+</span>
+            <span>€50+</span>
           </div>
         </div>
       </div>
@@ -403,17 +509,33 @@
       {{!-- Rating --}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseRating"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseRating"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Rating Minimo</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Voto minimo
+            {{#if this.selectedRatingLabel}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearRating}}
+                role="button"
+              >
+                {{this.selectedRatingLabel}}
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseRating"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseRating"
+          ></i>
         </h6>
-        <div id="collapseRating" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapseRating" class="collapse" data-parent="#filterAccordion">
           {{#each this.ratingFilters as |rating|}}
             <div class="custom-control custom-radio mb-2">
               <input
@@ -439,17 +561,33 @@
       {{!-- Stato --}}
       <div class="filter-section mb-3">
         <h6
-          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-md-block d-flex justify-content-between align-items-center"
-          data-toggle="collapse"
-          data-target="#collapseStatus"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseStatus"
+          class="ofinder-text-sm font-weight-bold mb-3 text-uppercase d-flex justify-content-between align-items-center"
         >
-          <span>Stato</span>
-          <i class="fa fa-chevron-down d-md-none"></i>
+          <span>
+            Stato
+            {{#if this.selectedStatusLabel}}
+              <span
+                class="ofinder-text-primary"
+                style="cursor: pointer;"
+                {{on "click" this.clearStatus}}
+                role="button"
+              >
+                {{this.selectedStatusLabel}}
+                <i class="fa fa-times ml-1"></i>
+              </span>
+            {{/if}}
+          </span>
+          <i
+            class="fa fa-chevron-down"
+            style="cursor: pointer;"
+            data-toggle="collapse"
+            data-target="#collapseStatus"
+            role="button"
+            aria-expanded="false"
+            aria-controls="collapseStatus"
+          ></i>
         </h6>
-        <div id="collapseStatus" class="collapse d-md-block" data-parent="#filterAccordion">
+        <div id="collapseStatus" class="collapse" data-parent="#filterAccordion">
           <div class="custom-control custom-checkbox mb-2">
             <input
               type="checkbox"
@@ -475,20 +613,6 @@
             <label class="custom-control-label ofinder-text-sm" for="filter-new">
               <span class="ofinder-badge-new ofinder-rounded-sm">New</span>
               Nuovi (ultimi 30gg)
-            </label>
-          </div>
-
-          <div class="custom-control custom-checkbox mb-2">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="filter-active"
-              checked={{this.onlyActiveToday}}
-              {{on "change" this.toggleActiveToday}}
-            />
-            <label class="custom-control-label ofinder-text-sm" for="filter-active">
-              <i class="fa fa-signal ofinder-text-success"></i>
-              Attivi oggi
             </label>
           </div>
         </div>

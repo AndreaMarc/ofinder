@@ -8,11 +8,16 @@
       class="card-img-top ofinder-performer-avatar"
     />
 
-    {{!-- Badge Verified (top-right overlay) --}}
+    {{!-- Badge Verified/Not Verified (top-right overlay) --}}
     {{#if @performer.verified}}
       <span class="ofinder-badge-verified ofinder-badge-overlay-tr">
         <i class="fas fa-check mr-1"></i>
         Verificato/a
+      </span>
+    {{else}}
+      <span class="ofinder-badge-not-verified ofinder-badge-overlay-tr">
+        <i class="fas fa-exclamation-triangle mr-1"></i>
+        Non verificato
       </span>
     {{/if}}
 
@@ -21,6 +26,13 @@
       <span class="ofinder-badge-premium ofinder-badge-overlay-tl">
         <i class="fas fa-star mr-1"></i>
         Premium
+      </span>
+    {{/if}}
+
+    {{!-- Badge New (bottom-right overlay) --}}
+    {{#if @performer.isNew}}
+      <span class="ofinder-badge-new ofinder-badge-overlay-br">
+        New
       </span>
     {{/if}}
   </div>

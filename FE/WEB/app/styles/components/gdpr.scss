@@ -5,11 +5,44 @@ div.blockUI.blockPage {
   bottom: 30px;
 }
 .gdpr-block {
-  background: #fff;
+  background: $ofinder-dark-surface;
   padding: 1em;
-  border-radius: 5px;
+  border-radius: $ofinder-border-radius-lg;
+  border: 2px solid rgba(219, 39, 119, 0.3);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(219, 39, 119, 0.2);
+
+  color: $ofinder-gray-100;
+
+  p, div {
+    color: $ofinder-gray-100 !important;
+  }
+
+  small {
+    color: $ofinder-gray-300 !important;
+  }
 }
 
 .link-style {
   cursor: pointer;
+  color: $ofinder-accent !important;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  font-weight: $ofinder-font-weight-bold;
+  font-size: 1.1em;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 15px rgba(245, 158, 11, 0.8),
+               0 0 30px rgba(245, 158, 11, 0.4);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(219, 39, 119, 0.1));
+  padding: 2px 6px;
+  border-radius: 3px;
+
+  &:hover {
+    color: $ofinder-primary !important;
+    text-shadow: 0 0 20px rgba(219, 39, 119, 0.9),
+                 0 0 40px rgba(219, 39, 119, 0.5);
+    background: linear-gradient(90deg, rgba(219, 39, 119, 0.2), rgba(245, 158, 11, 0.15));
+    transform: scale(1.05);
+  }
 }

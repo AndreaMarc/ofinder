@@ -20,9 +20,20 @@ export default class ChannelContentTypeModel extends Model {
 
   /**
    * Tipo di contenuto
-   * Es nel caso di Performer: "foto erotiche", "video gallery", "live public", "live private",
-   * "vendita abbigliamento", "contenuti extra", ecc.
-   * Es nel caso di camgirl: "face", "anal", "lush", ecc
+   * Es nel caso di PERFORMER:
+   *  - Foto & Video: "foto", "video", "video-custom", "live-public", "live-private"
+   *  - Altro: "vendita abbigliamento", "contenuti extra"
+   * Es nel caso di CAMGIRL:
+   *  - Aspetto & Performance: face, body, dance, cosplay
+   *  - Formato Show: public-show, private-show, tip-controlled, interactive-toy
+   *  - Interazione & Esperienza: vge (Virtual girlfriend experience, cioé chiacchiere
+   *    interazioni romantiche simulate), asmr (suoni, sussurri, esperienza sensoriale), custom-request
+   *  - Numero Partecipanti: single, couple, lesbo, group
+   *  - Atti Sessuali Base: masturbation, oral, 69, vaginal, anal-finger, anal-dildo-sex, squirt, facial, tit-cum
+   *  - Atti Sessuali Intensi: deep-penetration, double-penetration, large-toys, fisting
+   *  - Setting & Fetish: foot, oil-cream, shower/bath, outdoor
+   *  - Dominazione Verbale & Taboo: dom/sub, dirty-talk, joi (Jerk Off Instructions cioè istruzioni per
+   *    masturbarsi), sph (Small Penis Humiliation), cei, golden-shower-scat
    */
   @attr('string') contentType;
 

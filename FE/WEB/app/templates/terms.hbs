@@ -1,4 +1,4 @@
-<div class="app-container">
+<div class="app-container ofinder-login-container">
     <div class="h-100">
         <div class="h-100 no-gutters row">
             <div class="d-none d-lg-block col-lg-4">
@@ -6,16 +6,22 @@
                     <Standard::Core::LoginSlider @page="terms"/>
                 {{/if}}
             </div>
-            <div class="h-100 d-flex bg-white justify-content-center align-items-center col-md-12 {{this.loginAreaClass}}">
-                <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-9">
-                    <div class="app-logo"></div>
-                    <p>
-                        <Standard::TR @key="template.terms.return" @default="Torna"/>
-                        <a href="javascript:window.history.back();" class="text-primary">
+            <div class="h-100 d-flex justify-content-center align-items-start col-md-12 {{this.loginAreaClass}} ofinder-login-scroll-container px-3 px-md-0">
+                <div class="mx-auto ofinder-login-box ofinder-terms-box col-sm-12 col-md-10 col-lg-9">
+                    <div class="ofinder-login-logo">
+                        <LinkTo @route="search" class="d-flex align-items-center justify-content-center mb-4 text-decoration-none">
+                            <i class="fa fa-search ofinder-login-logo-icon"></i>
+                            <h1 class="ofinder-login-logo-text mb-0 ml-3">OFINDER</h1>
+                        </LinkTo>
+                    </div>
+                    <div class="text-center mb-4">
+                        <button type="button" {{on "click" this.goBack}} class="btn ofinder-back-button">
+                            <i class="fa fa-arrow-left mr-2"></i>
+                            <Standard::TR @key="template.terms.return" @default="Torna"/>
                             <Standard::TR @key="template.terms.backwards" @default="indietro"/>
-                        </a>
-                    </p>
-                    <div class="divider row mb-3"></div>
+                        </button>
+                    </div>
+                    <div class="ofinder-terms-divider mb-3"></div>
                     <Standard::Core::TermsConditions @code={{@model.legalCode}}/>
                 </div>
             </div>

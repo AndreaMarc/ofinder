@@ -51,6 +51,8 @@ export default class StandardCoreRegistrationFormComponent extends Component {
     this.siteSetup = this.stp.siteSetup;
     if (!this.siteSetup || !this.siteSetup.publicRegistration) {
       this.available = false;
+    } else if (!this.stp.siteSetup.registrationFields.registration) {
+      this.available = false;
     } else {
       this.available = true;
       this.currentTenant = this.args.tenantId || '1';
@@ -70,6 +72,8 @@ export default class StandardCoreRegistrationFormComponent extends Component {
     this.newValue = this.initializeRecord();
     this.registrationFields =
       this.stp.siteSetup.registrationFields.registration;
+
+    if (!this.registrationFields) return false; // TODO mettere una condizione che non fa vedere il form perché setup incompleto
 
     setTimeout(() => {
       this.setupSelect2('#registrationBirthState');

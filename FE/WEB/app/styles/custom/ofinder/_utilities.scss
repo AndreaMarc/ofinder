@@ -76,6 +76,16 @@
   font-weight: $ofinder-font-weight-medium;
 }
 
+.ofinder-badge-not-verified {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #f59e0b; // Orange/amber for warning
+  color: white;
+  border-radius: $ofinder-border-radius-sm;
+  font-size: $ofinder-font-size-xs;
+  font-weight: $ofinder-font-weight-medium;
+}
+
 .ofinder-badge-premium {
   display: inline-block;
   padding: 0.25rem 0.5rem;
