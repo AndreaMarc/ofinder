@@ -18,7 +18,7 @@ ssh ubuntu@51.210.6.193 "cd /opt/mitfwk && sudo tar -czf /tmp/$BACKUP_NAME app/ 
 scp ubuntu@51.210.6.193:/tmp/$BACKUP_NAME .\backups\
 ssh ubuntu@51.210.6.193 "sudo rm /tmp/$BACKUP_NAME"
 
-Write-Host "✓ Backup salvato in: .\backups\$BACKUP_NAME" -ForegroundColor Green
+Write-Host "Backup salvato in: .\backups\$BACKUP_NAME" -ForegroundColor Green
 Write-Host ""
 
 # 1. Build
@@ -26,7 +26,7 @@ Write-Host "STEP 1: Building backend (self-contained)..." -ForegroundColor Yello
 Set-Location Src\MIT.Fwk.WebApi
 dotnet publish -c Release -r linux-x64 --self-contained true -o ..\..\publish\linux-x64-selfcontained
 Set-Location ..\..
-Write-Host "✓ Build completato" -ForegroundColor Green
+Write-Host "Build completato" -ForegroundColor Green
 Write-Host ""
 
 # 2. Package
@@ -38,13 +38,13 @@ $PACKAGE = "ofinder-api-$(Get-Date -Format 'yyyyMMdd-HHmmss').tar.gz"
 tar -czf $PACKAGE *
 
 $size = (Get-Item $PACKAGE).Length / 1MB
-Write-Host "✓ Pacchetto creato: $PACKAGE (dimensione: $([math]::Round($size, 2)) MB)" -ForegroundColor Green
+Write-Host "Pacchetto creato: $PACKAGE (dimensione: $([math]::Round($size, 2)) MB)" -ForegroundColor Green
 Write-Host ""
 
 # 3. Upload
 Write-Host "STEP 3: Upload su server OVH (potrebbe richiedere qualche minuto)..." -ForegroundColor Yellow
 scp $PACKAGE ubuntu@51.210.6.193:/opt/mitfwk/
-Write-Host "✓ Upload completato" -ForegroundColor Green
+Write-Host "Upload completato" -ForegroundColor Green
 Write-Host ""
 
 # 4. Deploy
@@ -85,28 +85,35 @@ sudo systemctl status mitfwk-api --no-pager -l
 
 ssh ubuntu@51.210.6.193 $deployScript
 
-Write-Host "✓ Deployment completato" -ForegroundColor Green
+Write-Host "Deployment completato" -ForegroundColor Green
 Write-Host ""
 
 # 5. Test
 Write-Host "STEP 5: Test finale..." -ForegroundColor Yellow
 try {
-    $response = Invoke-WebRequest -Uri "https://ofinder.it/api" -Method Get -SkipHttpErrorCheck -UseBasicParsing
+    $response = Invoke-WebRequest -Uri "https://ofinder.it/api" -Method Get -UseBasicParsing
     $statusCode = $response.StatusCode
-
-    if ($statusCode -eq 401 -or $statusCode -eq 200) {
-        Write-Host "✓ API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
-    } else {
-        Write-Host "✗ ATTENZIONE: API non risponde come previsto (HTTP $statusCode)" -ForegroundColor Red
-        Write-Host "  Verifica i log: ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -n 100'" -ForegroundColor Yellow
-    }
+    Write-Host "API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
 } catch {
-    Write-Host "✗ Errore durante il test dell'API: $_" -ForegroundColor Red
+    # In PowerShell 5.1, gli errori HTTP generano eccezioni
+    if ($_.Exception.Response) {
+        $statusCode = [int]$_.Exception.Response.StatusCode
+        if ($statusCode -eq 401 -or $statusCode -eq 200) {
+            Write-Host "API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
+        } else {
+            Write-Host "ATTENZIONE: API risponde con HTTP $statusCode" -ForegroundColor Yellow
+            Write-Host "Verifica i log: ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -n 100'" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "ATTENZIONE: Impossibile raggiungere l'API" -ForegroundColor Red
+        Write-Host "Errore: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "Verifica i log: ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -n 100'" -ForegroundColor Yellow
+    }
 }
 
 Write-Host ""
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "✓ Deployment completato con successo!" -ForegroundColor Green
+Write-Host "Deployment completato con successo!" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Pacchetto deployato: $PACKAGE"
