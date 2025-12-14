@@ -91,7 +91,7 @@ namespace MIT.Fwk.WebApi.Controllers
         public async Task<IActionResult> AddVoice(CancellationToken cancellationToken)
         {
             List<Tenant> tenants = await _jsonService.GetAllAsync<Tenant, int>();
-            return Ok(CreateTenantHierarchy(tenants));
+            return Ok(new { success = true, data = CreateTenantHierarchy(tenants) });
 
         }
 

@@ -19,7 +19,12 @@
       "Bash(grep:*)",
       "Bash(lsof:*)",
       "Bash(git restore:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(dotnet publish:*)",
+      "Bash(dir ofinder-api-*.tar.gz)",
+      "Bash(scp:*)",
+      "Bash(ssh:*)",
+      "Bash(dir:*)"
     ]
   }
 }

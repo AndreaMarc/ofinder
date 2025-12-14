@@ -109,7 +109,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             }
 
-            return Ok(await _jsonService.SetRoleClaims(listClaimsRoles, model.roleId, true));
+            return Ok(new { success = true, data = await _jsonService.SetRoleClaims(listClaimsRoles, model.roleId, true) });
 
         }
 
@@ -136,7 +136,7 @@ namespace MIT.Fwk.WebApi.Controllers
             }
 
 
-            return Ok(await _jsonService.UpdateRoutesRole(listClaimsRoles));
+            return Ok(new { success = true, data = await _jsonService.UpdateRoutesRole(listClaimsRoles) });
 
         }
 
@@ -158,7 +158,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             if (claimsPool.Contains("isSuperAdmin"))
             {
-                return Ok("{ \"roles\": \"" + String.Join(",", roles.Select(x => x.Id)) + "\" }");
+                return Ok(new { success = true, data = "{ \"roles\": \"" + String.Join(",", roles.Select(x => x.Id)) + "\" }" });
             }
             else
             {
@@ -184,7 +184,7 @@ namespace MIT.Fwk.WebApi.Controllers
                     possibleRoles.Add(roles.First(x => x.Name == "User").Id);
                 }
 
-                return Ok("{ \"roles\": \"" + String.Join(",", possibleRoles) + "\" }");
+                return Ok(new { success = true, data = "{ \"roles\": \"" + String.Join(",", possibleRoles) + "\" }" });
             }
         }
 

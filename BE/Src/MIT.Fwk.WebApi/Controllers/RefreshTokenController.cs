@@ -1,3 +1,4 @@
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -155,27 +156,31 @@ namespace MIT.Fwk.WebApi.Controllers
             await _jsonApiManualService.UpdateUserDevice(device);
 
             HttpContext.Response.Headers.Remove("Set-Cookie");
-            return Ok(new CurrentUserViewModel()
+            return Ok(new
             {
-                Email = currentUser.Email,
-                FirstName = up.FirstName,
-                LastName = up.LastName,
-                AuthorizationHeader = string.Empty,
-                AuthorizationBearer = (await HttpContext.ToJwtBearer(currentUser.UserName, "559e2f95-ee64-45af-b6c7-30801842496f", password, accessExpiresIn, device.salt, superAdmin, tenantId)).ToString(),
-                AuthorizationExpiresIn = accessExpiresIn,
-                AuthorizationRefreshBearer = bearerToken.ToString(),
-                AuthorizationRefreshExpiresIn = refreshExpiresIn,
-                SecurityStamp = currentUser.SecurityStamp,
-                IsAuthenticated = true,
-                IsEnabled = true,
-                DefaultLanguage = up.UserLang,
-                TenantId = int.Parse(tenantId),
-                Id = currentUser.Id,
-                ClaimsList = await _jsonApiManualService.GetClaimsByUsername(currentUser.UserName, tenantId),
-                AssociatedTenants = asTen,
-                ProfileImageId = up.ProfileImageId,
-                CurrentTenantActive = tenants.First(x => x.Id == int.Parse(tenantId)).Enabled,
-                TermsAcceptanceDate = up.termsAcceptanceDate == null ? null : up.termsAcceptanceDate.Value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff", CultureInfo.InvariantCulture) + "+00:00"
+                success = true,
+                data = new CurrentUserViewModel()
+                {
+                    Email = currentUser.Email,
+                    FirstName = up.FirstName,
+                    LastName = up.LastName,
+                    AuthorizationHeader = string.Empty,
+                    AuthorizationBearer = (await HttpContext.ToJwtBearer(currentUser.UserName, "559e2f95-ee64-45af-b6c7-30801842496f", password, accessExpiresIn, device.salt, superAdmin, tenantId)).ToString(),
+                    AuthorizationExpiresIn = accessExpiresIn,
+                    AuthorizationRefreshBearer = bearerToken.ToString(),
+                    AuthorizationRefreshExpiresIn = refreshExpiresIn,
+                    SecurityStamp = currentUser.SecurityStamp,
+                    IsAuthenticated = true,
+                    IsEnabled = true,
+                    DefaultLanguage = up.UserLang,
+                    TenantId = int.Parse(tenantId),
+                    Id = currentUser.Id,
+                    ClaimsList = await _jsonApiManualService.GetClaimsByUsername(currentUser.UserName, tenantId),
+                    AssociatedTenants = asTen,
+                    ProfileImageId = up.ProfileImageId,
+                    CurrentTenantActive = tenants.First(x => x.Id == int.Parse(tenantId)).Enabled,
+                    TermsAcceptanceDate = up.termsAcceptanceDate == null ? null : up.termsAcceptanceDate.Value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff", CultureInfo.InvariantCulture) + "+00:00"
+                }
             });
         }
 
@@ -367,27 +372,31 @@ namespace MIT.Fwk.WebApi.Controllers
             device.lastAccess = DateTime.UtcNow;
             await _jsonApiManualService.UpdateUserDevice(device);
 
-            return Ok(new CurrentUserViewModel()
+            return Ok(new
             {
-                Email = currentUser.Email,
-                FirstName = up.FirstName,
-                LastName = up.LastName,
-                AuthorizationHeader = string.Empty,
-                AuthorizationBearer = (await HttpContext.ToJwtBearer(currentUser.UserName, "559e2f95-ee64-45af-b6c7-30801842496f", password, accessExpiresIn, device.salt, superAdmin, tenantId)).ToString(),
-                AuthorizationExpiresIn = accessExpiresIn,
-                AuthorizationRefreshBearer = bearerToken.ToString(),
-                AuthorizationRefreshExpiresIn = refreshExpiresIn,
-                SecurityStamp = currentUser.SecurityStamp,
-                IsAuthenticated = true,
-                IsEnabled = true,
-                DefaultLanguage = "IT-it",
-                TenantId = int.Parse(tenantId),
-                Id = currentUser.Id,
-                ClaimsList = await _jsonApiManualService.GetClaimsByUsername(currentUser.UserName, tenantId),
-                AssociatedTenants = asTen,
-                ProfileImageId = up.ProfileImageId,
-                CurrentTenantActive = tenants.First(x => x.Id == int.Parse(tenantId)).Enabled,
-                TermsAcceptanceDate = up.termsAcceptanceDate == null ? null : up.termsAcceptanceDate.Value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff", CultureInfo.InvariantCulture) + "+00:00"
+                success = true,
+                data = new CurrentUserViewModel()
+                {
+                    Email = currentUser.Email,
+                    FirstName = up.FirstName,
+                    LastName = up.LastName,
+                    AuthorizationHeader = string.Empty,
+                    AuthorizationBearer = (await HttpContext.ToJwtBearer(currentUser.UserName, "559e2f95-ee64-45af-b6c7-30801842496f", password, accessExpiresIn, device.salt, superAdmin, tenantId)).ToString(),
+                    AuthorizationExpiresIn = accessExpiresIn,
+                    AuthorizationRefreshBearer = bearerToken.ToString(),
+                    AuthorizationRefreshExpiresIn = refreshExpiresIn,
+                    SecurityStamp = currentUser.SecurityStamp,
+                    IsAuthenticated = true,
+                    IsEnabled = true,
+                    DefaultLanguage = "IT-it",
+                    TenantId = int.Parse(tenantId),
+                    Id = currentUser.Id,
+                    ClaimsList = await _jsonApiManualService.GetClaimsByUsername(currentUser.UserName, tenantId),
+                    AssociatedTenants = asTen,
+                    ProfileImageId = up.ProfileImageId,
+                    CurrentTenantActive = tenants.First(x => x.Id == int.Parse(tenantId)).Enabled,
+                    TermsAcceptanceDate = up.termsAcceptanceDate == null ? null : up.termsAcceptanceDate.Value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffff", CultureInfo.InvariantCulture) + "+00:00"
+                }
             });
         }
     }

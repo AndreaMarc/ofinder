@@ -44,7 +44,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             await _jsonService.SetLegalTerms(model.Id);
 
-            return Ok(true);
+            return Ok(new { success = true, data = true });
 
         }
 
@@ -59,10 +59,10 @@ namespace MIT.Fwk.WebApi.Controllers
             {
                 model.Id = Guid.NewGuid().ToString();
                 await _jsonService.CreateAsync<LegalTerm, string>(model);
-                return StatusCode(201, model);
+                return StatusCode(201, new { success = true, data = model });
             }
 
-            return StatusCode(200, existing);
+            return Ok(new { success = true, data = existing });
 
         }
     }

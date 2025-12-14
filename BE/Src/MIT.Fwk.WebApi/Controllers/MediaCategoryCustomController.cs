@@ -206,7 +206,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             List<MediaFile> files = await _jsonService.FindAllMediaInMediaCategories(mediaCategories);
 
-            return Ok(CreateHierarchy(files, mediaCategories));
+            return Ok(new { success = true, data = CreateHierarchy(files, mediaCategories) });
 
         }
 

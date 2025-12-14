@@ -198,7 +198,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             List<Category> categories = await _jsonService.GetAllCategoriesByTenantId(tenant);
 
-            return Ok(CreateCategoryHierarchy(categories));
+            return Ok(new { success = true, data = CreateCategoryHierarchy(categories) });
 
         }
 
@@ -256,7 +256,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             templates = templates.FindAll(x => x.Language == language);
 
-            return Ok(AddTemplatesToHierarchy(templates, categories));
+            return Ok(new { success = true, data = AddTemplatesToHierarchy(templates, categories) });
 
         }
 
