@@ -94,6 +94,7 @@
       {{!-- Search Bar --}}
       <SearchBar
         @quickFilters={{@model.quickFilters}}
+        @searchType={{this.activeFilters.searchType}}
         @onSearch={{this.handleSearch}}
         @onFilterToggle={{this.handleQuickFilterToggle}}
         class="mb-4"

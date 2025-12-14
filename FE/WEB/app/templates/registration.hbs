@@ -1,4 +1,4 @@
-<div class="app-container">
+<div class="app-container ofinder-login-container">
     <div class="h-100">
         <div class="h-100 no-gutters row">
             {{#if this.leftSlider}}
@@ -6,24 +6,26 @@
                     <Standard::Core::LoginSlider @page="registration"/>
                 </div>
             {{/if}}
-            <div class="h-100 d-md-flex d-sm-block bg-white justify-content-center align-items-center col-md-12 {{this.loginAreaClass}}">
-                <div class="unlog-variable-height">
-                    <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-10">
-                        <div class="d-block d-sm-block d-md-none d-lg-none p-3"></div>
-                        <div class="app-logo"></div>
-                        <h4>
-                            <div>
+            <div class="d-flex justify-content-center align-items-start col-md-12 {{this.loginAreaClass}} px-3 px-md-0 ofinder-login-scroll-container">
+                <div class="mx-auto ofinder-login-box col-12 col-md-10 col-lg-10">
+                        <div class="ofinder-login-logo">
+                            <LinkTo @route="search" class="d-flex align-items-center justify-content-center mb-4 text-decoration-none">
+                                <i class="fa fa-search ofinder-login-logo-icon"></i>
+                                <h1 class="ofinder-login-logo-text mb-0 ml-3">OFINDER</h1>
+                            </LinkTo>
+                        </div>
+                        <h4 class="mb-3 ofinder-login-heading text-center">
+                            <span class="d-block mb-2">
                                 <Standard::TR @key="template.registration.welcome" @default="Benvenuto,"/>
-                            </div>
-                            <span>
-                                <Standard::TR @key="template.registration.howTo1" @default="crea il tuo account in"/> 
-                                <span class="text-success">
+                            </span>
+                            <span class="ofinder-login-subheading">
+                                <Standard::TR @key="template.registration.howTo1" @default="crea il tuo account in"/>
+                                <span class="highlight">
                                     <Standard::TR @key="template.registration.howTo2" @default="pochi secondi"/>
                                 </span>
                             </span>
                         </h4>
                         <Standard::Core::RegistrationForm @tenantId="1"/>
-                    </div>
                 </div>
             </div>
             {{#if this.rightSlider}}

@@ -1,4 +1,4 @@
-<div class="app-container">
+<div class="app-container ofinder-login-container">
     <div class="unlogged-language-area {{if this.rightSlider 'left'}}">
         <Standard::Core::ChooseLanguage @position="unlogged"/>
     </div>
@@ -9,35 +9,50 @@
                     <Standard::Core::LoginSlider @page="login"/>
                 </div>
             {{/if}}
-            <div class="d-flex bg-white justify-content-center align-items-center col-md-12 {{this.loginAreaClass}}">
-                <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-8">
+            <div class="d-flex justify-content-center align-items-start align-items-md-center col-md-12 {{this.loginAreaClass}} px-3 px-md-0 ofinder-login-scroll-container">
+                <div class="mx-auto ofinder-login-box col-12 col-md-10 col-lg-8">
                     <div class="d-block d-sm-block d-md-none d-lg-none p-3"></div>
-                    <div class="app-logo"></div>
-                    <h4 class="mb-0">
+                    <div class="ofinder-login-logo">
+                        <LinkTo @route="search" class="d-flex align-items-center justify-content-center mb-4 text-decoration-none">
+                            <i class="fa fa-search ofinder-login-logo-icon"></i>
+                            <h1 class="ofinder-login-logo-text mb-0 ml-3">OFINDER</h1>
+                        </LinkTo>
+                    </div>
+                    <h4 class="mb-4 ofinder-login-heading text-center">
                         <span class="d-block">
                             <Standard::TR @key="template.login.welcome" @default="Bentornato,"/>
                         </span>
-                        <span>
+                        <span class="ofinder-login-subheading">
                             <Standard::TR @key="template.login.enterCredentials" @default="Inserisci le tue credenziali d'accesso."/>
                         </span>
                     </h4>
+                    <Standard::Core::LoginForm @disableSocialLogin="" @dialogsError="" />
                     {{#if this.showRegistration}}
-                        <h6 class="mt-3">
-                            <Standard::TR @key="template.login.unregistered" @default="Non sei registrato?"/>
-                            <LinkTo @route="registration" class="text-primary">
-                                <Standard::TR @key="template.login.registration" @default="Registrati"/>
-                            </LinkTo>
-                        </h6>
-                        <p>
-                            <LinkTo @route="recovery-password" class="btn-lg btn btn-link p-0">
-                                <Standard::TR @key="template.login.forgotPassword" @default="Password dimenticata?"/>
-                            </LinkTo>
-                        </p>
+                        <div class="ofinder-login-actions mt-3 mt-md-4">
+                            <div class="row">
+                                <div class="col-12 col-md-6 mb-2 mb-md-0">
+                                    <span class="ofinder-text-muted d-block mb-1 mb-md-2 text-center">
+                                        <Standard::TR @key="template.login.unregistered" @default="Non sei registrato?"/>
+                                    </span>
+                                    <LinkTo @route="registration" class="btn btn-outline-primary btn-block ofinder-register-btn">
+                                        <i class="fa fa-user-plus mr-2"></i>
+                                        <Standard::TR @key="template.login.registration" @default="Registrati"/>
+                                    </LinkTo>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <span class="ofinder-text-muted d-block mb-1 mb-md-2 text-center">
+                                        <Standard::TR @key="template.login.forgotPassword" @default="Password dimenticata?"/>
+                                    </span>
+                                    <LinkTo @route="recovery-password" class="btn btn-outline-primary btn-block ofinder-forgot-password-btn">
+                                        <i class="fa fa-lock mr-2"></i>
+                                        <Standard::TR @key="template.login.recoverPassword" @default="Recupera PWD"/>
+                                    </LinkTo>
+                                </div>
+                            </div>
+                        </div>
                     {{/if}}
-                    <div class="divider row"></div>
-                    <Standard::Core::LoginFormTicket @disableSocialLogin="" @dialogsError="" />
 
-                    <div class="text-center">
+                    <div class="text-center mt-3 mt-md-5">
                       {{#if (eq this.environment 'development')}}
                         <button class="btn btn-danger" type="button">DEV {{if this.isApp 'APP' ''}} Environment<span class="opacity-4">{{this.appVersion}}</span></button>
                       {{else if (eq this.environment 'test')}}

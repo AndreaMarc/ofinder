@@ -13,7 +13,7 @@ export default class SearchController extends Controller {
 
   @tracked searchQuery = '';
   @tracked activeFilters = {
-    searchType: null, // 'CamGirl', 'Performer', 'Escort'
+    searchType: null, // 'CamGirl', 'Performer', 'Escort' - null until user selects
     platforms: [],
     contentTypes: [],
     scheduleDays: [], // Giorni della settimana
@@ -133,7 +133,7 @@ export default class SearchController extends Controller {
   handleFilterChange(filters) {
     // Update activeFilters with all values from FilterPanel
     this.activeFilters = {
-      searchType: filters.searchType || null,
+      searchType: filters.searchType,
       platforms: filters.platforms || [],
       contentTypes: filters.contentTypes || [],
       scheduleDays: filters.scheduleDays || [],

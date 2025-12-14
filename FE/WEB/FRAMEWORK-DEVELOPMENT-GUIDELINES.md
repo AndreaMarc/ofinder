@@ -25,8 +25,10 @@ const data = await this.store.query('model-name', {
 **✅ CORRETTO - Query Semplici (1 solo filtro):**
 ```javascript
 // Per query semplici con un solo filtro, scrivi direttamente la stringa
+// IMPORTANTE: quando filtri per relazioni, usa gli attributi *Id (es. geoCountryId), NON la relazione (geoCountry)
+// I valori vanno sempre messi tra quotes, sia numerici che stringhe
 const data = await this.store.query('model-name', {
-  filter: `equals(relationshipName,'${value}')`,  // Usa il nome della relazione
+  filter: `equals(relationshipNameId,'${value}')`,  // Usa attributo ID con quotes
   sort: 'name',
 });
 ```
@@ -73,20 +75,28 @@ Secondo lo standard JSON:API implementato da JsonApiDotNetCore ([documentazione]
 ```javascript
 // Carica tutte le regioni dell'Italia (ID: 107)
 // Query semplice -> scrivi direttamente la stringa
+// IMPORTANTE: usa l'attributo geoCountryId, NON la relazione geoCountry
+// I valori vanno sempre tra quotes
 const regions = await this.store.query('geo-first-division', {
-  filter: `equals(geoCountry,'107')`,
+  filter: `equals(geoCountryId,'107')`,  // ✓ Corretto: attributo ID con quotes
   sort: 'name',
+});
+
+// Esempio con stringa
+const users = await this.store.query('user', {
+  filter: `equals(username,'mario.rossi')`,  // ✓ Corretto: stringa con quotes
 });
 ```
 
 #### Filtri Multipli (AND automatico)
 ```javascript
 // Filtra per paese E per status attivo
+// Con json-api service per query con 2+ filtri
 const queryParams = this.jsonApi.queryBuilder({
   filter: [
     {
       function: 'equals',
-      column: 'geoCountry',
+      column: 'geoCountryId',  // Usa attributo ID, non relazione
       value: 107,
     },
     {
@@ -147,7 +157,7 @@ const queryParams = this.jsonApi.queryBuilder({
   filter: [
     {
       function: null,  // Ignora il meccanismo automatico
-      value: "and(equals(geoCountry,'107'),greaterThan(population,100000))",
+      value: "and(equals(geoCountryId,'107'),greaterThan(population,'100000'))",
     },
   ],
 });
@@ -330,6 +340,22 @@ handleClick(event) {
 }
 ```
 
+### 5. Conversione RecordArray in Array
+**DEPRECATO**: Non usare `.toArray()` su RecordArray o altri oggetti array-like di EmberData.
+
+**✅ CORRETTO**: Usare il metodo nativo `.slice()` per convertire in array:
+```javascript
+// ❌ ERRATO
+const regions = await this.store.query('geo-first-division', {...});
+this.regions = regions.toArray(); // Deprecato!
+
+// ✅ CORRETTO
+const regions = await this.store.query('geo-first-division', {...});
+this.regions = regions.slice(); // Usa metodo nativo
+```
+
+**Motivazione**: Il metodo `.toArray()` è deprecato in EmberData 4.x e sarà rimosso nella versione 5.0. Usare sempre i metodi nativi degli array quando disponibili.
+
 ---
 
 ## Risorse
@@ -346,6 +372,8 @@ handleClick(event) {
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2025-12-11 | Initial guidelines document |
+| 1.1.0 | 2025-12-11 | Added JSON:API filter syntax rules (use attributeId instead of relationships) |
+| 1.2.0 | 2025-12-11 | Added deprecation warning for .toArray() - use .slice() instead |
 
 ---
 

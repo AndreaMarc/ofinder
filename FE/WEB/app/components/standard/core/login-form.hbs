@@ -4,22 +4,22 @@
 
     <div class="form-row">
       <div class="col-md-6">
-          <div class="position-relative form-group">
-              <label for="identification" class="">
+          <div class="position-relative form-group ofinder-login-input">
+              <label for="identification" class="ofinder-login-label">
                 <Standard::TR @key="component.loginForm.email" @default="E-mail"/>
               </label>
-              <input name="email" id="identification" type="email" class="form-control" placeholder="..." {{on 'input' this.updateIdentification}} value={{this.identification}} data-test-identification>
+              <input name="email" id="identification" type="email" class="form-control" placeholder="nome@esempio.it" {{on 'input' this.updateIdentification}} value={{this.identification}} data-test-identification>
           </div>
       </div>
       <div class="col-md-6">
-          <div class="position-relative form-group">
-              <label for="password" class="">
+          <div class="position-relative form-group ofinder-login-input">
+              <label for="password" class="ofinder-login-label">
                 <Standard::TR @key="component.loginForm.password" @default="Password"/>
               </label>
               <div class="input-group">
-                <input name="password" id="password" type={{this.pwdType}} {{on 'input' this.updatePassword}} placeholder="..." class="form-control">
+                <input name="password" id="password" type={{this.pwdType}} {{on 'input' this.updatePassword}} placeholder="••••••••" class="form-control">
                 <div class="input-group-append">
-                  <button class="btn btn-light" type="button" {{on 'click' this.updateShowPwd}} tabindex="-1">
+                  <button class="btn ofinder-bg-surface ofinder-text-light" type="button" {{on 'click' this.updateShowPwd}} tabindex="-1" style="border-color: rgba(255, 255, 255, 0.15);">
                     <i class="fa {{if (eq this.pwdType 'password') 'fa-eye-slash' 'fa-eye'}}"></i>
                   </button>
                 </div>
@@ -28,30 +28,29 @@
       </div>
     </div>
 
-    <div class="d-flex align-items-center">
-      <div class="ml-auto">
-          <button {{on 'click' (perform this.authenticateJwt)}} id="login-form-btn" type="button" class="btn btn-custom2 btn-lg">
-            <Standard::TR @key="component.loginForm.logIn" @default="Accedi"/>
-            <i class="fa {{if this.authenticateJwt.isRunning 'fa-spinner fa-spin' 'fa-angle-right'}} ml-2"></i>
-          </button>
-      </div>
+    <div class="d-flex align-items-center justify-content-center mt-4">
+      <button {{on 'click' (perform this.authenticateJwt)}} id="login-form-btn" type="button" class="btn ofinder-login-btn btn-lg">
+        <Standard::TR @key="component.loginForm.logIn" @default="Accedi"/>
+        <i class="fa {{if this.authenticateJwt.isRunning 'fa-spinner fa-spin' 'fa-angle-right'}} ml-2"></i>
+      </button>
     </div>
-    <div class="divider row"></div>
   </form>
 </div>
 
 {{#if this.showSocialLogin}}
-<div class="row mb-3">
+<div class="row mb-3 mt-4">
   {{#if this.showFacebook}}
-  <div class="col text-center">
-    <button {{on 'click' this.authenticateWithFacebook}} class="btn btn-custom2 mb-3" href="#" type="button">
+  <div class="col-12 col-md-6 mb-3 mb-md-0">
+    <button {{on 'click' this.authenticateWithFacebook}} class="btn ofinder-social-btn" href="#" type="button">
+      <i class="fab fa-facebook mr-2"></i>
       <Standard::TR @key="component.loginForm.fbLogin" @default="Login con Facebook"/>
     </button>
   </div>
   {{/if}}
   {{#if this.showGoogle}}
-  <div class="col text-center">
-    <button {{on 'click' this.authenticateWithGoogleImplicitGrant}} class="btn btn-custom2" type="button">
+  <div class="col-12 col-md-6">
+    <button {{on 'click' this.authenticateWithGoogleImplicitGrant}} class="btn ofinder-social-btn" type="button">
+      <i class="fab fa-google mr-2"></i>
       <Standard::TR @key="component.loginForm.googleLogin" @default="Login con Google"/>
     </button>
   </div>

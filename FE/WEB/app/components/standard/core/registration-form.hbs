@@ -9,7 +9,7 @@
         <div class="col-md-6">
           <div class="position-relative form-group">
             <label for="registrationEmail">
-              <span class="registration-mandatory {{if (is-empty this.newValue.email) "text-danger" "text-success"}}">*</span>
+              <i class="registration-mandatory fa {{if (is-empty this.newValue.email) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
               <Standard::TR @key="component.registrationForm.email" @default="E-mail"/>
             </label>
             <input id="registrationEmail" type="email" {{on 'input' (fn this.storeNewValue 'email')}} autocomplete="off" placeholder="..." class="form-control">
@@ -28,7 +28,7 @@
         <div class="position-relative form-group">
           <label for="registrationContactEmail">
             {{#if (eq this.registrationFields.contactEmail '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.contactEmail) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.contactEmail) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.contactEmail" @default="E-mail di contatto"/>
           </label>
@@ -44,7 +44,7 @@
       <div class="col-md-6">
         <div class="position-relative form-group">
           <label for="registrationLastName">
-            <span class="registration-mandatory {{if (is-empty this.newValue.lastName) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.lastName) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             <Standard::TR @key="component.registrationForm.lastName" @default="Cognome"/>
           </label>
           <input id="registrationLastName" type="text" {{on 'input' (fn this.storeNewValue 'lastName')}} placeholder="..." autocomplete="off" class="form-control">
@@ -55,7 +55,7 @@
       <div class="col-md-6">
         <div class="position-relative form-group">
           <label for="registrationFirstName">
-            <span class="registration-mandatory {{if (is-empty this.newValue.firstName) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.firstName) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             <Standard::TR @key="component.registrationForm.firstName" @default="Nome"/>
           </label>
           <input id="registrationFirstName" type="text" {{on 'input' (fn this.storeNewValue 'firstName')}} placeholder="..." autocomplete="off" class="form-control">
@@ -66,7 +66,7 @@
       <div class="col-md-6">
         <div class="position-relative form-group">
           <label for="registrationPassword">
-            <span class="registration-mandatory {{if (is-empty this.newValue.password) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.password) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             <Standard::TR @key="component.registrationForm.password" @default="Password"/>
           </label>
           <div class="input-group">
@@ -87,7 +87,7 @@
       <div class="col-md-6">
         <div class="position-relative form-group">
           <label for="registrationConfirmPassword">
-            <span class="registration-mandatory {{if (is-empty this.newValue.confirmPassword) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.confirmPassword) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             <Standard::TR @key="component.registrationForm.confirmPassword" @default="Conferma Password"/>
           </label>
           <div class="input-group">
@@ -111,7 +111,7 @@
         <div class="position-relative form-group">
           <label for="registrationNickName">
             {{#if (eq this.registrationFields.nickName '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.nickName) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.nickName) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             Nick-name
             <Standard::TR @key="component.registrationForm.nickName" @default="Nick-name"/>
@@ -130,7 +130,7 @@
         <div class="position-relative form-group">
           <label for="registrationFixedPhone">
             {{#if (eq this.registrationFields.fixedPhone '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.fixedPhone) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.fixedPhone) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.fixedPhone" @default="Telefono fisso"/>
           </label>
@@ -145,7 +145,7 @@
         <div class="position-relative form-group">
           <label for="registrationMobilePhone">
             {{#if (eq this.registrationFields.mobilePhone '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.mobilePhone) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.mobilePhone) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.mobilePhone" @default="Telefono mobile"/>
           </label>
@@ -160,7 +160,7 @@
         <div class="position-relative form-group">
           <label for="registrationSex">
             {{#if (eq this.registrationFields.sex '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.sex) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.sex) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.sex" @default="Sesso"/>
           </label>
@@ -179,7 +179,7 @@
         <div class="position-relative form-group">
           <label for="registrationTaxId">
             {{#if (eq this.registrationFields.taxId '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.taxId) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.taxId) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.taxId" @default="Codice fiscale"/>
           </label>
@@ -197,7 +197,7 @@
         <div class="position-relative form-group">
           <label for="registrationBirthDate">
             {{#if (eq this.registrationFields.birthDate '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.birthDate) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.birthDate) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.birthDate" @default="Data di nascita"/>
           </label>
@@ -212,7 +212,7 @@
         <div class="position-relative form-group">
           <label for="registrationBirthCity">
             {{#if (eq this.registrationFields.birthCity '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.birthCity) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.birthCity) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.birthCity" @default="Città di nascita"/>
           </label>
@@ -227,7 +227,7 @@
         <div class="position-relative form-group">
           <label for="registrationBirthProvince">
             {{#if (eq this.registrationFields.birthProvince '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.birthProvince) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.birthProvince) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.birthProvince" @default="Provincia di nascita"/>
           </label>
@@ -242,7 +242,7 @@
         <div class="position-relative form-group">
           <label for="registrationBirthZip">
             {{#if (eq this.registrationFields.birthZIP '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.birthZIP) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.birthZIP) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.birthZIP" @default="C.A.P. di nascita"/>
           </label>
@@ -257,7 +257,7 @@
         <div class="position-relative form-group">
           <label for="registrationBirthState">
             {{#if (eq this.registrationFields.birthState '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.birthState) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.birthState) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.birthState" @default="Stato di nascita"/>
           </label>
@@ -277,7 +277,7 @@
         <div class="position-relative form-group">
           <label for="registrationResidenceCity">
             {{#if (eq this.registrationFields.residenceCity '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.residenceCity) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.residenceCity) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.residenceCity" @default="Città di residenza"/>
           </label>
@@ -292,7 +292,7 @@
         <div class="position-relative form-group">
           <label for="registrationResidenceProvince">
             {{#if (eq this.registrationFields.residenceProvince '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.residenceProvince) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.residenceProvince) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.residenceProvince" @default="Provincia di residenza"/>
           </label>
@@ -307,7 +307,7 @@
         <div class="position-relative form-group">
           <label for="registrationResidenceZip">
             {{#if (eq this.registrationFields.residenceZIP '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.residenceZIP) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.residenceZIP) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.residenceZIP" @default="C.A.P. di residenza"/>
           </label>
@@ -322,7 +322,7 @@
         <div class="position-relative form-group">
           <label for="registrationResidenceState">
             {{#if (eq this.registrationFields.residenceState '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.residenceState) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.residenceState) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.residenceState" @default="Stato di residenza"/>
           </label>
@@ -342,7 +342,7 @@
         <div class="position-relative form-group">
           <label for="registrationResidenceAddress">
             {{#if (eq this.registrationFields.residenceAddress '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.residenceAddress) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.residenceAddress) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.residenceAddress" @default="Indirizzo di residenza"/>
           </label>
@@ -357,7 +357,7 @@
         <div class="position-relative form-group">
           <label for="residenceHouseNumber">
             {{#if (eq this.registrationFields.residenceHouseNumber '2')}}
-            <span class={{if (is-empty this.newValue.residenceHouseNumber) "text-danger" "text-success"}}>*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.residenceHouseNumber) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.residenceHouseNumber" @default="N° civico"/>
           </label>
@@ -372,7 +372,7 @@
         <div class="position-relative form-group">
           <label for="registrationOccupation">
             {{#if (eq this.registrationFields.occupation '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.occupation) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.occupation) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.occupation" @default="Occupazione"/>
           </label>
@@ -387,7 +387,7 @@
         <div class="position-relative form-group">
           <label for="registrationDescription">
             {{#if (eq this.registrationFields.description '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.description) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.description) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             <Standard::TR @key="component.registrationForm.description" @default="Descrizione"/>
           </label>
@@ -402,7 +402,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldString1">
             {{#if (eq this.registrationFields.profileFreeFieldString1.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldString1) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldString1) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldString1.label}}
           </label>
@@ -417,7 +417,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldString2">
             {{#if (eq this.registrationFields.profileFreeFieldString2.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldString2) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldString2) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldString2.label}}
           </label>
@@ -432,7 +432,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldString3">
             {{#if (eq this.registrationFields.profileFreeFieldString3.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldString3) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldString3) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldString3.label}}
           </label>
@@ -447,7 +447,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldDateTime">
             {{#if (eq this.registrationFields.profileFreeFieldDateTime.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldDateTime) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldDateTime) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldDateTime.label}}
           </label>
@@ -462,7 +462,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldInt1">
             {{#if (eq this.registrationFields.profileFreeFieldInt1.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldInt1) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldInt1) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldInt1.label}}
           </label>
@@ -477,7 +477,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldInt2">
             {{#if (eq this.registrationFields.profileFreeFieldInt2.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldInt2) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldInt2) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldInt2.label}}
           </label>
@@ -492,7 +492,7 @@
         <div class="position-relative form-group">
           <label for="registrationProfileFreeFieldBoolean">
             {{#if (eq this.registrationFields.profileFreeFieldBoolean.field '2')}}
-            <span class="registration-mandatory {{if (is-empty this.newValue.profileFreeFieldBoolean) "text-danger" "text-success"}}">*</span>
+            <i class="registration-mandatory fa {{if (is-empty this.newValue.profileFreeFieldBoolean) "fa-exclamation-circle text-danger" "fa-check-circle text-success"}}"></i>
             {{/if}}
             {{this.registrationFields.profileFreeFieldBoolean.label}}
           </label>
@@ -522,9 +522,9 @@
         </LinkTo>
       </h5>
       <div class="ml-auto">
-        <button {{on 'click' this.save}} data-test-registrati class="btn-wide btn-pill btn-shadow btn-hover-shine btn btn-primary btn-lg" type="button">
-          <i class="fa mr-2 {{if this.createUser.isRunning 'fa-spinner fa-spin' 'fa-save'}}"></i>
+        <button {{on 'click' this.save}} data-test-registrati class="btn ofinder-login-btn btn-lg" type="button">
           <Standard::TR @key="component.registrationForm.signUp" @default="Registrati"/>
+          <i class="fa ml-2 {{if this.createUser.isRunning 'fa-spinner fa-spin' 'fa-angle-right'}}"></i>
         </button>
       </div>
     </div>

@@ -1,17 +1,12 @@
 {{!-- Weekly Schedule Chart --}}
 <div class="weekly-schedule-chart">
-  {{#if this.topDays}}
+  {{#if this.topDays.length}}
     <div class="d-flex align-items-center mb-2">
       <i class="pe-7s-clock ofinder-text-accent mr-2"></i>
       <span class="ofinder-text-xs ofinder-text-muted">
         Disponibilità:
-        {{#each this.topDays as |day index|}}
-          <span class="ofinder-text-accent font-weight-bold">{{day.name}}</span>
-          {{#if (lt index 2)}}
-            {{#unless (eq index (sub this.topDays.length 1))}}
-              ,
-            {{/unless}}
-          {{/if}}
+        {{#each this.topDays as |day|}}
+          <span class="ofinder-text-accent font-weight-bold">{{day.name}}</span>{{#unless @last}},{{/unless}}
         {{/each}}
       </span>
     </div>

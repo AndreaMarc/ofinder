@@ -40,8 +40,8 @@ module.exports = function (environment) {
     cordovaIosAppId: '', // appId dell'app iOS.
 
     // API HOST
-    //apiHostDev: 'https://maefwk6-dev.maestrale.it',
-    apiHostDev: 'http://localhost:7002',
+    apiHostDev: 'https://ofinder.it',
+    //apiHostDev: 'http://localhost:7002',
     apiHostTest: 'https://maefwk6-test.maestrale.it', //
     apiHostProd: 'https://maefwk6-prod.maestrale.it',
     // FRONT-END HOST

@@ -1,3 +1,30 @@
 #termScroll {
   padding: 5px 15px 0 0;
+
+  // Override dark text color with OFinder light colors
+  color: $ofinder-gray-200 !important;
+
+  * {
+    color: $ofinder-gray-200 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $ofinder-gray-100 !important;
+  }
+
+  p, div, span, li {
+    color: $ofinder-gray-200 !important;
+  }
+
+  strong, b {
+    color: $ofinder-gray-100 !important;
+  }
+
+  a {
+    color: $ofinder-accent !important;
+
+    &:hover {
+      color: $ofinder-primary !important;
+    }
+  }
 }

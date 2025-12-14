@@ -34,17 +34,21 @@
 
 // Text Colors (usa variabili OFinder)
 .ofinder-text-primary {
-  color: $ofinder-primary;
+  color: $ofinder-primary !important;
 }
 
 .ofinder-text-secondary {
-  color: $ofinder-secondary;
+  color: $ofinder-secondary !important;
 }
 
 .ofinder-text-accent {
-  color: $ofinder-accent;
+  color: $ofinder-accent !important;
 }
 
 .ofinder-text-muted {
-  color: $ofinder-gray-700;
+  color: $ofinder-gray-700 !important;
+}
+
+.ofinder-text-light {
+  color: $ofinder-gray-100 !important;
 }

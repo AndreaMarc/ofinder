@@ -1,0 +1,1031 @@
+// ==================================
+// OFinder Design System - Login Page
+// ==================================
+// Colorful styles for login/registration pages
+
+// Login page container with animated gradient background
+.ofinder-login-container {
+  background: linear-gradient(
+    135deg,
+    $ofinder-dark-bg 0%,
+    #2d1b4e 25%,
+    #1a0a2e 50%,
+    #2d1b4e 75%,
+    $ofinder-dark-bg 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh; // Garantisce altezza minima
+  height: 100vh; // Altezza fissa per contenere lo scroll
+
+  // Animated gradient
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  // Decorative colored circles (floating background elements)
+  // Mobile - dimensioni ridotte
+  &::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(
+      circle,
+      rgba(219, 39, 119, 0.1) 0%,
+      transparent 70%
+    );
+    top: -150px;
+    right: -100px;
+    border-radius: 50%;
+    animation: float 20s ease-in-out infinite;
+
+    // Desktop - dimensioni maggiori
+    @media (min-width: 768px) {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(
+        circle,
+        rgba(219, 39, 119, 0.15) 0%,
+        transparent 70%
+      );
+      top: -250px;
+      right: -150px;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(
+      circle,
+      rgba(245, 158, 11, 0.08) 0%,
+      transparent 70%
+    );
+    bottom: -120px;
+    left: -60px;
+    border-radius: 50%;
+    animation: float 25s ease-in-out infinite reverse;
+
+    // Desktop - dimensioni maggiori
+    @media (min-width: 768px) {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(
+        circle,
+        rgba(245, 158, 11, 0.1) 0%,
+        transparent 70%
+      );
+      bottom: -200px;
+      left: -100px;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-30px) scale(1.05);
+    }
+  }
+}
+
+// Scroll container for login content
+.ofinder-login-scroll-container {
+  max-height: 100vh; // Altezza massima dello schermo
+  overflow-y: auto; // Rende scrollabile se necessario
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; // Smooth scrolling su iOS
+  padding: 1.5rem 0; // Mobile - padding ridotto
+
+  @media (min-width: 768px) {
+    padding: 2rem 0; // Desktop - padding per distanziare dal bordo
+  }
+}
+
+// Login box with colorful border and glow effect
+.ofinder-login-box {
+  background: $ofinder-dark-surface !important;
+  border-radius: $ofinder-border-radius-lg;
+  padding: 1rem 1rem; // Mobile first - padding molto ridotto per evitare scroll
+
+  // Mobile - shadow più intensa (effetto hover permanente)
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(219, 39, 119, 0.25),
+    0 0 100px rgba(245, 158, 11, 0.15);
+
+  border: 1px solid rgba(219, 39, 119, 0.3);
+  position: relative;
+  z-index: 1;
+  max-width: 100%; // Mobile - previene overflow
+
+  // Desktop - shadow normale, cambia solo su hover
+  @media (min-width: 768px) {
+    padding: 3rem 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(219, 39, 119, 0.15),
+      0 0 80px rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(219, 39, 119, 0.2);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(219, 39, 119, 0.25),
+        0 0 100px rgba(245, 158, 11, 0.15);
+      border-color: rgba(219, 39, 119, 0.4);
+    }
+  }
+
+  // Animated border glow
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+      45deg,
+      $ofinder-primary,
+      $ofinder-accent,
+      $ofinder-primary
+    );
+    border-radius: $ofinder-border-radius-lg;
+    z-index: -1;
+    opacity: 0.3; // Mobile - sempre visibile
+    transition: opacity 0.3s ease;
+
+    // Desktop - animazione al movimento
+    @media (min-width: 768px) {
+      opacity: 0;
+      animation: borderPulse 3s ease-in-out infinite;
+    }
+  }
+
+  // Hover su desktop - aumenta l'intensità
+  @media (min-width: 768px) {
+    &:hover::before {
+      opacity: 0.4;
+      animation: none;
+    }
+  }
+
+  // Animazione pulsante per il border su desktop
+  @keyframes borderPulse {
+    0%, 100% {
+      opacity: 0.15;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+}
+
+// Form inputs with colorful focus effects
+.ofinder-login-input {
+  position: relative;
+
+  .form-control {
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease;
+    font-size: 16px !important; // Mobile - previene zoom su iOS
+    padding: 0.75rem 1rem !important; // Campi più grandi
+    height: auto !important;
+
+    @media (min-width: 768px) {
+      font-size: 1.05rem !important; // Desktop - font leggermente più grande
+      padding: 0.875rem 1.25rem !important;
+    }
+
+    &:focus {
+      border-color: $ofinder-primary !important;
+      box-shadow: 0 0 20px rgba(219, 39, 119, 0.3),
+        0 0 40px rgba(219, 39, 119, 0.1) !important;
+
+      // Transform solo su desktop
+      @media (min-width: 768px) {
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  // Input icons with gradient
+  .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, $ofinder-primary, $ofinder-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 18px;
+    z-index: 2;
+  }
+
+  // Padding when icon is present
+  &.has-icon .form-control {
+    padding-left: 45px;
+  }
+}
+
+// Colorful label without accent bar
+.ofinder-login-label {
+  color: $ofinder-gray-100 !important;
+  font-weight: $ofinder-font-weight-medium;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 1rem; // Mobile - font più leggibile
+
+  @media (min-width: 768px) {
+    font-size: 1.1rem; // Desktop - ancora più grande
+  }
+}
+
+// Submit button with gradient gold/pink effect
+.ofinder-login-btn {
+  background: transparent !important;
+  border: 2px solid $ofinder-accent !important;
+  color: $ofinder-accent !important;
+  font-weight: $ofinder-font-weight-bold !important;
+  font-size: 1.2rem !important;
+  padding: 1rem 2.5rem !important;
+  border-radius: $ofinder-border-radius !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  min-width: 200px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, $ofinder-accent, $ofinder-primary);
+    transition: left 0.4s ease;
+    z-index: -1;
+  }
+
+  // Desktop - hover effect
+  @media (min-width: 768px) {
+    &:hover {
+      color: white !important;
+      border-color: $ofinder-accent !important;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4),
+        0 0 30px rgba(245, 158, 11, 0.2);
+      transform: translateY(-2px);
+
+      &::before {
+        left: 0;
+      }
+    }
+  }
+
+  // Mobile - glow effect
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+
+  i {
+    font-size: 1.2rem;
+  }
+}
+
+// Social login buttons with brand colors
+.ofinder-social-btn {
+  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+  background: transparent !important;
+  color: $ofinder-gray-100 !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  width: 100%; // Mobile - full width
+
+  @media (min-width: 768px) {
+    width: auto;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, $ofinder-primary, $ofinder-accent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  // Hover solo su desktop
+  @media (min-width: 768px) {
+    &:hover {
+      border-color: $ofinder-primary !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(219, 39, 119, 0.3);
+
+      &::before {
+        opacity: 0.1;
+      }
+    }
+  }
+}
+
+// Divider semplice e pulito (senza rettangolo)
+.ofinder-login-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0; // Mobile first - margini ridotti
+
+  @media (min-width: 768px) {
+    margin: 2rem 0;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(219, 39, 119, 0.2) 50%,
+      transparent 100%
+    );
+  }
+
+  // Testo "oppure" - solo se presente
+  span {
+    background: transparent; // Rimosso sfondo rettangolare
+    padding: 0;
+    position: relative;
+    color: $ofinder-gray-700;
+    font-size: 0; // Nasconde il testo, lascia solo la linea
+
+    // Su desktop mostra il testo se necessario (opzionale)
+    @media (min-width: 768px) {
+      font-size: $ofinder-font-size-xs;
+      padding: 0 1rem;
+      background: $ofinder-dark-surface;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+// Link with gradient hover effect
+.ofinder-login-link {
+  color: $ofinder-gray-200 !important;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, $ofinder-primary, $ofinder-accent);
+    transition: width 0.3s ease;
+  }
+
+  &:hover {
+    color: $ofinder-accent !important;
+
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+// Login actions section
+.ofinder-login-actions {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem; // Mobile - padding ridotto
+  margin-top: 1rem; // Mobile - margine ridotto
+
+  @media (min-width: 768px) {
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+  }
+}
+
+// Register button - monochrome yellow effect
+.ofinder-register-btn {
+  background: transparent !important;
+  border: 2px solid $ofinder-accent !important;
+  color: $ofinder-accent !important;
+  font-weight: $ofinder-font-weight-bold !important;
+  font-size: 0.85rem !important; // Mobile - più piccolo
+  padding: 0.5rem 1rem !important; // Mobile - padding ridotto
+  border-radius: $ofinder-border-radius !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  @media (min-width: 768px) {
+    font-size: 0.95rem !important; // Desktop - leggermente più grande
+    padding: 0.65rem 1.25rem !important;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: $ofinder-accent; // Monocolore giallo
+    transition: left 0.4s ease;
+    z-index: -1;
+  }
+
+  // Desktop - hover effect
+  @media (min-width: 768px) {
+    &:hover {
+      color: $ofinder-dark-bg !important; // Testo scuro su sfondo giallo
+      border-color: $ofinder-accent !important;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4),
+        0 0 30px rgba(245, 158, 11, 0.2);
+      transform: translateY(-2px);
+
+      &::before {
+        left: 0;
+      }
+    }
+  }
+
+  // Mobile - sempre un po' di glow
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+
+  i {
+    font-size: 0.95rem;
+  }
+}
+
+// Forgot password button - matching style with register button
+.ofinder-forgot-password-btn {
+  background: transparent !important;
+  border: 2px solid $ofinder-primary !important;
+  color: $ofinder-primary !important;
+  font-weight: $ofinder-font-weight-bold !important;
+  font-size: 0.85rem !important; // Mobile - più piccolo
+  padding: 0.5rem 1rem !important; // Mobile - padding ridotto
+  border-radius: $ofinder-border-radius !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  @media (min-width: 768px) {
+    font-size: 0.95rem !important; // Desktop - leggermente più grande
+    padding: 0.65rem 1.25rem !important;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, $ofinder-primary, $ofinder-primary-dark);
+    transition: left 0.4s ease;
+    z-index: -1;
+  }
+
+  // Desktop - hover effect
+  @media (min-width: 768px) {
+    &:hover {
+      color: white !important;
+      border-color: $ofinder-primary !important;
+      box-shadow: 0 4px 20px rgba(219, 39, 119, 0.4),
+        0 0 30px rgba(219, 39, 119, 0.2);
+      transform: translateY(-2px);
+
+      &::before {
+        left: 0;
+      }
+    }
+  }
+
+  // Mobile - sempre un po' di glow
+  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.2);
+
+  i {
+    font-size: 0.95rem;
+  }
+}
+
+// Forgot password link - more visible (legacy, kept for backward compatibility)
+.ofinder-forgot-password-link {
+  color: $ofinder-gray-300 !important;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: $ofinder-font-weight-medium;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: $ofinder-border-radius-sm;
+  transition: all 0.3s ease;
+  position: relative;
+
+  i {
+    color: $ofinder-primary;
+    transition: color 0.3s ease;
+  }
+
+  // Mobile - leggero background per visibilità
+  background: rgba(255, 255, 255, 0.03);
+
+  // Desktop - hover effect
+  @media (min-width: 768px) {
+    &:hover {
+      background: rgba(219, 39, 119, 0.1);
+      color: $ofinder-primary !important;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 10px rgba(219, 39, 119, 0.2);
+
+      i {
+        color: $ofinder-accent;
+      }
+    }
+  }
+}
+
+// App logo with colorful text and icon
+.ofinder-login-logo {
+  text-align: center;
+  margin-bottom: 1rem; // Mobile - margine ridotto
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem;
+  }
+
+  // Link wrapper
+  a {
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+
+      .ofinder-login-logo-icon {
+        filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.7))
+          drop-shadow(0 0 40px rgba(245, 158, 11, 0.5));
+      }
+
+      .ofinder-login-logo-text {
+        text-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+      }
+    }
+  }
+
+  // Logo icon with gradient glow
+  .ofinder-login-logo-icon {
+    font-size: 2.5rem; // Mobile
+    color: $ofinder-accent;
+    filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.5))
+      drop-shadow(0 0 30px rgba(245, 158, 11, 0.3));
+    animation: logoIconPulse 3s ease-in-out infinite;
+    transition: filter 0.3s ease;
+
+    @media (min-width: 768px) {
+      font-size: 3.5rem; // Desktop
+    }
+  }
+
+  // Logo text with gradient
+  .ofinder-login-logo-text {
+    font-size: 2rem; // Mobile
+    font-weight: $ofinder-font-weight-bold;
+    background: linear-gradient(135deg, $ofinder-accent 0%, $ofinder-primary 50%, $ofinder-accent 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.1em;
+    animation: logoTextShine 4s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+    transition: text-shadow 0.3s ease;
+
+    @media (min-width: 768px) {
+      font-size: 3rem; // Desktop
+      letter-spacing: 0.15em;
+    }
+  }
+
+  // Animation for icon pulse
+  @keyframes logoIconPulse {
+    0%, 100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.5))
+        drop-shadow(0 0 30px rgba(245, 158, 11, 0.3));
+    }
+    50% {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.7))
+        drop-shadow(0 0 40px rgba(245, 158, 11, 0.5));
+    }
+  }
+
+  // Animation for text shine
+  @keyframes logoTextShine {
+    0%, 100% {
+      background-position: 0% center;
+    }
+    50% {
+      background-position: 200% center;
+    }
+  }
+}
+
+// Welcome heading with gradient text
+.ofinder-login-heading {
+  background: linear-gradient(135deg, $ofinder-gray-100, $ofinder-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: $ofinder-font-weight-bold;
+  margin-bottom: 1.25rem !important; // Mobile - margine ridotto
+  font-size: 1.5rem; // Mobile first - font più piccolo
+
+  @media (min-width: 768px) {
+    margin-bottom: 2rem !important;
+    font-size: 2rem;
+  }
+}
+
+// Subheading with colored accent
+.ofinder-login-subheading {
+  color: $ofinder-gray-200 !important;
+
+  .highlight {
+    color: $ofinder-accent !important;
+    font-weight: $ofinder-font-weight-bold;
+  }
+}
+
+// ==================================
+// SweetAlert2 (Swal) OFinder Style
+// ==================================
+
+// Popup container
+.swal2-popup {
+  background: $ofinder-dark-surface !important;
+  border: 1px solid rgba(219, 39, 119, 0.3) !important;
+  border-radius: $ofinder-border-radius-lg !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(219, 39, 119, 0.2),
+    0 0 80px rgba(245, 158, 11, 0.1) !important;
+}
+
+// Title
+.swal2-title {
+  color: $ofinder-gray-100 !important;
+  font-weight: $ofinder-font-weight-bold !important;
+}
+
+// Content text
+.swal2-html-container,
+.swal2-content {
+  color: $ofinder-gray-200 !important;
+}
+
+// Confirm button
+.swal2-confirm {
+  background: linear-gradient(90deg, $ofinder-accent, $ofinder-primary) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4) !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6),
+      0 0 40px rgba(245, 158, 11, 0.3) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  &:focus {
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4) !important;
+  }
+}
+
+// Cancel button
+.swal2-cancel {
+  background: transparent !important;
+  border: 2px solid $ofinder-primary !important;
+  color: $ofinder-primary !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background: $ofinder-primary !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.3) !important;
+  }
+}
+
+// Close button
+.swal2-close {
+  color: $ofinder-gray-300 !important;
+
+  &:hover {
+    color: $ofinder-primary !important;
+  }
+}
+
+// Icon colors
+.swal2-icon {
+  &.swal2-error {
+    border-color: $ofinder-danger !important;
+    color: $ofinder-danger !important;
+
+    .swal2-x-mark-line-left,
+    .swal2-x-mark-line-right {
+      background-color: $ofinder-danger !important;
+    }
+  }
+
+  &.swal2-warning {
+    border-color: $ofinder-accent !important;
+    color: $ofinder-accent !important;
+  }
+
+  &.swal2-success {
+    border-color: $ofinder-success !important;
+
+    .swal2-success-ring {
+      border-color: rgba(76, 175, 80, 0.3) !important;
+    }
+
+    .swal2-success-line-tip,
+    .swal2-success-line-long {
+      background-color: $ofinder-success !important;
+    }
+  }
+
+  &.swal2-info,
+  &.swal2-question {
+    border-color: $ofinder-info !important;
+    color: $ofinder-info !important;
+  }
+}
+
+// Input fields in Swal
+.swal2-input,
+.swal2-textarea {
+  background: $ofinder-dark-bg !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  color: $ofinder-gray-100 !important;
+
+  &:focus {
+    border-color: $ofinder-primary !important;
+    box-shadow: 0 0 20px rgba(219, 39, 119, 0.3) !important;
+  }
+}
+
+// Validation message
+.swal2-validation-message {
+  background: rgba(244, 67, 54, 0.1) !important;
+  color: $ofinder-danger !important;
+}
+
+// Footer
+.swal2-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: $ofinder-gray-300 !important;
+}
+
+// ==================================
+// Registration Form Icons
+// ==================================
+
+// Icone per campi obbligatori del form di registrazione
+.registration-mandatory {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+
+  // Rosso per campo vuoto
+  &.text-danger {
+    color: $ofinder-danger !important;
+    filter: drop-shadow(0 0 4px rgba(244, 67, 54, 0.6));
+  }
+
+  // Verde per campo compilato
+  &.text-success {
+    color: $ofinder-success !important;
+    filter: drop-shadow(0 0 4px rgba(76, 175, 80, 0.6));
+  }
+}
+
+// ==================================
+// Terms & Privacy Policy Page
+// ==================================
+
+.ofinder-terms-box {
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (min-width: 768px) {
+    max-height: 85vh;
+  }
+}
+
+.ofinder-back-button {
+  background: transparent !important;
+  border: 2px solid $ofinder-primary !important;
+  color: $ofinder-primary !important;
+  font-weight: $ofinder-font-weight-bold !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: $ofinder-border-radius !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, $ofinder-primary, $ofinder-primary-dark);
+    transition: left 0.4s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: white !important;
+    border-color: $ofinder-primary !important;
+    box-shadow: 0 4px 20px rgba(219, 39, 119, 0.4),
+      0 0 30px rgba(219, 39, 119, 0.2);
+    transform: translateY(-2px);
+    text-decoration: none;
+
+    &::before {
+      left: 0;
+    }
+
+    i {
+      transform: translateX(-3px);
+    }
+  }
+
+  i {
+    transition: transform 0.3s ease;
+  }
+
+  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.2);
+}
+
+.ofinder-terms-divider {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(219, 39, 119, 0.3) 50%,
+    transparent 100%
+  );
+  margin: 1.5rem 0;
+}
+
+// Style for the terms content component
+.ofinder-terms-box {
+  // Headings
+  h1, h2, h3, h4, h5, h6 {
+    color: $ofinder-gray-100 !important;
+    font-weight: $ofinder-font-weight-bold;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, $ofinder-accent, $ofinder-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: $ofinder-accent !important;
+  }
+
+  // Paragraphs
+  p, li, div {
+    color: $ofinder-gray-200 !important;
+    line-height: 1.8;
+  }
+
+  // Lists
+  ul, ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  // Links
+  a {
+    color: $ofinder-accent !important;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $ofinder-primary !important;
+    }
+  }
+
+  // Strong/Bold text
+  strong, b {
+    color: $ofinder-gray-100 !important;
+    font-weight: $ofinder-font-weight-bold;
+  }
+
+  // Code blocks
+  code, pre {
+    background: rgba(0, 0, 0, 0.3);
+    color: $ofinder-accent;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+  }
+}
+
+// ==================================
+// GDPR Block (Cookie Consent) - Button styles
+// ==================================
+// Main GDPR styles are in components/gdpr.scss
+
+.gdpr-block {
+  // Bottoni GDPR
+  .btn {
+    border-radius: $ofinder-border-radius !important;
+    font-weight: $ofinder-font-weight-bold !important;
+    transition: all 0.3s ease !important;
+
+    // Bottone "Rifiuto" e "Accetto solo tecnici"
+    &.btn-outline-light {
+      background: transparent !important;
+      border: 2px solid rgba(255, 255, 255, 0.3) !important;
+      color: $ofinder-gray-200 !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    // Bottone "Accetto tutto"
+    &.btn-outline-success {
+      background: transparent !important;
+      border: 2px solid $ofinder-success !important;
+      color: $ofinder-success !important;
+
+      &:hover {
+        background: $ofinder-success !important;
+        border-color: $ofinder-success !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      }
+    }
+  }
+}

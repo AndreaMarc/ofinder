@@ -1,0 +1,128 @@
+// ==================================
+// OFinder Design System - Forms
+// ==================================
+// Global form styles for dark theme
+
+// Form labels - Light color for dark background
+label {
+  color: $ofinder-gray-100 !important;
+}
+
+// Form text (hints, descriptions)
+.form-text {
+  color: $ofinder-gray-700 !important;
+
+  &.text-muted {
+    color: $ofinder-gray-700 !important;
+  }
+}
+
+// Input groups
+.input-group-append {
+  .btn {
+    background-color: $ofinder-dark-surface !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: $ofinder-gray-100 !important;
+
+    &:hover {
+      background-color: $ofinder-dark-surface-light !important;
+    }
+  }
+}
+
+// Custom buttons (btn-custom2 used in standard components)
+.btn-custom2 {
+  background-color: $ofinder-primary !important;
+  border-color: $ofinder-primary !important;
+  color: white !important;
+
+  &:hover {
+    background-color: $ofinder-primary-dark !important;
+    border-color: $ofinder-primary-dark !important;
+  }
+}
+
+// Success/danger indicators for mandatory fields
+.registration-mandatory {
+  &.text-danger {
+    color: $ofinder-danger !important;
+  }
+
+  &.text-success {
+    color: $ofinder-success !important;
+  }
+}
+
+// Alert messages
+.alert {
+  &.alert-danger {
+    background-color: rgba(244, 67, 54, 0.1) !important;
+    border-color: $ofinder-danger !important;
+    color: $ofinder-gray-100 !important;
+  }
+
+  &.alert-success {
+    background-color: rgba(76, 175, 80, 0.1) !important;
+    border-color: $ofinder-success !important;
+    color: $ofinder-gray-100 !important;
+  }
+
+  &.alert-warning {
+    background-color: rgba(255, 152, 0, 0.1) !important;
+    border-color: $ofinder-warning !important;
+    color: $ofinder-gray-100 !important;
+  }
+
+  &.alert-info {
+    background-color: rgba(33, 150, 243, 0.1) !important;
+    border-color: $ofinder-info !important;
+    color: $ofinder-gray-100 !important;
+  }
+}
+
+// Checkboxes and radio buttons custom styling
+.custom-control-label {
+  color: $ofinder-gray-100 !important;
+
+  &::before {
+    background-color: $ofinder-dark-surface !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+.custom-control-input:checked ~ .custom-control-label {
+  &::before {
+    background-color: $ofinder-primary !important;
+    border-color: $ofinder-primary !important;
+  }
+}
+
+// Select dropdowns
+select.form-control {
+  background-color: $ofinder-dark-surface !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: $ofinder-gray-100 !important;
+
+  option {
+    background-color: $ofinder-dark-surface !important;
+    color: $ofinder-gray-100 !important;
+  }
+}
+
+// Textarea
+textarea.form-control {
+  background-color: $ofinder-dark-surface !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: $ofinder-gray-100 !important;
+
+  &:focus {
+    background-color: $ofinder-dark-surface-light !important;
+    border-color: $ofinder-primary !important;
+  }
+}
+
+// Divider between form sections
+.divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 1.5rem 0;
+}
