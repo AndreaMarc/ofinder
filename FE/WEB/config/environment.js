@@ -42,12 +42,12 @@ module.exports = function (environment) {
     // API HOST
     apiHostDev: 'https://ofinder.it',
     //apiHostDev: 'http://localhost:7002',
-    apiHostTest: 'https://maefwk6-test.maestrale.it', //
-    apiHostProd: 'https://maefwk6-prod.maestrale.it',
+    apiHostTest: 'https://ofinder.it', //
+    apiHostProd: 'https://ofinder.it',
     // FRONT-END HOST
-    feHostDev: 'https://fwk-dev.maestrale.it/',
-    feHostTest: 'https://fwk-test.maestrale.it/',
-    feHostProd: 'https://fwk-prod.maestrale.it/',
+    feHostDev: 'https://ofinder.it/',
+    feHostTest: 'https://ofinder.it/',
+    feHostProd: 'https://ofinder.it/',
 
     namespaceHost: 'api/v6',
   };
