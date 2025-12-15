@@ -62,3 +62,12 @@
 @import 'custom/override-theme-style.scss';
 @import 'custom/override-js-library.scss';
 @import 'custom/theme-integrations.scss';
+
+// ============================================================================
+// OFINDER THEME OVERRIDES
+// ============================================================================
+// IMPORTANTE: Questo file contiene tutti gli override per personalizzare
+// il tema ArchitectUI secondo lo stile OFinder.
+// Per disattivare le personalizzazioni, commenta la riga seguente:
+@import 'custom/ofinder-theme-overrides.scss';
+// ============================================================================

@@ -4,9 +4,66 @@ SOVRASCRIVE GLI STILI DELLE LIBRERIE JS
 */
 
 
-/* ALERTIFY */
+/* ALERTIFY - OFinder Dark Theme */
 .alertify .ajs-dimmer, .alertify .ajs-modal {
   z-index: 10000;
+}
+
+// Dialog container
+.alertify .ajs-dialog {
+  background-color: #2d1b4e !important; // ofinder-dark-surface
+  border: 1px solid rgba(245, 158, 11, 0.3) !important; // ofinder-accent border
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+// Header
+.alertify .ajs-header {
+  background-color: rgba(26, 10, 46, 0.8) !important; // ofinder-dark-bg semi-transparent
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2) !important; // ofinder-accent border
+  color: #f9fafb !important; // ofinder-gray-100 (testo chiaro)
+}
+
+// Body / Message
+.alertify .ajs-body {
+  color: #e5e7eb !important; // ofinder-gray-200 (testo chiaro)
+}
+
+// Footer
+.alertify .ajs-footer {
+  background-color: rgba(26, 10, 46, 0.5) !important; // ofinder-dark-bg semi-transparent
+  border-top: 1px solid rgba(245, 158, 11, 0.2) !important; // ofinder-accent border
+}
+
+// Buttons
+.alertify .ajs-button {
+  background-color: #7c3aed !important; // ofinder-primary
+  border-color: #7c3aed !important;
+  color: white !important;
+
+  &:hover {
+    background-color: #6d28d9 !important; // ofinder-primary-dark
+    border-color: #6d28d9 !important;
+  }
+
+  &.ajs-ok {
+    background-color: #f59e0b !important; // ofinder-accent (gold)
+    border-color: #f59e0b !important;
+    color: #1a0a2e !important; // ofinder-dark-bg (testo scuro su oro)
+
+    &:hover {
+      background-color: #d97706 !important; // ofinder-accent-dark
+      border-color: #d97706 !important;
+    }
+  }
+}
+
+// Close button
+.alertify .ajs-close {
+  color: #f9fafb !important; // ofinder-gray-100
+
+  &:hover {
+    color: #f59e0b !important; // ofinder-accent
+  }
 }
 
 /* SELECT2 - Bootstrap4 - OFinder Dark Theme */
