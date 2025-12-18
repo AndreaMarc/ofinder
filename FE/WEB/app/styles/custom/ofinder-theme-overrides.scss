@@ -1,0 +1,597 @@
+/**
+ * OFINDER THEME OVERRIDES
+ *
+ * Questo file contiene tutti gli override CSS/SCSS specifici per personalizzare
+ * il tema ArchitectUI secondo lo stile OFinder.
+ *
+ * IMPORTANTE: Questo file è completamente reversibile.
+ * Per tornare allo stile originale, basta:
+ * 1. Commentare l'import di questo file in app.scss, oppure
+ * 2. Eliminare questo file
+ *
+ * Nessun altro file del progetto viene modificato da queste personalizzazioni.
+ */
+
+// ============================================================================
+// IMPORTA LE VARIABILI OFINDER
+// ============================================================================
+@import 'ofinder/variables';
+
+// ============================================================================
+// TABS OVERRIDE
+// ============================================================================
+// Override colori tab per usare l'accent OFinder (oro) invece del blu
+
+// Tabs animated - barra sotto e colore testo
+.tabs-animated .nav-link {
+  &::before {
+    background: $ofinder-accent !important;
+  }
+
+  &.active,
+  &:hover {
+    color: $ofinder-accent !important;
+  }
+}
+
+// Tabs animated shadow - box shadow e colore
+.tabs-animated-shadow .nav-link {
+  &::before {
+    background: $ofinder-accent !important;
+    box-shadow: 0 16px 26px -10px rgba($ofinder-accent, 0.56) !important,
+                0 4px 25px 0px rgba(0, 0, 0, 0.12) !important,
+                0 8px 10px -5px rgba($ofinder-accent, 0.2) !important;
+  }
+
+  &.active,
+  &:hover {
+    color: white !important;
+  }
+}
+
+// Body tabs shadow - per classe body-tabs-shadow
+.body-tabs-shadow .body-tabs-animated .nav-link {
+  &::before {
+    background: $ofinder-accent !important;
+    box-shadow: 0 16px 26px -10px rgba($ofinder-accent, 0.56) !important,
+                0 4px 25px 0px rgba(0, 0, 0, 0.12) !important,
+                0 8px 10px -5px rgba($ofinder-accent, 0.2) !important;
+  }
+
+  &.active,
+  &:hover {
+    color: white !important;
+  }
+}
+
+// Body tabs line - per classe body-tabs-line
+.body-tabs-line .body-tabs-layout {
+  border-bottom-color: rgba($ofinder-accent, 0.3) !important;
+}
+
+.body-tabs-line .nav-link {
+  &.active,
+  &:hover {
+    color: $ofinder-accent !important;
+  }
+}
+
+// Nav tabs standard
+.nav-tabs .nav-link {
+  &:hover {
+    color: $ofinder-accent !important;
+  }
+
+  &.active {
+    color: $ofinder-accent !important;
+  }
+}
+
+// ============================================================================
+// BORDER UTILITIES OVERRIDE
+// ============================================================================
+// Override bordi per .underline e .left-border con colori OFinder
+
+.underline {
+  border-bottom-color: rgba($ofinder-accent, 0.3) !important;
+}
+
+.left-border {
+  border-left-color: rgba($ofinder-accent, 0.3) !important;
+}
+
+// Unable box - stato disattivato
+.unable-box {
+  background-color: rgba(0, 0, 0, 0.3) !important; // Nero semi-trasparente per effetto "disattivato"
+  opacity: 0.6 !important; // Riduce l'opacità per dare senso di non disponibilità
+}
+
+// ============================================================================
+// COLLAPSE BUTTONS OVERRIDE
+// ============================================================================
+// Override colore icone frecce dei bottoni collapse
+
+// Bottoni con data-toggle="collapse"
+button[data-toggle="collapse"],
+a[data-toggle="collapse"],
+h6[data-toggle="collapse"] {
+  color: $ofinder-accent !important;
+
+  &:hover,
+  &:focus {
+    color: $ofinder-accent-dark !important;
+  }
+
+  // Icone all'interno
+  i,
+  .fa,
+  .fas,
+  .far {
+    color: $ofinder-accent !important;
+  }
+}
+
+// Form heading nei collapse
+.form-heading {
+  color: $ofinder-accent !important;
+}
+
+// Accordion wrapper
+.accordion-wrapper {
+  .card-header {
+    button[data-toggle="collapse"] {
+      color: $ofinder-accent !important;
+
+      &:hover {
+        color: $ofinder-accent-dark !important;
+      }
+    }
+  }
+}
+
+// ============================================================================
+// SIDEBAR OVERRIDES
+// ============================================================================
+
+// Sidebar principale - sfondo base
+.app-sidebar {
+  background: $ofinder-dark-surface !important;
+  border-right: 1px solid rgba($ofinder-primary, 0.15) !important;
+
+  .app-sidebar__inner {
+    background: transparent !important;
+  }
+}
+
+// Logo area nella sidebar
+.app-sidebar .app-sidebar__heading {
+  background: rgba($ofinder-primary, 0.05) !important;
+  border-bottom: 1px solid rgba($ofinder-accent, 0.2) !important;
+  color: $ofinder-accent !important;
+  padding: 1rem 1.5rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+// Menu items nella sidebar - solo colori
+.vertical-nav-menu {
+  li a {
+    color: $ofinder-gray-100 !important;
+
+    &:hover {
+      color: $ofinder-accent !important;
+    }
+  }
+
+  li.mm-active > a {
+    color: $ofinder-accent !important;
+  }
+
+  // Submenu
+  ul.mm-collapse {
+    background: rgba(0, 0, 0, 0.2) !important;
+
+    li a {
+      color: $ofinder-gray-200 !important;
+
+      &:hover {
+        color: $ofinder-accent !important;
+      }
+    }
+  }
+}
+
+// ============================================================================
+// HEADER OVERRIDES
+// ============================================================================
+
+// Header principale
+.app-header {
+  background: $ofinder-dark-bg !important;
+  border-bottom: 1px solid rgba($ofinder-primary, 0.2) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+
+  // Logo area
+  .app-header__logo {
+    background: $ofinder-dark-surface !important;
+    border-right: 1px solid rgba($ofinder-primary, 0.2) !important;
+  }
+
+  // Menu items nell'header
+  .header-menu a {
+    color: $ofinder-gray-100 !important;
+
+    &:hover {
+      color: $ofinder-accent !important;
+    }
+  }
+}
+
+// ============================================================================
+// PAGE TITLE (HEADER) OVERRIDES
+// ============================================================================
+
+// Override generale per tutti i blocchi .app-page-title
+// Applica uno stile simile a quello della pagina search
+.app-page-title {
+  background: linear-gradient(135deg, $ofinder-dark-bg 0%, #2d1b4e 50%, $ofinder-primary-dark 100%) !important;
+  padding: 2rem 1.5rem !important;
+  margin-bottom: 2rem !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  border: none !important;
+
+  .page-title-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .page-title-heading {
+    display: flex !important;
+    align-items: center !important;
+
+    .page-title-icon {
+      align-items: center !important;
+      justify-content: center !important;
+      width: 60px !important;
+      height: 60px !important;
+      min-width: 60px !important;
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 12px !important;
+      margin-right: 1.5rem !important;
+      flex-shrink: 0;
+
+      // Rispetta le classi Bootstrap d-none/d-flex
+      &:not(.d-none) {
+        display: flex !important;
+      }
+
+      i {
+        font-size: 32px !important;
+        color: $ofinder-accent !important;
+      }
+    }
+  }
+
+  .page-title-head {
+    color: white !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .page-title-subheading {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 1rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  // Action buttons styling
+  .page-title-actions {
+    .btn {
+      box-shadow: $ofinder-shadow-sm !important;
+
+      &:not(.btn-ofinder-primary):not(.btn-outline-primary) {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2) !important;
+          border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+      }
+    }
+  }
+}
+
+// ============================================================================
+// MAIN CONTENT AREA OVERRIDES
+// ============================================================================
+
+// Area principale del contenuto
+.app-main {
+  background: $ofinder-dark-bg !important;
+}
+
+.app-main__outer {
+  background: $ofinder-dark-bg !important;
+}
+
+.app-main__inner {
+  background: $ofinder-dark-bg !important;
+}
+
+// ============================================================================
+// CARDS E PANNELLI
+// ============================================================================
+
+// Card generiche
+.card {
+  background: $ofinder-dark-surface !important;
+  border: 1px solid rgba($ofinder-primary, 0.1) !important;
+  color: $ofinder-gray-100 !important;
+
+  .card-header {
+    background: rgba($ofinder-dark-bg, 0.5) !important;
+    border-bottom: 1px solid rgba($ofinder-primary, 0.2) !important;
+    color: $ofinder-gray-100 !important;
+  }
+
+  .card-body {
+    color: $ofinder-gray-200 !important;
+  }
+
+  .card-footer {
+    background: rgba($ofinder-dark-bg, 0.5) !important;
+    border-top: 1px solid rgba($ofinder-primary, 0.2) !important;
+  }
+}
+
+// ============================================================================
+// TABLES
+// ============================================================================
+
+.table {
+  color: $ofinder-gray-100 !important;
+
+  thead th {
+    background: $ofinder-dark-bg !important;
+    color: $ofinder-gray-100 !important;
+    border-color: rgba($ofinder-primary, 0.2) !important;
+  }
+
+  tbody tr {
+    background: $ofinder-dark-surface !important;
+
+    &:hover {
+      background: rgba($ofinder-primary, 0.05) !important;
+    }
+
+    td {
+      border-color: rgba($ofinder-primary, 0.1) !important;
+      color: $ofinder-gray-200 !important;
+    }
+  }
+}
+
+// ============================================================================
+// MODALS E DROPDOWN
+// ============================================================================
+
+// Modal
+.modal-content {
+  background: $ofinder-dark-surface !important;
+  border: 1px solid rgba($ofinder-primary, 0.3) !important;
+
+  .modal-header {
+    background: rgba($ofinder-dark-bg, 0.8) !important;
+    border-bottom: 1px solid rgba($ofinder-primary, 0.2) !important;
+    color: $ofinder-gray-100 !important;
+
+    .close {
+      color: $ofinder-gray-100 !important;
+
+      &:hover {
+        color: $ofinder-primary !important;
+      }
+    }
+  }
+
+  .modal-body {
+    color: $ofinder-gray-200 !important;
+  }
+
+  .modal-footer {
+    background: rgba($ofinder-dark-bg, 0.5) !important;
+    border-top: 1px solid rgba($ofinder-primary, 0.2) !important;
+  }
+}
+
+// Dropdown menu
+.dropdown-menu {
+  background: $ofinder-dark-surface !important;
+  border: 1px solid rgba($ofinder-primary, 0.3) !important;
+
+  .dropdown-item {
+    color: $ofinder-gray-100 !important;
+
+    &:hover {
+      background: rgba($ofinder-primary, 0.1) !important;
+      color: $ofinder-primary !important;
+    }
+  }
+
+  .dropdown-divider {
+    border-color: rgba($ofinder-primary, 0.2) !important;
+  }
+}
+
+// ============================================================================
+// FORMS
+// ============================================================================
+
+// Input fields
+.form-control {
+  background: $ofinder-dark-bg !important;
+  border: 1px solid rgba($ofinder-primary, 0.3) !important;
+  color: $ofinder-gray-100 !important;
+
+  &:focus {
+    background: $ofinder-dark-surface !important;
+    border-color: $ofinder-accent !important;
+    box-shadow: 0 0 0 0.2rem rgba($ofinder-accent, 0.25) !important;
+    color: $ofinder-gray-100 !important;
+  }
+
+  &::placeholder {
+    color: $ofinder-gray-700 !important;
+  }
+}
+
+// Select
+select.form-control {
+  background: $ofinder-dark-bg !important;
+  color: $ofinder-gray-100 !important;
+
+  option {
+    background: $ofinder-dark-surface !important;
+    color: $ofinder-gray-100 !important;
+  }
+}
+
+// ============================================================================
+// BUTTONS (solo override se necessario)
+// ============================================================================
+
+// Se i bottoni base devono essere adattati
+.btn-secondary {
+  background: $ofinder-dark-surface !important;
+  border-color: rgba($ofinder-primary, 0.3) !important;
+  color: $ofinder-gray-100 !important;
+
+  &:hover {
+    background: rgba($ofinder-primary, 0.2) !important;
+    border-color: $ofinder-primary !important;
+    color: $ofinder-primary !important;
+  }
+}
+
+// ============================================================================
+// PAGINATION
+// ============================================================================
+
+.pagination {
+  .page-link {
+    background: $ofinder-dark-surface !important;
+    border-color: rgba($ofinder-primary, 0.3) !important;
+    color: $ofinder-gray-100 !important;
+
+    &:hover {
+      background: rgba($ofinder-primary, 0.2) !important;
+      color: $ofinder-primary !important;
+    }
+  }
+
+  .page-item.active .page-link {
+    background: linear-gradient(90deg, $ofinder-accent, $ofinder-primary) !important;
+    border-color: $ofinder-accent !important;
+    color: white !important;
+  }
+
+  .page-item.disabled .page-link {
+    background: rgba($ofinder-dark-bg, 0.5) !important;
+    color: $ofinder-gray-700 !important;
+  }
+}
+
+// ============================================================================
+// BADGES E LABELS
+// ============================================================================
+
+.badge {
+  &.badge-primary {
+    background: $ofinder-primary !important;
+  }
+
+  &.badge-secondary {
+    background: $ofinder-dark-surface !important;
+    color: $ofinder-gray-100 !important;
+  }
+}
+
+// ============================================================================
+// ALERTS
+// ============================================================================
+
+.alert {
+  border-radius: $ofinder-border-radius !important;
+
+  &.alert-info {
+    background: rgba($ofinder-accent, 0.1) !important;
+    border-color: rgba($ofinder-accent, 0.3) !important;
+    color: $ofinder-accent !important;
+  }
+
+  &.alert-success {
+    background: rgba($ofinder-success, 0.1) !important;
+    border-color: rgba($ofinder-success, 0.3) !important;
+    color: $ofinder-success !important;
+  }
+
+  &.alert-warning {
+    background: rgba($ofinder-warning, 0.1) !important;
+    border-color: rgba($ofinder-warning, 0.3) !important;
+    color: $ofinder-warning !important;
+  }
+
+  &.alert-danger {
+    background: rgba($ofinder-danger, 0.1) !important;
+    border-color: rgba($ofinder-danger, 0.3) !important;
+    color: $ofinder-danger !important;
+  }
+}
+
+// ============================================================================
+// SCROLLBAR CUSTOMIZATION
+// ============================================================================
+
+// Scrollbar personalizzata per browser WebKit
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $ofinder-dark-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba($ofinder-primary, 0.5);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba($ofinder-primary, 0.7);
+  }
+}
+
+// ============================================================================
+// TEXT COLORS
+// ============================================================================
+
+// Override colori testo per miglior contrasto
+.text-muted {
+  color: $ofinder-gray-300 !important;
+}
+
+.text-dark {
+  color: $ofinder-gray-100 !important;
+}
+
+// ============================================================================
+// FINE OVERRIDES
+// ============================================================================
+
+// Aggiungi qui ulteriori personalizzazioni seguendo la stessa struttura
+// Ogni sezione è ben documentata per facilità di manutenzione

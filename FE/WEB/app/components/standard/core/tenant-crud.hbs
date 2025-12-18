@@ -1,377 +1,377 @@
 <div ...attributes>
   {{#if (and this.available (or (has-permissions 'isSuperAdmin') (has-permissions 'isDeveloper')))}}
-  <div class="card-header text-success">
-    <i class="header-icon lnr-apartment"></i> GESTIONE TENANT
-    <div class="btn-actions-pane-right">
-      <div class="swatch-holder swatch-holder-sm bg-success text-center" data-toggle="collapse" data-target="#info-tenant" type="button" style="border-radius: 50%;">
-        <i class="fa fa-info text-white"></i>
-      </div>
-    </div>
-  </div>
-
-  <div class="card-body underline">
-    <div class="row">
-      <div class="col-md-12">
-        <div id="info-tenant" class="alert alert-success fade collapse mb-5" role="alert">
-          Fai click su uno dei Tenant elencati per modificarne i dati.<br />
-          Puoi eliminare i soli Tenant che non abbiano sub-tenant.<br />
-          I Tenant contrassegnati dal bollino rosso sono disattivati: i relativi utenti verranno rediretti ad una pagina bloccante quando accedono al sito.
+    <div class="card-header text-success">
+      <i class="header-icon lnr-apartment"></i> GESTIONE TENANT
+      <div class="btn-actions-pane-right">
+        <div class="swatch-holder swatch-holder-sm bg-success text-center" data-toggle="collapse" data-target="#info-tenant" type="button" style="border-radius: 50%;">
+          <i class="fa fa-info text-white"></i>
         </div>
       </div>
-      <div class="col-md-6">
-        {{!-- #region elenco record (tree view) --}}
-        {{#if this.findRecords.isRunning}}
-        <Standard::LoadingSpinner @icon='1' @msg="Caricamento tenant in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
-        {{/if}}
-        {{#if this.findRecords.isIdle}}
-          <h6 class="mb-4">Lista dei Tenant</h6>
-          {{#if (eq this.recordsLength 0)}}
-            <p class="m-3"><em>Non ci sono tenant da mostrare</em></p>
-          {{else}}
-            <div class="input-group mb-3 text-right">
-              <input type="search" incremental placeholder="..." autocomplete="off" class="find-tenant form-control form-control-sm">
-              <div class="input-group-append">
-                <button class="btn btn-secondary btn-sm" disabled type="button">
-                  <i class="fa fa-search"></i>
+    </div>
+
+    <div class="card-body underline">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="info-tenant" class="alert alert-success fade collapse mb-5" role="alert">
+            Fai click su uno dei Tenant elencati per modificarne i dati.<br />
+            Puoi eliminare i soli Tenant che non abbiano sub-tenant.<br />
+            I Tenant contrassegnati dal bollino rosso sono disattivati: i relativi utenti verranno rediretti ad una pagina bloccante quando accedono al sito.
+          </div>
+        </div>
+        <div class="col-md-6">
+          {{!-- #region elenco record (tree view) --}}
+          {{#if this.findRecords.isRunning}}
+          <Standard::LoadingSpinner @icon='1' @msg="Caricamento tenant in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
+          {{#if this.findRecords.isIdle}}
+            <h6 class="mb-4">Lista dei Tenant</h6>
+            {{#if (eq this.recordsLength 0)}}
+              <p class="m-3"><em>Non ci sono tenant da mostrare</em></p>
+            {{else}}
+              <div class="input-group mb-3 text-right">
+                <input type="search" incremental placeholder="..." autocomplete="off" class="find-tenant form-control form-control-sm">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary btn-sm" disabled type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+                <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' this.start}}>
+                  <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
                 </button>
               </div>
-              <button class="btn btn-secondary btn-sm ml-2 pl-2 pr-2" type="button" {{on 'click' this.start}}>
-                <i class="fa fa-refresh {{if this.findRecords.isRunning 'fa-spin'}}"></i>
-              </button>
-            </div>
 
-            <div class="col-md-12" id="tenantsTree"></div>
-            <p class="m-2 ml-0 opacity-3">
-              <smal><em>In rosso i Tenant disattivati</em></smal>
-            </p>
+              <div class="col-md-12" id="tenantsTree"></div>
+              <p class="m-2 ml-0 opacity-3">
+                <smal><em>In rosso i Tenant disattivati</em></smal>
+              </p>
+            {{/if}}
           {{/if}}
-        {{/if}}
-        {{!-- #endregion --}}
-      </div>
+          {{!-- #endregion --}}
+        </div>
 
-      {{#if this.showUpdateTenant}}
-      <div class="col-md-6 border-left">
-        <h6 class="mb-4">Modifica Tenant</h6>
-        {{#if this.findRecord.isRunning}}
-          <Standard::LoadingSpinner @icon='1' @msg="Caricamento tenant in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
-        {{/if}}
+        {{#if this.showUpdateTenant}}
+        <div class="col-md-6 border-left">
+          <h6 class="mb-4">Modifica Tenant</h6>
+          {{#if this.findRecord.isRunning}}
+            <Standard::LoadingSpinner @icon='1' @msg="Caricamento tenant in corso, attendere prego..." @msgKey="" @style="3" class="alert-info"/>
+          {{/if}}
 
-        <form>
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">* Nome</label>
-                    <input placeholder="..." type="text" value={{this.tenant.name}} {{on 'input' (fn this.storeNewValue 'name' true)}} class="form-control form-control-sm" >
-                </div>
+          <form>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">* Nome</label>
+                      <input placeholder="..." type="text" value={{this.tenant.name}} {{on 'input' (fn this.storeNewValue 'name' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-10">
-                <div class="position-relative form-group">
-                    <label for="tenantOrganization" class="">Tenant superiore</label>
-                    <select value={{this.tenant.parentTenant}} {{on 'change' (fn this.storeNewValue 'parentTenant' true)}} class="form-control form-control-sm">
-                      <option value="0" selected>--</option>
-                      {{#each this.allTenants as | parent |}}
-                        {{#if parent.name}}
-                        <option value={{parent.id}}>{{parent.name}}</option>
-                        {{/if}}
-                      {{/each}}
-                    </select>
-                </div>
+            <div class="form-row">
+              <div class="col-md-10">
+                  <div class="position-relative form-group">
+                      <label for="tenantOrganization" class="">Tenant superiore</label>
+                      <select value={{this.tenant.parentTenant}} {{on 'change' (fn this.storeNewValue 'parentTenant' true)}} class="form-control form-control-sm">
+                        <option value="0" selected>--</option>
+                        {{#each this.allTenants as | parent |}}
+                          {{#if parent.name}}
+                          <option value={{parent.id}}>{{parent.name}}</option>
+                          {{/if}}
+                        {{/each}}
+                      </select>
+                  </div>
+              </div>
+              <div class="col-md-2 text-right">
+                  <div class="position-relative form-group">
+                      <label for="tenantOrganization" class="">Attivo</label>
+                      <div class="col-md-12 p-0">
+                        <input checked={{this.tenant.enabled}} data-field="enabled" class="slider-tenant form-check-input" type="checkbox" data-toggle="toggle" data-size="sm">
+                      </div>
+                  </div>
+              </div>
             </div>
-            <div class="col-md-2 text-right">
-                <div class="position-relative form-group">
-                    <label for="tenantOrganization" class="">Attivo</label>
-                    <div class="col-md-12 p-0">
-                      <input checked={{this.tenant.enabled}} data-field="enabled" class="slider-tenant form-check-input" type="checkbox" data-toggle="toggle" data-size="sm">
-                    </div>
-                </div>
-            </div>
-          </div>
 
-          <div class="form-row">
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">E-mail</label>
-                    <input placeholder="..." type="email" value={{this.tenant.email}} {{on 'input' (fn this.storeNewValue 'email' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">E-mail</label>
+                      <input placeholder="..." type="email" value={{this.tenant.email}} {{on 'input' (fn this.storeNewValue 'email' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">PEC</label>
+                      <input placeholder="..." type="email" value={{this.tenant.tenantPEC}} {{on 'input' (fn this.storeNewValue 'tenantPEC' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">PEC</label>
-                    <input placeholder="..." type="email" value={{this.tenant.tenantPEC}} {{on 'input' (fn this.storeNewValue 'tenantPEC' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">Ragione Sociale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.organization}} {{on 'input' (fn this.storeNewValue 'organization' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">Ragione Sociale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.organization}} {{on 'input' (fn this.storeNewValue 'organization' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">Partita IVA</label>
+                      <input placeholder="..." type="text" value={{this.tenant.tenantVAT}} {{on 'input' (fn this.storeNewValue 'tenantVAT' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">Codice fiscale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.taxId}} {{on 'input' (fn this.storeNewValue 'taxId' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">Partita IVA</label>
-                    <input placeholder="..." type="text" value={{this.tenant.tenantVAT}} {{on 'input' (fn this.storeNewValue 'tenantVAT' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">Telefono</label>
+                      <input placeholder="..." type="text" value={{this.tenant.phoneNumber}} {{on 'input' (fn this.storeNewValue 'phoneNumber' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">Sito web</label>
+                      <input placeholder="..." type="text" value={{this.tenant.webSite}} {{on 'input' (fn this.storeNewValue 'webSite' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">Codice fiscale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.taxId}} {{on 'input' (fn this.storeNewValue 'taxId' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">Codice Univoco SDI</label>
+                      <input placeholder="..." type="text" value={{this.tenant.tenantSDI}} {{on 'input' (fn this.storeNewValue 'tenantSDI' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="position-relative form-group">
+                      <label class="">IBAN</label>
+                      <input placeholder="..." type="text" value={{this.tenant.tenantIBAN}} {{on 'input' (fn this.storeNewValue 'tenantIBAN' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">Telefono</label>
-                    <input placeholder="..." type="text" value={{this.tenant.phoneNumber}} {{on 'input' (fn this.storeNewValue 'phoneNumber' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">Proprietario</label>
+                      <input placeholder="..." type="text" value={{this.tenant.owner}} {{on 'input' (fn this.storeNewValue 'owner' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">Sito web</label>
-                    <input placeholder="..." type="text" value={{this.tenant.webSite}} {{on 'input' (fn this.storeNewValue 'webSite' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">Commerciale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.commercial}} {{on 'input' (fn this.storeNewValue 'commercial' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">Codice Univoco SDI</label>
-                    <input placeholder="..." type="text" value={{this.tenant.tenantSDI}} {{on 'input' (fn this.storeNewValue 'tenantSDI' true)}} class="form-control form-control-sm" >
-                </div>
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <label class="">Capitale Sociale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.shareCapital}} {{on 'input' (fn this.storeNewValue 'shareCapital' true)}} class="form-control form-control-sm" >
+                  </div>
+              </div>
             </div>
-            <div class="col-md-6">
-                <div class="position-relative form-group">
-                    <label class="">IBAN</label>
-                    <input placeholder="..." type="text" value={{this.tenant.tenantIBAN}} {{on 'input' (fn this.storeNewValue 'tenantIBAN' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">Proprietario</label>
-                    <input placeholder="..." type="text" value={{this.tenant.owner}} {{on 'input' (fn this.storeNewValue 'owner' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">Commerciale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.commercial}} {{on 'input' (fn this.storeNewValue 'commercial' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">Capitale Sociale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.shareCapital}} {{on 'input' (fn this.storeNewValue 'shareCapital' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
 
-          <hr />
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">La Sede Legale corrisponde a quella di Fatturazione?</label>
-                    <div class="col-md-12 p-0">
-                      <input checked={{this.tenant.matchBillingAddress}} data-field="matchBillingAddress" class="slider-tenant form-check-input" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Sì" data-off="No">
-                    </div>
-                </div>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <h6>Sede Legale</h6>
-                    <label class="">Indirizzo della Sede Legale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.registeredOfficeAddress}} {{on 'input' (fn this.storeNewValue 'RegisteredOfficeAddress' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12">
-                <div class="position-relative form-group">
-                    <label class="">Città della Sede Legale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.registeredOfficeCity}} {{on 'input' (fn this.storeNewValue 'registeredOfficeCity' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-8">
-                <div class="position-relative form-group">
-                    <label class="">Provincia della Sede Legale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.registeredOfficeProvince}} {{on 'input' (fn this.storeNewValue 'registeredOfficeProvince' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="position-relative form-group">
-                    <label class="">Stato della S.L.</label>
-                    <input placeholder="..." type="text" value={{this.tenant.registeredOfficeState}} {{on 'input' (fn this.storeNewValue 'registeredOfficeState' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-8">
-                <div class="position-relative form-group">
-                    <label class="">Regione della Sede Legale</label>
-                    <input placeholder="..." type="text" value={{this.tenant.registeredOfficeRegion}} {{on 'input' (fn this.storeNewValue 'registeredOfficeRegion' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="position-relative form-group">
-                    <label class="">C.A.P. della S.L.</label>
-                    <input placeholder="..." type="text" value={{this.tenant.registeredOfficeZIP}} {{on 'input' (fn this.storeNewValue 'registeredOfficeZIP' true)}} class="form-control form-control-sm" >
-                </div>
-            </div>
-          </div>
-
-          <div class="{{this.displayBilling}}">
             <hr />
             <div class="form-row">
               <div class="col-md-12">
                   <div class="position-relative form-group">
-                      <h6>Sede di Fatturazione</h6>
-                      <label class="">Indirizzo della Sede di Fatturazione</label>
-                      <input placeholder="..." type="text" value={{this.tenant.billingAddressAddress}} {{on 'input' (fn this.storeNewValue 'billingAddressAddress' true)}} class="form-control form-control-sm" >
+                      <label class="">La Sede Legale corrisponde a quella di Fatturazione?</label>
+                      <div class="col-md-12 p-0">
+                        <input checked={{this.tenant.matchBillingAddress}} data-field="matchBillingAddress" class="slider-tenant form-check-input" type="checkbox" data-toggle="toggle" data-size="sm" data-on="Sì" data-off="No">
+                      </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-12">
+                  <div class="position-relative form-group">
+                      <h6>Sede Legale</h6>
+                      <label class="">Indirizzo della Sede Legale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.registeredOfficeAddress}} {{on 'input' (fn this.storeNewValue 'RegisteredOfficeAddress' true)}} class="form-control form-control-sm" >
                   </div>
               </div>
             </div>
             <div class="form-row">
               <div class="col-md-12">
                   <div class="position-relative form-group">
-                      <label class="">Città della Sede di Fatturazione</label>
-                      <input placeholder="..." type="text" value={{this.tenant.billingAddressCity}} {{on 'input' (fn this.storeNewValue 'billingAddressCity' true)}} class="form-control form-control-sm" >
+                      <label class="">Città della Sede Legale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.registeredOfficeCity}} {{on 'input' (fn this.storeNewValue 'registeredOfficeCity' true)}} class="form-control form-control-sm" >
                   </div>
               </div>
             </div>
             <div class="form-row">
               <div class="col-md-8">
                   <div class="position-relative form-group">
-                      <label class="">Provincia della Sede di Fatturazione</label>
-                      <input placeholder="..." type="text" value={{this.tenant.billingAddressProvince}} {{on 'input' (fn this.storeNewValue 'billingAddressProvince' true)}} class="form-control form-control-sm" >
+                      <label class="">Provincia della Sede Legale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.registeredOfficeProvince}} {{on 'input' (fn this.storeNewValue 'registeredOfficeProvince' true)}} class="form-control form-control-sm" >
                   </div>
               </div>
               <div class="col-md-4">
                   <div class="position-relative form-group">
-                      <label class="">Stato della S.d.F.</label>
-                      <input placeholder="..." type="text" value={{this.tenant.billingAddressState}} {{on 'input' (fn this.storeNewValue 'billingAddressState' true)}} class="form-control form-control-sm" >
+                      <label class="">Stato della S.L.</label>
+                      <input placeholder="..." type="text" value={{this.tenant.registeredOfficeState}} {{on 'input' (fn this.storeNewValue 'registeredOfficeState' true)}} class="form-control form-control-sm" >
                   </div>
               </div>
             </div>
             <div class="form-row">
               <div class="col-md-8">
                   <div class="position-relative form-group">
-                      <label class="">Regione della Sede di Fatturazione</label>
-                      <input placeholder="..." type="text" value={{this.tenant.billingAddressRegion}} {{on 'input' (fn this.storeNewValue 'billingAddressRegion' true)}} class="form-control form-control-sm" >
+                      <label class="">Regione della Sede Legale</label>
+                      <input placeholder="..." type="text" value={{this.tenant.registeredOfficeRegion}} {{on 'input' (fn this.storeNewValue 'registeredOfficeRegion' true)}} class="form-control form-control-sm" >
                   </div>
               </div>
               <div class="col-md-4">
                   <div class="position-relative form-group">
-                      <label class="">C.A.P. della S.d.F.</label>
-                      <input placeholder="..." type="text" value={{this.tenant.billingAddressZIP}} {{on 'input' (fn this.storeNewValue 'billingAddressZIP' true)}} class="form-control form-control-sm" >
+                      <label class="">C.A.P. della S.L.</label>
+                      <input placeholder="..." type="text" value={{this.tenant.registeredOfficeZIP}} {{on 'input' (fn this.storeNewValue 'registeredOfficeZIP' true)}} class="form-control form-control-sm" >
                   </div>
               </div>
             </div>
-          </div>
+
+            <div class="{{this.displayBilling}}">
+              <hr />
+              <div class="form-row">
+                <div class="col-md-12">
+                    <div class="position-relative form-group">
+                        <h6>Sede di Fatturazione</h6>
+                        <label class="">Indirizzo della Sede di Fatturazione</label>
+                        <input placeholder="..." type="text" value={{this.tenant.billingAddressAddress}} {{on 'input' (fn this.storeNewValue 'billingAddressAddress' true)}} class="form-control form-control-sm" >
+                    </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-12">
+                    <div class="position-relative form-group">
+                        <label class="">Città della Sede di Fatturazione</label>
+                        <input placeholder="..." type="text" value={{this.tenant.billingAddressCity}} {{on 'input' (fn this.storeNewValue 'billingAddressCity' true)}} class="form-control form-control-sm" >
+                    </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-8">
+                    <div class="position-relative form-group">
+                        <label class="">Provincia della Sede di Fatturazione</label>
+                        <input placeholder="..." type="text" value={{this.tenant.billingAddressProvince}} {{on 'input' (fn this.storeNewValue 'billingAddressProvince' true)}} class="form-control form-control-sm" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label class="">Stato della S.d.F.</label>
+                        <input placeholder="..." type="text" value={{this.tenant.billingAddressState}} {{on 'input' (fn this.storeNewValue 'billingAddressState' true)}} class="form-control form-control-sm" >
+                    </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-8">
+                    <div class="position-relative form-group">
+                        <label class="">Regione della Sede di Fatturazione</label>
+                        <input placeholder="..." type="text" value={{this.tenant.billingAddressRegion}} {{on 'input' (fn this.storeNewValue 'billingAddressRegion' true)}} class="form-control form-control-sm" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label class="">C.A.P. della S.d.F.</label>
+                        <input placeholder="..." type="text" value={{this.tenant.billingAddressZIP}} {{on 'input' (fn this.storeNewValue 'billingAddressZIP' true)}} class="form-control form-control-sm" >
+                    </div>
+                </div>
+              </div>
+            </div>
 
 
 
 
-          <div class="form-row mb-5">
-            <div class="col-md-12 text-right">
-              <button class="btn-save-field btn-hover-shine btn btn-sm btn-secondary" type="button" {{on 'click' this.undoRecord}}>
-                ANNULLA
-              </button>
-              <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' this.saveVoice}}>
-                <i class="fa mr-2 {{if this.saveVoiceConfirmed.isRunning 'fa-refresh fa-spin' 'fa-save'}}"></i>
+            <div class="form-row mb-5">
+              <div class="col-md-12 text-right">
+                <button class="btn-save-field btn-hover-shine btn btn-sm btn-secondary" type="button" {{on 'click' this.undoRecord}}>
+                  ANNULLA
+                </button>
+                <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' this.saveVoice}}>
+                  <i class="fa mr-2 {{if this.saveVoiceConfirmed.isRunning 'fa-refresh fa-spin' 'fa-save'}}"></i>
+                  SALVA
+                </button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md-12 text-right">
+                {{#if this.erasableTenant}}
+                <button class="btn-save-field btn-hover-shine btn btn-sm btn-danger" type="button" {{on 'click' this.delVoice}}>
+                  <i class="fa mr-2 {{if this.delVoiceConfirmed.isRunning 'fa-refresh fa-spin' 'fa-trash'}}"></i>
+                  ELIMINA TENANT
+                </button>
+                {{else}}
+                <p class="text-danger">
+                  <em>{{this.notErasableReason}}</em>
+                </p>
+                {{/if}}
+              </div>
+            </div>
+          </form>
+
+        </div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- #region Aggiungi Record  --}}
+    <div class="card-body">
+      <p class="text-success text-bold">
+        <i class="header-icon ion-android-add"> </i> AGGIUNGI UN TENANT
+      </p>
+      <table class="mae-table mb-3">
+        <thead>
+          <tr>
+            <th>NOME DEL TENANT</th>
+            <th>AZIENDA/ORGANIZZAZIONE</th>
+            <th style="width: 320px;">TENANT SUPERIORE</th>
+            <th style="width: 100px;">ATTIVO</th>
+            <th style="width: 91px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input type="text" class="form-control form-control-sm" value={{this.newRecord.name}} {{on 'input' (fn this.storeNewValue 'name' false)}}>
+            </td>
+            <td>
+              <input type="text" class="form-control form-control-sm" value={{this.newRecord.organization}} {{on 'input' (fn this.storeNewValue 'organization' false)}}>
+            </td>
+            <td>
+              <select value={{this.newRecord.parentTenant}} class="form-control form-control-sm" {{on 'change' (fn this.storeNewValue 'parentTenant' false)}}>
+                <option value="0" selected>--</option>
+                {{#each this.allTenants as | parent|}}
+                  {{#if parent.name}}
+                  <option value={{parent.id}}>{{parent.name}}</option>
+                  {{/if}}
+                {{/each}}
+              </select>
+            </td>
+            <td>
+              <input checked={{this.newRecord.enabled}} class="slider-new-tenant form-check-input" type="checkbox" data-toggle="toggle" data-size="sm">
+            </td>
+            <td>
+              <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
+                {{#if this.saveNewVoice.isRunning}}
+                <i class="fa fa-refresh fa-spin mr-2"></i>
+                {{/if}}
+                {{#if this.saveNewVoice.isIdle}}
+                <i class="fa fa-save mr-2"></i>
+                {{/if}}
                 SALVA
               </button>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12 text-right">
-              {{#if this.erasableTenant}}
-              <button class="btn-save-field btn-hover-shine btn btn-sm btn-danger" type="button" {{on 'click' this.delVoice}}>
-                <i class="fa mr-2 {{if this.delVoiceConfirmed.isRunning 'fa-refresh fa-spin' 'fa-trash'}}"></i>
-                ELIMINA TENANT
-              </button>
-              {{else}}
-              <p class="text-danger">
-                <em>{{this.notErasableReason}}</em>
-              </p>
-              {{/if}}
-            </div>
-          </div>
-        </form>
-
-      </div>
-      {{/if}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
-
-  {{!-- #region Aggiungi Record  --}}
-  <div class="card-body">
-    <p class="text-success text-bold">
-      <i class="header-icon ion-android-add"> </i> AGGIUNGI UN TENANT
-    </p>
-    <table class="mae-table mb-3">
-      <thead>
-        <tr>
-          <th>NOME DEL TENANT</th>
-          <th>AZIENDA/ORGANIZZAZIONE</th>
-          <th style="width: 320px;">TENANT SUPERIORE</th>
-          <th style="width: 100px;">ATTIVO</th>
-          <th style="width: 91px;"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <input type="text" class="form-control form-control-sm" value={{this.newRecord.name}} {{on 'input' (fn this.storeNewValue 'name' false)}}>
-          </td>
-          <td>
-            <input type="text" class="form-control form-control-sm" value={{this.newRecord.organization}} {{on 'input' (fn this.storeNewValue 'organization' false)}}>
-          </td>
-          <td>
-            <select value={{this.newRecord.parentTenant}} class="form-control form-control-sm" {{on 'change' (fn this.storeNewValue 'parentTenant' false)}}>
-              <option value="0" selected>--</option>
-              {{#each this.allTenants as | parent|}}
-                {{#if parent.name}}
-                <option value={{parent.id}}>{{parent.name}}</option>
-                {{/if}}
-              {{/each}}
-            </select>
-          </td>
-          <td>
-            <input checked={{this.newRecord.enabled}} class="slider-new-tenant form-check-input" type="checkbox" data-toggle="toggle" data-size="sm">
-          </td>
-          <td>
-            <button class="btn-save-field btn-hover-shine btn btn-sm btn-alternate" type="button" {{on 'click' (perform this.saveNewVoice)}}>
-              {{#if this.saveNewVoice.isRunning}}
-              <i class="fa fa-refresh fa-spin mr-2"></i>
-              {{/if}}
-              {{#if this.saveNewVoice.isIdle}}
-              <i class="fa fa-save mr-2"></i>
-              {{/if}}
-              SALVA
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  {{!-- #endregion --}}
+    {{!-- #endregion --}}
 
   {{else}}
   <div class="card">
