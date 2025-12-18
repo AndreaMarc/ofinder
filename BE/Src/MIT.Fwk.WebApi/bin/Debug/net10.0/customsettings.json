@@ -33,12 +33,12 @@
     "BaseUrl": "https://test-app.maestrale.it:5000"
   },
   "Swagger": {
-    "Title": "MICH Web Api",
-    "Description": "MICH Web Api documentation",
-    "Owner": "Maestrale Information Technology S.r.l.",
-    "Email": "info@maestrale.it",
-    "Website": "http://www.maestrale.it",
-    "License": "Copyright(c) 2020 - Maestrale Information Technology S.r.l."
+    "Title": "Ofinder",
+    "Description": "Ofinder Web Api documentation",
+    "Owner": "Ofinder",
+    "Email": "info@ofinder.it",
+    "Website": "http://www.ofinder.it",
+    "License": "Sviluppo"
   },
   "EnableJobs": "false",
   "EnableAutoMigrations": "true",

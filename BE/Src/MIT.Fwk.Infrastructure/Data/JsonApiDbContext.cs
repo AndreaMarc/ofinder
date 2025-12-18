@@ -124,20 +124,7 @@ namespace MIT.Fwk.Infrastructure.Data
                     .HasForeignKey(e => e.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(e => e.GeoCountry)
-                    .WithMany()
-                    .HasForeignKey(e => e.GeoCountryId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                entity.HasOne(e => e.GeoFirstDivision)
-                    .WithMany()
-                    .HasForeignKey(e => e.GeoFirstDivisionId)
-                    .OnDelete(DeleteBehavior.SetNull);
-
-                entity.HasOne(e => e.GeoSecondDivision)
-                    .WithMany()
-                    .HasForeignKey(e => e.GeoSecondDivisionId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                
 
                 // Indexes
                 entity.HasIndex(e => e.UserId).IsUnique();

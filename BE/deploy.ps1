@@ -9,16 +9,14 @@ Write-Host "=== Ofinder Deployment Automatico ===" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# 0. Backup locale
-Write-Host "STEP 0: Scaricando backup dal server..." -ForegroundColor Yellow
-$BACKUP_NAME = "ofinder-backup-$(Get-Date -Format 'yyyyMMdd-HHmmss').tar.gz"
-New-Item -ItemType Directory -Force -Path ".\backups" | Out-Null
+# 0. Backup remoto (solo sul server, non scaricato localmente per velocita)
+Write-Host "STEP 0: Verifica spazio e preparazione..." -ForegroundColor Yellow
 
-ssh ubuntu@51.210.6.193 "cd /opt/mitfwk && sudo tar -czf /tmp/$BACKUP_NAME app/ && sudo chown ubuntu:ubuntu /tmp/$BACKUP_NAME"
-scp ubuntu@51.210.6.193:/tmp/$BACKUP_NAME .\backups\
-ssh ubuntu@51.210.6.193 "sudo rm /tmp/$BACKUP_NAME"
+# Nota: Il backup viene creato automaticamente durante il deployment (STEP 4)
+# Non scarichiamo il backup locale per velocizzare il processo
+# I backup sono disponibili su: /opt/mitfwk/backups/app-backup-YYYYMMDD-HHMMSS/
 
-Write-Host "Backup salvato in: .\backups\$BACKUP_NAME" -ForegroundColor Green
+Write-Host "Preparazione completata" -ForegroundColor Green
 Write-Host ""
 
 # 1. Build
@@ -32,10 +30,19 @@ Write-Host ""
 # 2. Package
 Write-Host "STEP 2: Creando pacchetto deployment..." -ForegroundColor Yellow
 Set-Location publish\linux-x64-selfcontained
+
+# IMPORTANTE: Rimuovi vecchi pacchetti per evitare inclusione ricorsiva!
+# (Ogni tar include i .tar.gz precedenti, creando file da GB invece di MB)
+$oldPackages = Get-ChildItem "ofinder-api-*.tar.gz" -ErrorAction SilentlyContinue
+if ($oldPackages) {
+    Write-Host "Rimuovendo $($oldPackages.Count) vecchi pacchetti..." -ForegroundColor Yellow
+    Remove-Item "ofinder-api-*.tar.gz" -Force
+}
+
 $PACKAGE = "ofinder-api-$(Get-Date -Format 'yyyyMMdd-HHmmss').tar.gz"
 
-# Usa tar di Windows 10/11 (disponibile nativamente)
-tar -czf $PACKAGE *
+# Crea pacchetto (esclude .tar.gz per sicurezza)
+tar -czf $PACKAGE --exclude="*.tar.gz" *
 
 $size = (Get-Item $PACKAGE).Length / 1MB
 Write-Host "Pacchetto creato: $PACKAGE (dimensione: $([math]::Round($size, 2)) MB)" -ForegroundColor Green
@@ -43,7 +50,14 @@ Write-Host ""
 
 # 3. Upload
 Write-Host "STEP 3: Upload su server OVH (potrebbe richiedere qualche minuto)..." -ForegroundColor Yellow
-scp $PACKAGE ubuntu@51.210.6.193:/opt/mitfwk/
+
+# SCP ottimizzato: compressione + keep-alive + cipher veloce + limite bandwidth (opzionale)
+# -C: abilita compressione
+# -o Compression=yes: forza compressione
+# -o ServerAliveInterval=30: invia keep-alive ogni 30 secondi (evita "stalled")
+# -c aes128-gcm@openssh.com: cipher veloce (3x più veloce di default)
+scp -C -o Compression=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -c aes128-gcm@openssh.com $PACKAGE ubuntu@51.210.6.193:/opt/mitfwk/
+
 Write-Host "Upload completato" -ForegroundColor Green
 Write-Host ""
 
@@ -76,53 +90,132 @@ sudo chmod +x /opt/mitfwk/app/MIT.Fwk.WebApi
 echo "  - Riavvio servizio..."
 sudo systemctl start mitfwk-api
 
-echo "  - Attesa avvio..."
-sleep 5
+echo "  - Attesa avvio (15 secondi)..."
+sleep 15
 
-echo "  - Verifica stato..."
-sudo systemctl status mitfwk-api --no-pager -l
+echo "  - Verifica stato servizio..."
+sudo systemctl is-active mitfwk-api || (echo "ERRORE: Servizio non attivo!" && sudo systemctl status mitfwk-api --no-pager -l && exit 1)
+
+echo "  - Pulizia vecchi pacchetti..."
+# Mantieni solo gli ultimi 3 pacchetti (per rollback) e cancella i più vecchi
+cd /opt/mitfwk
+ls -t ofinder-api-*.tar.gz 2>/dev/null | tail -n +4 | xargs -r rm -f
+echo "    Pacchetti rimanenti: `$(ls ofinder-api-*.tar.gz 2>/dev/null | wc -l)"
+
+# Mantieni solo gli ultimi 5 backup (per sicurezza)
+cd /opt/mitfwk/backups
+ls -td app-backup-* 2>/dev/null | tail -n +6 | xargs -r rm -rf
+echo "    Backup rimanenti: `$(ls -d app-backup-* 2>/dev/null | wc -l)"
 "@
 
-ssh ubuntu@51.210.6.193 $deployScript
+# Convert Windows line endings (CRLF) to Unix (LF) before sending to Linux
+$deployScriptUnix = $deployScript -replace "`r`n", "`n"
+
+# SSH ottimizzato con keep-alive (deployment può richiedere tempo)
+ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -c aes128-gcm@openssh.com ubuntu@51.210.6.193 $deployScriptUnix
 
 Write-Host "Deployment completato" -ForegroundColor Green
 Write-Host ""
 
-# 5. Test
-Write-Host "STEP 5: Test finale..." -ForegroundColor Yellow
-try {
-    $response = Invoke-WebRequest -Uri "https://ofinder.it/api" -Method Get -UseBasicParsing
-    $statusCode = $response.StatusCode
-    Write-Host "API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
-} catch {
-    # In PowerShell 5.1, gli errori HTTP generano eccezioni
-    if ($_.Exception.Response) {
-        $statusCode = [int]$_.Exception.Response.StatusCode
-        if ($statusCode -eq 401 -or $statusCode -eq 200) {
-            Write-Host "API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
-        } else {
-            Write-Host "ATTENZIONE: API risponde con HTTP $statusCode" -ForegroundColor Yellow
-            Write-Host "Verifica i log: ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -n 100'" -ForegroundColor Yellow
+# 5. Test API con retry
+Write-Host "STEP 5: Test API (con retry)..." -ForegroundColor Yellow
+
+$apiOk = $false
+$maxRetries = 6
+$retryDelay = 5
+
+for ($i = 1; $i -le $maxRetries; $i++) {
+    try {
+        Write-Host "  Tentativo $i/$maxRetries..." -ForegroundColor Cyan
+        $response = Invoke-WebRequest -Uri "https://ofinder.it/api" -Method Get -UseBasicParsing -TimeoutSec 10
+        $statusCode = $response.StatusCode
+
+        if ($statusCode -eq 200 -or $statusCode -eq 401) {
+            Write-Host "  API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
+            $apiOk = $true
+            break
         }
-    } else {
-        Write-Host "ATTENZIONE: Impossibile raggiungere l'API" -ForegroundColor Red
-        Write-Host "Errore: $($_.Exception.Message)" -ForegroundColor Red
-        Write-Host "Verifica i log: ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -n 100'" -ForegroundColor Yellow
+    } catch {
+        if ($_.Exception.Response) {
+            $statusCode = [int]$_.Exception.Response.StatusCode
+
+            # 401 o 200 = API funziona (401 = serve autenticazione, normale)
+            if ($statusCode -eq 401 -or $statusCode -eq 200) {
+                Write-Host "  API risponde correttamente (HTTP $statusCode)" -ForegroundColor Green
+                $apiOk = $true
+                break
+            } elseif ($statusCode -eq 502 -or $statusCode -eq 503) {
+                # 502/503 = API ancora in avvio, riprova
+                Write-Host "  API in avvio (HTTP $statusCode), attendo $retryDelay secondi..." -ForegroundColor Yellow
+                if ($i -lt $maxRetries) {
+                    Start-Sleep -Seconds $retryDelay
+                }
+            } else {
+                Write-Host "  Errore HTTP $statusCode" -ForegroundColor Red
+                break
+            }
+        } else {
+            Write-Host "  Errore connessione: $($_.Exception.Message)" -ForegroundColor Red
+            if ($i -lt $maxRetries) {
+                Start-Sleep -Seconds $retryDelay
+            }
+        }
     }
+}
+
+if (-not $apiOk) {
+    Write-Host ""
+    Write-Host "ATTENZIONE: API non risponde correttamente dopo $maxRetries tentativi!" -ForegroundColor Red
+    Write-Host "Verifica i log: ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -n 100'" -ForegroundColor Yellow
+    Write-Host ""
 }
 
 Write-Host ""
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "Deployment completato con successo!" -ForegroundColor Green
+
+if ($apiOk) {
+    Write-Host "Deployment completato con successo!" -ForegroundColor Green
+    Write-Host "API operativa e funzionante" -ForegroundColor Green
+} else {
+    Write-Host "Deployment completato con AVVISI" -ForegroundColor Yellow
+    Write-Host "API non risponde correttamente - verifica necessaria!" -ForegroundColor Yellow
+}
+
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Pacchetto deployato: $PACKAGE"
-Write-Host "Backup locale: .\backups\$BACKUP_NAME"
+Write-Host "Backup remoto: /opt/mitfwk/backups/app-backup-*" -ForegroundColor Cyan
 Write-Host "API endpoint: https://ofinder.it/api"
+
+if ($apiOk) {
+    Write-Host "Stato API: OK" -ForegroundColor Green
+} else {
+    Write-Host "Stato API: ERRORE - Richiede verifica!" -ForegroundColor Red
+}
+
 Write-Host ""
-Write-Host "Per controllare i log sul server:" -ForegroundColor Yellow
-Write-Host "  ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -f'"
+Write-Host "Comandi utili:" -ForegroundColor Yellow
+Write-Host "  Logs:    ssh ubuntu@51.210.6.193 'sudo journalctl -u mitfwk-api -f'"
+Write-Host "  Status:  ssh ubuntu@51.210.6.193 'sudo systemctl status mitfwk-api'"
+Write-Host "  Backups: ssh ubuntu@51.210.6.193 'ls -lh /opt/mitfwk/backups/'"
+
+if (-not $apiOk) {
+    Write-Host ""
+    Write-Host "AZIONE RICHIESTA:" -ForegroundColor Red
+    Write-Host "  1. Controlla i log per errori" -ForegroundColor Yellow
+    Write-Host "  2. Verifica la licenza: ssh ubuntu@51.210.6.193 'ls -la /opt/mitfwk/app/license.lic'" -ForegroundColor Yellow
+    Write-Host "  3. Se necessario, rollback: ssh ubuntu@51.210.6.193 'sudo systemctl stop mitfwk-api && sudo rm -rf /opt/mitfwk/app/* && sudo cp -r /opt/mitfwk/backups/app-backup-*/  /opt/mitfwk/app/ && sudo systemctl start mitfwk-api'" -ForegroundColor Yellow
+}
+
 Write-Host ""
 
 # Torna alla directory BE
 Set-Location ..\..
+
+# Pulizia finale: rimuovi il pacchetto appena uploadato (è già sul server)
+Write-Host "Pulizia locale..." -ForegroundColor Yellow
+$localPackagePath = "publish\linux-x64-selfcontained\$PACKAGE"
+if (Test-Path $localPackagePath) {
+    Remove-Item $localPackagePath -Force
+    Write-Host "Pacchetto locale rimosso (liberati ~70MB)" -ForegroundColor Green
+}

@@ -238,25 +238,26 @@ namespace MIT.Fwk.WebApi.Configurations
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddCors(o =>
-            {
-                o.AddPolicy("AllowSpecificOrigin", options =>
-                {
-                    string allowedOrigin = configuration["AllowedCorsOrigin"] ?? "*";
-
-                    if (allowedOrigin != "*")
-                    {
-                        options.WithOrigins(allowedOrigin);
-                    }
-                    else
-                    {
-                        options.AllowAnyOrigin();
-                    }
-
-                    options.AllowAnyHeader();
-                    options.AllowAnyMethod();
-                });
-            });
+            // CORS - DISABLED: nginx handles CORS headers (prevents duplicate headers)
+            // services.AddCors(o =>
+            // {
+            //     o.AddPolicy("AllowSpecificOrigin", options =>
+            //     {
+            //         string allowedOrigin = configuration["AllowedCorsOrigin"] ?? "*";
+            //
+            //         if (allowedOrigin != "*")
+            //         {
+            //             options.WithOrigins(allowedOrigin);
+            //         }
+            //         else
+            //         {
+            //             options.AllowAnyOrigin();
+            //         }
+            //
+            //         options.AllowAnyHeader();
+            //         options.AllowAnyMethod();
+            //     });
+            // });
 
             return services;
         }

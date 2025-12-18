@@ -24,7 +24,10 @@
       "Bash(dir ofinder-api-*.tar.gz)",
       "Bash(scp:*)",
       "Bash(ssh:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(curl:*)",
+      "Bash(git -C /c/Projects/ofinder/BE log --since=\"2 days ago\" --oneline --all -- \"**/JsonApiManualService.cs\")",
+      "Bash(git -C /c/Projects/ofinder/BE show 8e05a03 -- \"**/JsonApiManualService.cs\")"
     ]
   }
 }

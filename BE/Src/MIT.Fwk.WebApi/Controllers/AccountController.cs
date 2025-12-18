@@ -89,6 +89,7 @@ namespace MIT.Fwk.WebApi.Controllers
             _googleService = googleService;
             _userManager = userManager;
             _jwtOptions = jwtOptions.Value;
+           
         }
 
         [HttpPost]
@@ -931,7 +932,12 @@ namespace MIT.Fwk.WebApi.Controllers
             }
 
             StringValues setupType;
+            StringValues wantedRolesSV;
             HttpContext.Request.Headers.TryGetValue("platform", out setupType);
+            HttpContext.Request.Headers.TryGetValue("wantedRoles", out wantedRolesSV);
+
+            string wantedRoles = wantedRolesSV.ToString();
+
 
             Setup setup = _jsonApiManualService.FirstOrDefault<Setup, int>(x => x.environment == setupType.ToString());
 
@@ -956,6 +962,9 @@ namespace MIT.Fwk.WebApi.Controllers
 
             User existingUser = await _jsonApiManualService.GetUserByEmail(model.Email);
 
+            List<String> allowedRoles = new List<String>() { "Cliente", "Modella" };
+
+
             if (existingUser != null)
             {
                 UserTenant existingAssociation = _jsonApiManualService.GetUserTenant(existingUser.Id, tenant);
@@ -968,6 +977,17 @@ namespace MIT.Fwk.WebApi.Controllers
                         existingAssociation.AcceptedAt = DateTime.UtcNow;
                         await _jsonApiManualService.UpdateUserTenant(existingAssociation);
                         await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, "User");
+                        if (!String.IsNullOrEmpty(wantedRoles))
+                        {
+                            foreach (string s in wantedRoles.Split(','))
+                            {
+                                if (allowedRoles.Contains(s))
+                                {
+                                    await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, s);
+                                }
+                            }
+                        }
+
 
                         StringValues baseEndpoint;
                         HttpContext.Request.Headers.TryGetValue("baseEndpoint", out baseEndpoint);
@@ -987,6 +1007,16 @@ namespace MIT.Fwk.WebApi.Controllers
                 {
                     await _jsonApiManualService.RegisterUserTenant(existingUser.Id, tenant, HttpContext.Connection.RemoteIpAddress.ToString(), "selfCreated");
                     await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, "User");
+                    if (!String.IsNullOrEmpty(wantedRoles))
+                    {
+                        foreach (string s in wantedRoles.Split(','))
+                        {
+                            if (allowedRoles.Contains(s))
+                            {
+                                await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, s);
+                            }
+                        }
+                    }
 
                     StringValues testNoLog;
                     HttpContext.Request.Headers.TryGetValue("unitTest", out testNoLog);
@@ -1185,8 +1215,13 @@ namespace MIT.Fwk.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
+           
             StringValues setupType;
+            StringValues wantedRolesSV;
             HttpContext.Request.Headers.TryGetValue("platform", out setupType);
+            HttpContext.Request.Headers.TryGetValue("wantedRoles", out wantedRolesSV);
+
+            string wantedRoles = wantedRolesSV.ToString();
 
             Setup setup = _jsonApiManualService.FirstOrDefault<Setup, int>(x => x.environment == setupType.ToString());
 
@@ -1227,7 +1262,7 @@ namespace MIT.Fwk.WebApi.Controllers
             HttpContext.Request.Headers.TryGetValue("baseEndpoint", out baseEndpoint);
 
             User existingUser = await _jsonApiManualService.GetUserByEmail(otp.OtpValue);
-
+            List<String> allowedRoles = new List<String>() { "Modella", "Cliente" };
             if (existingUser != null)
             {
                 UserTenant existingAssociation = _jsonApiManualService.GetUserTenant(existingUser.Id, tenant);
@@ -1240,6 +1275,16 @@ namespace MIT.Fwk.WebApi.Controllers
                         existingAssociation.AcceptedAt = DateTime.UtcNow;
                         await _jsonApiManualService.UpdateUserTenant(existingAssociation);
                         await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, "User");
+                        if (!String.IsNullOrEmpty(wantedRoles))
+                        {
+                            foreach (string s in wantedRoles.Split(','))
+                            {
+                                if (allowedRoles.Contains(s))
+                                {
+                                    await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, s);
+                                }
+                            }
+                        }
 
                         StringValues testNoLog;
                         HttpContext.Request.Headers.TryGetValue("unitTest", out testNoLog);
@@ -1256,6 +1301,16 @@ namespace MIT.Fwk.WebApi.Controllers
                 {
                     await _jsonApiManualService.RegisterUserTenant(existingUser.Id, tenant, HttpContext.Connection.RemoteIpAddress.ToString(), "selfCreated");
                     await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, "User");
+                    if (!String.IsNullOrEmpty(wantedRoles))
+                    {
+                        foreach (string s in wantedRoles.Split(','))
+                        {
+                            if (allowedRoles.Contains(s))
+                            {
+                                await _jsonApiManualService.RegisterUserRole(existingUser.Id, tenant, s);
+                            }
+                        }
+                    }
 
                     StringValues testNoLog;
                     HttpContext.Request.Headers.TryGetValue("unitTest", out testNoLog);
@@ -1523,7 +1578,7 @@ namespace MIT.Fwk.WebApi.Controllers
                 await _jsonApiManualService.UpdateAsync<Otp, string>(existingOtp);
 
                 IdentityResult res = await _userManager.ResetPasswordAsync(user, existingOtp.OtpValue, model.md5Password);
-                if(!res.Succeeded)
+                if (!res.Succeeded)
                 {
                     return StatusCode(500, "Unable to reset password");
                 }

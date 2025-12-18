@@ -67,6 +67,8 @@ namespace MIT.Fwk.Infrastructure.Entities.AccountViewModels
         public bool? termsAccepted { get; set; }
         public DateTime? termsAcceptanceDate { get; set; }
         public DateTime? registrationDate { get; set; }
+        public string? WantedRoles { get; set; }
+
 
     }
 }

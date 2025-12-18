@@ -66,23 +66,23 @@ namespace MIT.Fwk.WebApi.Configurations
                 app.UseHttpsRedirection();
             }
 
-            // CORS
-            app.UseCors(c =>
-            {
-                c.DisallowCredentials();
-                c.AllowAnyHeader();
-                c.AllowAnyMethod();
-
-                string allowedOrigin = configuration["AllowedCorsOrigin"] ?? "*";
-                if (allowedOrigin != "*")
-                {
-                    c.WithOrigins(allowedOrigin);
-                }
-                else
-                {
-                    c.AllowAnyOrigin();
-                }
-            });
+            // CORS - DISABLED: nginx handles CORS headers (prevents duplicate headers)
+            // app.UseCors(c =>
+            // {
+            //     c.DisallowCredentials();
+            //     c.AllowAnyHeader();
+            //     c.AllowAnyMethod();
+            //
+            //     string allowedOrigin = configuration["AllowedCorsOrigin"] ?? "*";
+            //     if (allowedOrigin != "*")
+            //     {
+            //         c.WithOrigins(allowedOrigin);
+            //     }
+            //     else
+            //     {
+            //         c.AllowAnyOrigin();
+            //     }
+            // });
 
             // Authentication & Authorization Pipeline (FASE 2-3 refactoring)
             // CRITICAL ORDER: Basic → JWT Auth → JWT Claims → JWT Logging

@@ -168,6 +168,11 @@ namespace MIT.Fwk.Infrastructure.Entities
         [Attr]
         public string applicationName { get; set; }
 
+        [Attr]
+        public string generalInformation { get; set; }
+
+        
+
 
 
     }

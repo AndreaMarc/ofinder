@@ -20,14 +20,7 @@ namespace MIT.Fwk.Infrastructure.Entities
         [Required]
         public string UserId { get; set; }
 
-        [Attr]
-        public int? GeoCountryId { get; set; }
-
-        [Attr]
-        public int? GeoFirstDivisionId { get; set; }
-
-        [Attr]
-        public int? GeoSecondDivisionId { get; set; }
+     
 
         // Performer-specific fields
         [Attr]
@@ -51,14 +44,7 @@ namespace MIT.Fwk.Infrastructure.Entities
         [HasOne]
         public virtual User User { get; set; }
 
-        [HasOne]
-        public virtual GeoCountry GeoCountry { get; set; }
-
-        [HasOne]
-        public virtual GeoFirstDivision GeoFirstDivision { get; set; }
-
-        [HasOne]
-        public virtual GeoSecondDivision GeoSecondDivision { get; set; }
+        
 
         [HasMany]
         public virtual ICollection<Channel> Channels { get; set; }

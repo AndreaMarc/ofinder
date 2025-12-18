@@ -48,6 +48,8 @@ namespace MIT.Fwk.Infrastructure.Entities
         [Attr] public bool? termsAccepted { get; set; }
         [Attr] public DateTime? termsAcceptanceDate { get; set; }
         [Attr] public DateTime? registrationDate { get; set; }
+        [Attr] public string birthRegion { get; set; }
+        [Attr] public string residenceRegion { get; set; }
 
         [HasOne]
         public virtual User User { get; set; }
