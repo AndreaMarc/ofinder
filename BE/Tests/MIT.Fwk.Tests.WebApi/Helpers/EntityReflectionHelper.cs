@@ -285,6 +285,15 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
                 return true;
             else if (underlyingType == typeof(Guid))
                 return Guid.NewGuid();
+            else if (underlyingType.IsEnum)
+            {
+                // Handle enum types - return first enum value
+                var enumValues = Enum.GetValues(underlyingType);
+                if (enumValues.Length > 0)
+                    return enumValues.GetValue(0);
+            }
+            else if (underlyingType == typeof(TimeSpan))
+                return TimeSpan.FromHours(1); // Default 1 hour
 
             // For nullable types, return null if we don't have a default
             if (Nullable.GetUnderlyingType(propertyType) != null)

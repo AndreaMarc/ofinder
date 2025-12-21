@@ -20,30 +20,45 @@ ssh ubuntu@51.210.6.193 "sudo rm /tmp/$BACKUP_NAME"
 echo "✓ Backup salvato in: ./backups/$BACKUP_NAME"
 echo ""
 
-# 1. Build
-echo "STEP 1: Building backend (self-contained)..."
+# 1. Test OFinder
+echo "STEP 1: Esecuzione test OFinder..."
+dotnet test Tests/MIT.Fwk.Tests.WebApi/MIT.Fwk.Tests.WebApi.csproj --filter "FullyQualifiedName~OFinderTests" --logger "console;verbosity=minimal" --no-restore
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "ERRORE: I test OFinder sono falliti!"
+    echo "Il deployment è stato annullato per evitare di deployare codice non funzionante."
+    echo ""
+    exit 1
+fi
+
+echo "✓ Test OFinder completati con successo"
+echo ""
+
+# 2. Build
+echo "STEP 2: Building backend (self-contained)..."
 cd Src/MIT.Fwk.WebApi
 dotnet publish -c Release -r linux-x64 --self-contained true -o ../../publish/linux-x64-selfcontained
 cd ../..
 echo "✓ Build completato"
 echo ""
 
-# 2. Package
-echo "STEP 2: Creando pacchetto deployment..."
+# 3. Package
+echo "STEP 3: Creando pacchetto deployment..."
 cd publish/linux-x64-selfcontained
 PACKAGE="ofinder-api-$(date +%Y%m%d-%H%M%S).tar.gz"
 tar -czf $PACKAGE *
 echo "✓ Pacchetto creato: $PACKAGE (dimensione: $(du -h $PACKAGE | cut -f1))"
 echo ""
 
-# 3. Upload
-echo "STEP 3: Upload su server OVH (potrebbe richiedere qualche minuto)..."
+# 4. Upload
+echo "STEP 4: Upload su server OVH (potrebbe richiedere qualche minuto)..."
 scp $PACKAGE ubuntu@51.210.6.193:/opt/mitfwk/
 echo "✓ Upload completato"
 echo ""
 
-# 4. Deploy
-echo "STEP 4: Deployment su server..."
+# 5. Deploy
+echo "STEP 5: Deployment su server..."
 ssh ubuntu@51.210.6.193 bash << ENDSSH
 set -e
 echo "  - Fermando servizio..."
@@ -80,8 +95,8 @@ ENDSSH
 echo "✓ Deployment completato"
 echo ""
 
-# 5. Test
-echo "STEP 5: Test finale..."
+# 6. Test API
+echo "STEP 6: Test API finale..."
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://ofinder.it/api)
 if [ "$HTTP_CODE" = "401" ] || [ "$HTTP_CODE" = "200" ]; then
     echo "✓ API risponde correttamente (HTTP $HTTP_CODE)"

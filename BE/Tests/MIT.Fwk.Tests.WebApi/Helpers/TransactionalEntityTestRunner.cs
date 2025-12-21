@@ -14,11 +14,16 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
     {
         private readonly DbContext _context;
         private readonly Action<string> _outputWriter;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<MIT.Fwk.Infrastructure.Entities.MITApplicationUser>? _userManager;
 
-        public TransactionalEntityTestRunner(DbContext context, Action<string> outputWriter)
+        public TransactionalEntityTestRunner(
+            DbContext context,
+            Action<string> outputWriter,
+            Microsoft.AspNetCore.Identity.UserManager<MIT.Fwk.Infrastructure.Entities.MITApplicationUser>? userManager = null)
         {
             _context = context;
             _outputWriter = outputWriter ?? (_ => { });
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -255,6 +260,28 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
                     _outputWriter($"✓ Seeded: Role (Id={role.Id}, Name={role.Name})");
                 }
 
+                // Seed User (AspNetUsers - required by Performer, PerformerView, PerformerReview, UserFavorite)
+                if (HasDbSet<MIT.Fwk.Infrastructure.Entities.User>() && _userManager != null)
+                {
+                    var tenantId = seeds.ContainsKey(typeof(MIT.Fwk.Infrastructure.Entities.Tenant))
+                        ? ((MIT.Fwk.Infrastructure.Entities.Tenant)seeds[typeof(MIT.Fwk.Infrastructure.Entities.Tenant)]).Id
+                        : 1;
+
+                    var testUser = TestDataBuilder.CreateTestUser(tenantId);
+                    var result = await _userManager.CreateAsync(testUser, TestDataBuilder.DefaultTestPassword);
+
+                    if (result.Succeeded)
+                    {
+                        // Store a minimal User object with just the ID for FK resolution
+                        seeds[typeof(MIT.Fwk.Infrastructure.Entities.User)] = new MIT.Fwk.Infrastructure.Entities.User { Id = testUser.Id };
+                        _outputWriter($"✓ Seeded: User (Id={testUser.Id}, Email={testUser.Email})");
+                    }
+                    else
+                    {
+                        _outputWriter($"✗ Failed to seed User: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
+                }
+
                 _outputWriter("");
                 return seeds;
             }
@@ -283,8 +310,9 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
             _outputWriter("CLEANUP: Deleting seed data...");
             _outputWriter("─────────────────────────────────────────");
 
-            // Delete in reverse order: Role → Tenant (to respect FK constraints)
+            // Delete in reverse order: User → Role → Tenant (to respect FK constraints)
             var deletionOrder = new[] {
+                typeof(MIT.Fwk.Infrastructure.Entities.User),
                 typeof(MIT.Fwk.Infrastructure.Entities.Role),
                 typeof(MIT.Fwk.Infrastructure.Entities.Tenant)
             };
@@ -296,6 +324,30 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
 
                 try
                 {
+                    // Special handling for User (requires UserManager)
+                    if (entityType == typeof(MIT.Fwk.Infrastructure.Entities.User) && _userManager != null)
+                    {
+                        var user = seedData[entityType] as MIT.Fwk.Infrastructure.Entities.User;
+                        if (user != null && !string.IsNullOrEmpty(user.Id))
+                        {
+                            var mitUser = await _userManager.FindByIdAsync(user.Id);
+                            if (mitUser != null)
+                            {
+                                var deleteResult = await _userManager.DeleteAsync(mitUser);
+                                if (deleteResult.Succeeded)
+                                {
+                                    _outputWriter($"✓ Deleted seed: User (Id={user.Id})");
+                                }
+                                else
+                                {
+                                    _outputWriter($"✗ Failed to delete seed User: {string.Join(", ", deleteResult.Errors.Select(e => e.Description))}");
+                                }
+                            }
+                        }
+                        continue;
+                    }
+
+                    // Standard cleanup for non-User entities
                     var entity = seedData[entityType];
                     var entityId = EntityReflectionHelper.GetEntityId(entity);
 

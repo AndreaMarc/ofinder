@@ -19,16 +19,31 @@ Write-Host "STEP 0: Verifica spazio e preparazione..." -ForegroundColor Yellow
 Write-Host "Preparazione completata" -ForegroundColor Green
 Write-Host ""
 
-# 1. Build
-Write-Host "STEP 1: Building backend (self-contained)..." -ForegroundColor Yellow
+# 1. Test OFinder
+Write-Host "STEP 1: Esecuzione test OFinder..." -ForegroundColor Yellow
+dotnet test Tests\MIT.Fwk.Tests.WebApi\MIT.Fwk.Tests.WebApi.csproj --filter "FullyQualifiedName~OFinderTests" --logger "console;verbosity=minimal" --no-restore
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host ""
+    Write-Host "ERRORE: I test OFinder sono falliti!" -ForegroundColor Red
+    Write-Host "Il deployment è stato annullato per evitare di deployare codice non funzionante." -ForegroundColor Yellow
+    Write-Host ""
+    exit 1
+}
+
+Write-Host "Test OFinder completati con successo" -ForegroundColor Green
+Write-Host ""
+
+# 2. Build
+Write-Host "STEP 2: Building backend (self-contained)..." -ForegroundColor Yellow
 Set-Location Src\MIT.Fwk.WebApi
 dotnet publish -c Release -r linux-x64 --self-contained true -o ..\..\publish\linux-x64-selfcontained
 Set-Location ..\..
 Write-Host "Build completato" -ForegroundColor Green
 Write-Host ""
 
-# 2. Package
-Write-Host "STEP 2: Creando pacchetto deployment..." -ForegroundColor Yellow
+# 3. Package
+Write-Host "STEP 3: Creando pacchetto deployment..." -ForegroundColor Yellow
 Set-Location publish\linux-x64-selfcontained
 
 # IMPORTANTE: Rimuovi vecchi pacchetti per evitare inclusione ricorsiva!
@@ -48,8 +63,8 @@ $size = (Get-Item $PACKAGE).Length / 1MB
 Write-Host "Pacchetto creato: $PACKAGE (dimensione: $([math]::Round($size, 2)) MB)" -ForegroundColor Green
 Write-Host ""
 
-# 3. Upload
-Write-Host "STEP 3: Upload su server OVH (potrebbe richiedere qualche minuto)..." -ForegroundColor Yellow
+# 4. Upload
+Write-Host "STEP 4: Upload su server OVH (potrebbe richiedere qualche minuto)..." -ForegroundColor Yellow
 
 # SCP ottimizzato: compressione + keep-alive + cipher veloce + limite bandwidth (opzionale)
 # -C: abilita compressione
@@ -61,8 +76,8 @@ scp -C -o Compression=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -c 
 Write-Host "Upload completato" -ForegroundColor Green
 Write-Host ""
 
-# 4. Deploy
-Write-Host "STEP 4: Deployment su server..." -ForegroundColor Yellow
+# 5. Deploy
+Write-Host "STEP 5: Deployment su server..." -ForegroundColor Yellow
 
 $deployScript = @"
 set -e
@@ -117,8 +132,8 @@ ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -c aes128-gcm@openssh.com
 Write-Host "Deployment completato" -ForegroundColor Green
 Write-Host ""
 
-# 5. Test API con retry
-Write-Host "STEP 5: Test API (con retry)..." -ForegroundColor Yellow
+# 6. Test API con retry
+Write-Host "STEP 6: Test API (con retry)..." -ForegroundColor Yellow
 
 $apiOk = $false
 $maxRetries = 6

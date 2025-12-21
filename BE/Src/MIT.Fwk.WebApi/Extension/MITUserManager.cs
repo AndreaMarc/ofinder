@@ -91,7 +91,7 @@ namespace MIT.Fwk.WebApi.Extension
             if (roleToAdd != null)
             {
                 //_db.UserRoles.Add(new UserRole() { UserId = user.Id, RoleId = roleToAdd.Id, TenantId = user.TenantId });
-                await _db.UserRoles.AddAsync(new UserRole() { UserId = user.Id, RoleId = roleToAdd.Id, TenantId = user.TenantId });
+                await _db.UserRoles.AddAsync(new UserRole() { Id = Guid.NewGuid().ToString(), UserId = user.Id, RoleId = roleToAdd.Id, TenantId = user.TenantId });
 
                 if (await _db.SaveChangesAsync() > 0)
                 {

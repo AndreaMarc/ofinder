@@ -43,7 +43,8 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
                 EmailConfirmed = true,
                 FirstName = $"Test{counter}",
                 LastName = "User",
-                TenantId = tenantId
+                TenantId = tenantId,
+                PasswordLastChange = DateTime.UtcNow // Required field in database
             };
         }
 
@@ -60,7 +61,8 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
                 Name = $"TestRole{counter}",
                 NormalizedName = $"TESTROLE{counter}",
                 TenantId = tenantId,
-                Level = level
+                Level = level,
+                CopyInNewTenants = false
             };
         }
 
@@ -268,6 +270,174 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
             }
 
             return sBuilder.ToString();
+        }
+
+        // ===== OFinder Entity Factories =====
+
+        /// <summary>
+        /// Creates a test Performer.
+        /// Requires userId from a created User (via AuthHelper.CreateTestUserAsync).
+        /// </summary>
+        public static Performer CreateTestPerformer(string userId)
+        {
+            return new Performer
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = userId,
+                Description = "Test performer description",
+                IsActive = true,
+                IsVerified = false,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test Channel.
+        /// </summary>
+        public static Channel CreateTestChannel(string performerId)
+        {
+            var counter = GetNextCounter();
+
+            return new Channel
+            {
+                Id = Guid.NewGuid().ToString(),
+                PerformerId = performerId,
+                Platform = MIT.Fwk.Core.Domain.Enums.PlatformType.OnlyFans,
+                ChannelType = MIT.Fwk.Core.Domain.Enums.ChannelType.CamGirl,
+                UsernameHandle = $"testhandle{counter}",
+                ProfileLink = $"https://test-platform.com/testhandle{counter}",
+                Note = "Test channel notes",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test PerformerService.
+        /// </summary>
+        public static PerformerService CreateTestPerformerService(string performerId)
+        {
+            return new PerformerService
+            {
+                Id = Guid.NewGuid().ToString(),
+                PerformerId = performerId,
+                ServiceType = MIT.Fwk.Core.Domain.Enums.ServiceType.Model,
+                Link = "https://test-service.com/profile",
+                Description = "Test service description",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test PerformerView.
+        /// </summary>
+        public static PerformerView CreateTestPerformerView(string performerId, string userId)
+        {
+            return new PerformerView
+            {
+                Id = Guid.NewGuid().ToString(),
+                PerformerId = performerId,
+                UserId = userId,
+                ViewedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test PerformerReview.
+        /// </summary>
+        public static PerformerReview CreateTestPerformerReview(string performerId, string userId)
+        {
+            return new PerformerReview
+            {
+                Id = Guid.NewGuid().ToString(),
+                PerformerId = performerId,
+                UserId = userId,
+                Rating = 4,
+                ReviewText = "Great performer, highly recommended!",
+                IsVerifiedPurchase = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test UserFavorite.
+        /// </summary>
+        public static UserFavorite CreateTestUserFavorite(string userId, string performerId)
+        {
+            return new UserFavorite
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserId = userId,
+                PerformerId = performerId,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test ChannelSchedule.
+        /// </summary>
+        public static ChannelSchedule CreateTestChannelSchedule(string channelId)
+        {
+            return new ChannelSchedule
+            {
+                ChannelId = channelId,
+                DayOfWeek = 1, // Monday (0=Sunday, 6=Saturday)
+                StartTime = new TimeSpan(20, 0, 0), // 20:00
+                EndTime = new TimeSpan(23, 0, 0), // 23:00
+                Note = "Test schedule note",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test ChannelContentType.
+        /// </summary>
+        public static ChannelContentType CreateTestChannelContentType(string channelId)
+        {
+            var counter = GetNextCounter();
+
+            return new ChannelContentType
+            {
+                ChannelId = channelId,
+                ContentType = $"TestContent{counter}",
+                Description = "Test content type description",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        /// <summary>
+        /// Creates a test ChannelPricing.
+        /// </summary>
+        public static ChannelPricing CreateTestChannelPricing(string channelId)
+        {
+            return new ChannelPricing
+            {
+                ChannelId = channelId,
+                MonthlySubscriptionFrom = 9.99m,
+                MonthlySubscriptionTo = 19.99m,
+                PhotoSaleFrom = 5.00m,
+                PhotoSaleTo = 15.00m,
+                VideoSaleFrom = 10.00m,
+                VideoSaleTo = 30.00m,
+                LivePublicFrom = 1.00m,
+                LivePublicTo = 5.00m,
+                LivePrivateFrom = 50.00m,
+                LivePrivateTo = 200.00m,
+                ClothingSalesFrom = 20.00m,
+                ClothingSalesTo = 100.00m,
+                ExtraContentFrom = 5.00m,
+                ExtraContentTo = 50.00m,
+                Note = "Test pricing notes",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
         }
     }
 }

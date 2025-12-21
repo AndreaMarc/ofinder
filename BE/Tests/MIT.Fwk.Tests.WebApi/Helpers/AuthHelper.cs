@@ -89,7 +89,8 @@ namespace MIT.Fwk.Tests.WebApi.Helpers
                     Name = roleName,
                     NormalizedName = roleName.ToUpper(),
                     TenantId = tenantId,
-                    Level = (short)level
+                    Level = (short)level,
+                    CopyInNewTenants = false
                 };
 
                 var result = await _roleManager.CreateAsync(role);

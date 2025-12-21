@@ -8,5 +8,13 @@ namespace MIT.Fwk.Infrastructure.Entities
         public int TenantId { get; set; }
 
         public short Level { get; set; }
+
+        public bool? Needful { get; set; }
+
+        public bool CopyInNewTenants { get; set; }
+
+        public string Typology { get; set; }
+
+        public string Initials { get; set; }
     }
 }
