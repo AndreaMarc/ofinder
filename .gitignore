@@ -25,3 +25,4 @@ APP/www/
 
 # FE - See FE/WEB/.gitignore for frontend-specific ignores
 /BE/old-packages
+/server-backups
