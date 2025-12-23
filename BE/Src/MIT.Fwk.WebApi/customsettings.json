@@ -24,13 +24,13 @@
   },
   "SMTP": {
     "Enabled": "true",
-    "Host": "smtp.eu.mailgun.org",
-    "Port": "25",
-    "Username": "dev@maeservices.it",
-    "Password": "Fwk-cosa?",
-    "Sender": "noreply@apptimesheet.it",
-    "NotifyTo": "andrea.marcelli@maestrale.it",
-    "BaseUrl": "https://test-app.maestrale.it:5000"
+    "Host": "smtp.gmail.com",
+    "Port": "587",
+    "Username": "myspacemodelapp@gmail.com",
+    "Password": "gotrkkmvnjrdhsce",
+    "Sender": "ofinder@gmail.com",
+    "NotifyTo": "myspacemodelapp@gmail.com",
+    "BaseUrl": "https://ofinder.it"
   },
   "Swagger": {
     "Title": "Ofinder",

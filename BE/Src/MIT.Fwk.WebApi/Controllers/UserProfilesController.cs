@@ -108,7 +108,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             Setup setup = _jsonApiManualService.FirstOrDefault<Setup, int>(x => x.environment == setupType.ToString());
 
-            User existingUser = (await _userService.GetAsync(cancellationToken)).ToList().FirstOrDefault(x => x.Email == resource.ContactEmail);
+            User existingUser = _jsonApiManualService.FirstOrDefault<User, string>(x => x.Email == resource.ContactEmail);
 
 
             string roleByPassOtpCustomSettings = _configuration["RolesByPassOtp"];
@@ -130,7 +130,7 @@ namespace MIT.Fwk.WebApi.Controllers
                     checkRole.Add(infoRole);
                 }
                 //controllo se quell'utente esiste gia sullo stesso tenant
-                UserTenant existingUserInTenat = (await _userTenantService.GetAsync(cancellationToken)).ToList().FirstOrDefault(x => x.UserId == existingUser.Id && x.TenantId == tenantId);
+                UserTenant existingUserInTenat = _jsonApiManualService.FirstOrDefault<UserTenant, string>(x => x.UserId == existingUser.Id && x.TenantId == tenantId);
                 if (existingUserInTenat != null)
                 {
                     //controllo se é associato ma in pending

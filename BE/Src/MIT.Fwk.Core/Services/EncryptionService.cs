@@ -111,8 +111,8 @@ namespace MIT.Fwk.Core.Services
             if (string.IsNullOrEmpty(certPath))
                 throw new ArgumentNullException(nameof(certPath));
 
-            // Load certificate with private key
-            X509Certificate2 cert = X509CertificateLoader.LoadCertificateFromFile(certPath);
+            // Load certificate with private key (.NET 8 compatible)
+            X509Certificate2 cert = new X509Certificate2(certPath);
             RSA rsa = cert.GetRSAPrivateKey()
                 ?? throw new CryptographicException("Certificate does not contain an RSA private key");
 
@@ -136,8 +136,8 @@ namespace MIT.Fwk.Core.Services
             if (string.IsNullOrEmpty(certPath))
                 throw new ArgumentNullException(nameof(certPath));
 
-            // Load certificate (public key only)
-            X509Certificate2 cert = X509CertificateLoader.LoadCertificateFromFile(certPath);
+            // Load certificate (public key only) (.NET 8 compatible)
+            X509Certificate2 cert = new X509Certificate2(certPath);
             RSA rsa = cert.GetRSAPublicKey()
                 ?? throw new CryptographicException("Certificate does not contain an RSA public key");
 

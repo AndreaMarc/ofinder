@@ -1,6 +1,6 @@
 ﻿namespace MIT.Fwk.WebApi.Configurations
 {
-    using Microsoft.OpenApi;
+    using Microsoft.OpenApi.Models;
     using Swashbuckle.AspNetCore.SwaggerGen;
     using System.Linq;
 
@@ -50,7 +50,7 @@
 
             string customMediaType = "application/vnd.api+json";
 
-            foreach (System.Collections.Generic.KeyValuePair<string, IOpenApiResponse> response in operation.Responses)
+            foreach (System.Collections.Generic.KeyValuePair<string, OpenApiResponse> response in operation.Responses)
             {
                 foreach (System.Collections.Generic.KeyValuePair<string, OpenApiMediaType> schema in response.Value.Content.Where(x => x.Key == "application/json").ToList())
                 {
@@ -59,7 +59,7 @@
             }
 
             // Aggiungi il MediaType personalizzato ai parametri del corpo della richiesta
-            IOpenApiRequestBody requestBody = operation.RequestBody;
+            OpenApiRequestBody requestBody = operation.RequestBody;
             if (requestBody != null)
             {
                 foreach (System.Collections.Generic.KeyValuePair<string, OpenApiMediaType> schema in requestBody.Content.Where(x => x.Key == "application/json").ToList())

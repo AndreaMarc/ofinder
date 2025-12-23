@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 
@@ -99,9 +99,7 @@ namespace MIT.Fwk.WebApi.Configurations
 
             // Enable Swagger middleware
             // Swashbuckle 9.x generates OpenAPI 3.1 by default
-            app.UseSwagger(options => {
-                options.OpenApiVersion = OpenApiSpecVersion.OpenApi2_0;
-            });
+            app.UseSwagger();
 
             // Enable Swagger UI
             app.UseSwaggerUI(s =>
