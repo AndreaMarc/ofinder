@@ -1,8 +1,8 @@
 {
   "ConnectionStrings": {
-    "Default": "server=193.70.84.182;port=3306;database=OffertaJob_Prod;User ID=offertajob;Password=Maestrale2004!;",
-    "JsonApiDbContext": "server=193.70.84.182;port=3306;database=TestMigrationNewFramework;User ID=offertajob;Password=Maestrale2004!;",
-    "NoSQLConnection": "mongodb://192.168.200.225:27017/FWK9",
-    "OtherDbContext": "server=193.70.84.182;port=3306;database=TestMigrationNewFramework;User ID=offertajob;Password=Maestrale2004!;"
+    "Default": "server=51.210.6.193;port=3306;database=ofinder_main;User ID=ofinder_user;Password=Maestrale2004!;",
+    "JsonApiDbContext": "server=51.210.6.193;port=3306;database=ofinder_main;User ID=ofinder_user;Password=Maestrale2004!;",
+    "NoSQLConnection": "mongodb://127.0.0.1:27017/FWK9",
+    "OtherDbContext": "server=51.210.6.193;port=3306;database=ofinder_main;User ID=ofinder_user;Password=Maestrale2004!;"
   }
 }

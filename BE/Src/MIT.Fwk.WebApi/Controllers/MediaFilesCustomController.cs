@@ -329,10 +329,28 @@ namespace MIT.Fwk.WebApi.Controllers
                         // FASE 8A: Use DocumentManager.CreateAsync instead of obsolete Create()
                         DocumentFile mongoMediaFileCreated = await MIT.Fwk.Infrastructure.Data.NoSql.Document.DocumentManager.CreateAsync(mongoMediaFile);
 
+                        if (mongoMediaFileCreated == null)
+                        {
+                            Console.WriteLine("[ERROR] MongoDB DocumentManager.CreateAsync returned null");
+                            return StatusCode(500, new { error = "Failed to save document to MongoDB" });
+                        }
+
                         mediafile.mongoGuid = mongoMediaFileCreated.FileGuid;
+
+                        Console.WriteLine($"[DEBUG] Saving MediaFile to MySQL - ID: {mediafile.Id}, mongoGuid: {mediafile.mongoGuid}");
 
                         //scrivo tramite il dbcontext
                         MediaFile response = await _jsonService.CreateAsync<MediaFile, string>(mediafile);
+
+                        if (response == null)
+                        {
+                            Console.WriteLine("[ERROR] MySQL CreateAsync returned null for MediaFile");
+                            Console.WriteLine($"[DEBUG] MediaFile data: Id={mediafile.Id}, extension={mediafile.extension}, tenantId={mediafile.tenantId}");
+                            return StatusCode(500, new { error = "Failed to save MediaFile to MySQL. Check database logs and field validations." });
+                        }
+
+                        Console.WriteLine($"[SUCCESS] MediaFile saved to MySQL - ID: {response.Id}");
+
                         SKEncodedImageFormat imageFormat = response.extension switch
                         {
                             "png" => SKEncodedImageFormat.Png,
@@ -718,10 +736,28 @@ namespace MIT.Fwk.WebApi.Controllers
                         // FASE 8A: Use DocumentManager.CreateAsync instead of obsolete Create()
                         DocumentFile mongoMediaFileCreated = await MIT.Fwk.Infrastructure.Data.NoSql.Document.DocumentManager.CreateAsync(mongoMediaFile);
 
+                        if (mongoMediaFileCreated == null)
+                        {
+                            Console.WriteLine("[ERROR] MongoDB DocumentManager.CreateAsync returned null");
+                            return StatusCode(500, new { error = "Failed to save document to MongoDB" });
+                        }
+
                         mediafile.mongoGuid = mongoMediaFileCreated.FileGuid;
+
+                        Console.WriteLine($"[DEBUG] Saving MediaFile to MySQL - ID: {mediafile.Id}, mongoGuid: {mediafile.mongoGuid}");
 
                         //scrivo tramite il dbcontext
                         MediaFile response = await _jsonService.CreateAsync<MediaFile, string>(mediafile);
+
+                        if (response == null)
+                        {
+                            Console.WriteLine("[ERROR] MySQL CreateAsync returned null for MediaFile");
+                            Console.WriteLine($"[DEBUG] MediaFile data: Id={mediafile.Id}, extension={mediafile.extension}, tenantId={mediafile.tenantId}");
+                            return StatusCode(500, new { error = "Failed to save MediaFile to MySQL. Check database logs and field validations." });
+                        }
+
+                        Console.WriteLine($"[SUCCESS] MediaFile saved to MySQL - ID: {response.Id}");
+
                         SKEncodedImageFormat imageFormat = response.extension switch
                         {
                             "png" => SKEncodedImageFormat.Png,

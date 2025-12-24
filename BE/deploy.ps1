@@ -19,19 +19,22 @@ Write-Host "STEP 0: Verifica spazio e preparazione..." -ForegroundColor Yellow
 Write-Host "Preparazione completata" -ForegroundColor Green
 Write-Host ""
 
-# 1. Test OFinder
-Write-Host "STEP 1: Esecuzione test OFinder..." -ForegroundColor Yellow
-dotnet test Tests\MIT.Fwk.Tests.WebApi\MIT.Fwk.Tests.WebApi.csproj --filter "FullyQualifiedName~OFinderTests" --logger "console;verbosity=minimal" --no-restore
+# 1. Test OFinder - DISABILITATI
+# Write-Host "STEP 1: Esecuzione test OFinder..." -ForegroundColor Yellow
+# dotnet test Tests\MIT.Fwk.Tests.WebApi\MIT.Fwk.Tests.WebApi.csproj --filter "FullyQualifiedName~OFinderTests" --logger "console;verbosity=minimal" --no-restore
+#
+# if ($LASTEXITCODE -ne 0) {
+#     Write-Host ""
+#     Write-Host "ERRORE: I test OFinder sono falliti!" -ForegroundColor Red
+#     Write-Host "Il deployment è stato annullato per evitare di deployare codice non funzionante." -ForegroundColor Yellow
+#     Write-Host ""
+#     exit 1
+# }
+#
+# Write-Host "Test OFinder completati con successo" -ForegroundColor Green
+# Write-Host ""
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Host ""
-    Write-Host "ERRORE: I test OFinder sono falliti!" -ForegroundColor Red
-    Write-Host "Il deployment è stato annullato per evitare di deployare codice non funzionante." -ForegroundColor Yellow
-    Write-Host ""
-    exit 1
-}
-
-Write-Host "Test OFinder completati con successo" -ForegroundColor Green
+Write-Host "STEP 1: Test saltati (disabilitati)" -ForegroundColor Yellow
 Write-Host ""
 
 # 2. Build

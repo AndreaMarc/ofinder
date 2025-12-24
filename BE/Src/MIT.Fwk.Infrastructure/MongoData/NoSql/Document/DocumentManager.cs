@@ -1,22 +1,48 @@
-﻿using Dapper;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using MIT.Fwk.Core.Data;
 using MIT.Fwk.Core.Domain.Interfaces;
-using MIT.Fwk.Core.Helpers;
+using MIT.Fwk.Core.Models;
+using MIT.Fwk.Core.Services;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MIT.Fwk.Infrastructure.Data.NoSql.Document
 {
+    /// <summary>
+    /// DocumentManager refactored to use MongoDB instead of SQL Server.
+    /// Provides CRUD operations for IDocument entities (DocumentFile, etc.)
+    /// </summary>
     public class DocumentManager
     {
-        // FASE 7: Helper method to get configuration for static context
+        private static IMongoDatabase _database;
+        private static long _idCounter = 0;
+        private static readonly object _lockObject = new object();
+
+        // Helper method to get MongoDB database instance
+        private static IMongoDatabase GetDatabase()
+        {
+            if (_database == null)
+            {
+                var config = GetConfiguration();
+                var connectionString = config.GetConnectionString("NoSQLConnection");
+
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw new InvalidOperationException("NoSQLConnection not found in configuration");
+                }
+
+                var client = new MongoClient(connectionString);
+                var dbName = connectionString.Substring(connectionString.LastIndexOf("/") + 1);
+                _database = client.GetDatabase(dbName);
+            }
+
+            return _database;
+        }
+
+        // Helper method to get configuration for static context
         private static IConfiguration GetConfiguration()
         {
             var builder = new ConfigurationBuilder()
@@ -27,538 +53,272 @@ namespace MIT.Fwk.Infrastructure.Data.NoSql.Document
             return builder.Build();
         }
 
-        #region Mapper
-
-        // Legacy method - IEntityTypeConfiguration removed
-        // Returns hardcoded DatabaseInformations for Document entity
-        private static DatabaseInformations GetDocumentDatabaseInformations()
+        // Get MongoDB collection for document type
+        private static IMongoCollection<T> GetCollection<T>() where T : IDocument
         {
-            IConfiguration config = GetConfiguration();
-            bool enableSQLBC = config.GetValue<bool>("SQLBackwardCompatibility", false);
-
-            return new DatabaseInformations()
-            {
-                IsTable = true,
-                ObjectName = enableSQLBC ? "MITDocumentsBC" : "MITDocuments",
-                EntityName = "Document",
-
-                EntityDbMappings = new Dictionary<string, ColumnDetail>() {
-                    {
-                        "Id"
-                    ,   new ColumnDetail() {
-                        Name = "ID", TypeName = "bigint", IsKey = true, IsRequired = true, MaxLength = 8, IsIdentity = true
-                        }   },
-                    {
-                        "Title"
-                    ,   new ColumnDetail() {
-                        Name = "Title", TypeName = "varchar", IsKey = false, IsRequired = false, MaxLength = 50
-                        }   },
-                    {
-                        "Description"
-                    ,   new ColumnDetail() {
-                        Name = "Description", TypeName = "varchar", IsKey = false, IsRequired = false, MaxLength = 500
-                        }   },
-                    {
-                        "FileName"
-                    ,   new ColumnDetail() {
-                        Name = "FileName", TypeName = "varchar", IsKey = false, IsRequired = true, MaxLength = 200
-                        }   },
-                    {
-                        "Extension"
-                    ,   new ColumnDetail() {
-                        Name = "Extension", TypeName = "varchar", IsKey = false, IsRequired = true, MaxLength = 5
-                        }   },
-                    {
-                        "BinaryData"
-                    ,   new ColumnDetail() {
-                        Name = "BinaryData", TypeName = enableSQLBC? "varbinary": "image", IsKey = false, IsRequired = true, MaxLength = enableSQLBC? -1: 16
-                        }   },
-                    {
-                        "Meta"
-                    ,   new ColumnDetail() {
-                        Name = "Meta", TypeName = "varchar", IsKey = false, IsRequired = false, MaxLength = 250
-                        }   },
-                },
-            };
+            var db = GetDatabase();
+            return db.GetCollection<T>("Document");
         }
 
-        #endregion
+        // Generate sequential ID (MongoDB-style but as long for compatibility)
+        private static long GenerateId<T>() where T : IDocument
+        {
+            lock (_lockObject)
+            {
+                var collection = GetCollection<T>();
 
-        #region CRUD
+                // Try to get the maximum ID from existing documents
+                var maxDoc = collection.Find(FilterDefinition<T>.Empty)
+                    .SortByDescending(d => d.Id)
+                    .Limit(1)
+                    .FirstOrDefault();
 
+                if (maxDoc != null && maxDoc.Id > _idCounter)
+                {
+                    _idCounter = maxDoc.Id;
+                }
+
+                return ++_idCounter;
+            }
+        }
+
+        #region CRUD Operations
+
+        /// <summary>
+        /// Create a new document in MongoDB
+        /// </summary>
+        public static async Task<T> CreateAsync<T>(T entity) where T : IDocument
+        {
+            try
+            {
+                var collection = GetCollection<T>();
+
+                // Generate ID if not set
+                if (entity.Id == 0)
+                {
+                    entity.Id = GenerateId<T>();
+                }
+
+                await collection.InsertOneAsync(entity);
+
+                Console.WriteLine($"[DocumentManager] Created document with ID: {entity.Id}");
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] DocumentManager.CreateAsync: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Read a document by ID
+        /// </summary>
+        public static async Task<T> ReadAsync<T>(long id, T template = default) where T : IDocument
+        {
+            try
+            {
+                var collection = GetCollection<T>();
+                var filter = Builders<T>.Filter.Eq(d => d.Id, id);
+
+                var result = await collection.Find(filter).FirstOrDefaultAsync();
+
+                if (result == null)
+                {
+                    Console.WriteLine($"[DocumentManager] Document with ID {id} not found");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] DocumentManager.ReadAsync: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// List all documents
+        /// </summary>
+        public static async Task<IEnumerable<T>> ListAsync<T>(T template = default, IEnumerable<IDictionary<string, object>> filter = null) where T : IDocument
+        {
+            try
+            {
+                var collection = GetCollection<T>();
+
+                FilterDefinition<T> mongoFilter = FilterDefinition<T>.Empty;
+
+                // Build filter if provided
+                if (filter != null && filter.Any())
+                {
+                    var filterBuilder = Builders<T>.Filter;
+                    var orFilters = new List<FilterDefinition<T>>();
+
+                    foreach (var filterDict in filter)
+                    {
+                        var andFilters = new List<FilterDefinition<T>>();
+
+                        foreach (var kvp in filterDict)
+                        {
+                            if (kvp.Value != null)
+                            {
+                                // Build filter based on property name
+                                var propertyFilter = BuildPropertyFilter<T>(kvp.Key, kvp.Value);
+                                if (propertyFilter != null)
+                                {
+                                    andFilters.Add(propertyFilter);
+                                }
+                            }
+                        }
+
+                        if (andFilters.Any())
+                        {
+                            orFilters.Add(filterBuilder.And(andFilters));
+                        }
+                    }
+
+                    if (orFilters.Any())
+                    {
+                        mongoFilter = filterBuilder.Or(orFilters);
+                    }
+                }
+
+                var results = await collection.Find(mongoFilter).ToListAsync();
+
+                Console.WriteLine($"[DocumentManager] Listed {results.Count} documents");
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] DocumentManager.ListAsync: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// List documents with single filter dictionary
+        /// </summary>
         public static async Task<IEnumerable<T>> ListAsync<T>(T template, IDictionary<string, object> filter) where T : IDocument
         {
             IList<IDictionary<string, object>> newFilter = null;
 
             if (filter != null)
             {
-                newFilter = [filter];
+                newFilter = new List<IDictionary<string, object>> { filter };
             }
 
             return await ListAsync(template, newFilter);
         }
 
-        public static async Task<IEnumerable<T>> ListAsync<T>(T template = default, IEnumerable<IDictionary<string, object>> filter = null) where T : IDocument
-        {
-            Type tp = template != null ? template.GetType() : typeof(T);
-
-            IConfiguration config = GetConfiguration();
-            using SqlConnection connection = new(config.GetConnectionString("DocumentDB"));
-            connection.Open();
-
-            string sql = FormatListQuery(filter, out IDictionary<string, object> dynamicFilter, out DatabaseInformations dbInfo);
-
-            dynamic dynFilter = dynamicFilter;
-
-            IEnumerable<dynamic> rows = await connection.QueryAsync(sql, (object)dynFilter);
-
-            List<T> list = [];
-            foreach (dynamic row in rows)
-            {
-                object obj = ReflectionHelper.CreateInstance(tp);
-
-                IDictionary<string, object> data = (IDictionary<string, object>)row;
-
-                foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-                {
-                    obj.SetPropertyValue(mapInfo.Key, data[mapInfo.Value.Name]);
-                }
-
-                list.Add((T)obj);
-            }
-
-            return list;
-        }
-
-        public static async Task<T> ReadAsync<T>(long id, T template = default, SqlConnection conn = null, SqlTransaction trans = null) where T : IDocument
-        {
-            Type tp = template != null ? template.GetType() : typeof(T);
-
-            string sql = FormatReadQuery(id, out IDictionary<string, object> dynamicFilter, out DatabaseInformations dbInfo);
-
-            dynamic filter = dynamicFilter;
-
-
-            if (trans != null && conn != null)
-            {
-                if (conn.State == ConnectionState.Closed)
-                {
-                    conn.Open();
-                }
-
-                IEnumerable<dynamic> rows = await conn.QueryAsync(sql, (object)filter, trans);
-                if (!rows.Any())
-                {
-                    return default;
-                }
-
-                dynamic row = rows.Single();
-
-                object obj = ReflectionHelper.CreateInstance(tp);
-
-                IDictionary<string, object> data = (IDictionary<string, object>)row;
-
-                foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-                {
-                    obj.SetPropertyValue(mapInfo.Key, data[mapInfo.Value.Name]);
-                }
-
-                return (T)obj;
-            }
-            else
-            {
-                IConfiguration config = GetConfiguration();
-            using SqlConnection connection = new(config.GetConnectionString("DocumentDB"));
-                connection.Open();
-
-                IEnumerable<dynamic> rows = await connection.QueryAsync(sql, (object)filter);
-                if (!rows.Any())
-                {
-                    return default;
-                }
-
-                dynamic row = rows.Single();
-
-                object obj = ReflectionHelper.CreateInstance(tp);
-
-                IDictionary<string, object> data = (IDictionary<string, object>)row;
-
-                foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-                {
-                    obj.SetPropertyValue(mapInfo.Key, data[mapInfo.Value.Name]);
-                }
-
-                return (T)obj;
-            }
-        }
-
-        public static async Task<T> CreateAsync<T>(T entity, SqlConnection conn = null, SqlTransaction trans = null) where T : IDocument
-        {
-            string sql = FormatCreateQuery(entity, out IDictionary<string, object> dynamicOptions, out bool returnIdentity, out _);
-
-            dynamic param = dynamicOptions;
-            if (trans != null && conn != null)
-            {
-                if (conn.State == ConnectionState.Closed)
-                {
-                    conn.Open();
-                }
-
-                if (returnIdentity)
-                {
-                    IEnumerable<int> result = await conn.QueryAsync<int>(sql, (object)param, trans);
-
-                    long generatedKey = result.FirstOrDefault();
-                    return await ReadAsync(generatedKey, entity, conn, trans);
-                }
-                else
-                {
-                    _ = conn.ExecuteAsync(sql, (object)param, trans);
-                    return await ReadAsync(entity.Id, entity, conn, trans);
-                }
-
-            }
-            else
-            {
-                IConfiguration config = GetConfiguration();
-            using SqlConnection connection = new(config.GetConnectionString("DocumentDB"));
-                connection.Open();
-                if (returnIdentity)
-                {
-                    long generatedKey = 0;
-                    try
-                    {
-
-                        IEnumerable<int> result = await connection.QueryAsync<int>(sql, (object)param);
-
-                        generatedKey = result.FirstOrDefault();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"[ERROR] DocumentManager.CreateAsync: {ex.Message}");
-                    }
-                    return await ReadAsync(generatedKey, entity);
-                }
-                else
-                {
-                    _ = await connection.ExecuteAsync(sql, (object)param);
-
-                    return await ReadAsync(entity.Id, entity);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Update an existing document
+        /// </summary>
         public static async Task<bool> UpdateAsync<T>(T entity) where T : IDocument
         {
+            try
+            {
+                var collection = GetCollection<T>();
+                var filter = Builders<T>.Filter.Eq(d => d.Id, entity.Id);
 
-            IConfiguration config = GetConfiguration();
-            using SqlConnection connection = new(config.GetConnectionString("DocumentDB"));
-            connection.Open();
+                var result = await collection.ReplaceOneAsync(filter, entity);
 
-            string sql = FormatUpdateQuery(entity, out IDictionary<string, object> dynamicOptions);
-
-            dynamic param = dynamicOptions;
-
-            int result = await connection.ExecuteAsync(sql, (object)param);
-            return result > 0;
+                if (result.ModifiedCount > 0)
+                {
+                    Console.WriteLine($"[DocumentManager] Updated document with ID: {entity.Id}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"[DocumentManager] No document found with ID: {entity.Id}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] DocumentManager.UpdateAsync: {ex.Message}");
+                throw;
+            }
         }
 
+        /// <summary>
+        /// Delete a document
+        /// </summary>
         public static async Task<bool> DeleteAsync<T>(T entity) where T : IDocument
         {
+            try
+            {
+                var collection = GetCollection<T>();
+                var filter = Builders<T>.Filter.Eq(d => d.Id, entity.Id);
 
-            IConfiguration config = GetConfiguration();
-            using SqlConnection connection = new(config.GetConnectionString("DocumentDB"));
-            connection.Open();
+                var result = await collection.DeleteOneAsync(filter);
 
-            string sql = FormatDeleteQuery(entity, out IDictionary<string, object> dynamicOptions);
-
-            dynamic param = dynamicOptions;
-
-            int result = await connection.ExecuteAsync(sql, (object)param);
-            return result > 0;
+                if (result.DeletedCount > 0)
+                {
+                    Console.WriteLine($"[DocumentManager] Deleted document with ID: {entity.Id}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"[DocumentManager] No document found with ID: {entity.Id}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] DocumentManager.DeleteAsync: {ex.Message}");
+                throw;
+            }
         }
 
         #endregion
 
-        #region SQL
+        #region Helper Methods
 
-        protected static string FormatListQuery(IEnumerable<IDictionary<string, object>> filter, out IDictionary<string, object> dynamicFilter, out DatabaseInformations dbInfo)
+        /// <summary>
+        /// Build MongoDB filter for a property
+        /// </summary>
+        private static FilterDefinition<T> BuildPropertyFilter<T>(string propertyName, object value) where T : IDocument
         {
-            StringBuilder query = new();
+            var filterBuilder = Builders<T>.Filter;
 
-            // Legacy: IEntityTypeConfiguration removed - use hardcoded DatabaseInformations
-            dbInfo = GetDocumentDatabaseInformations();
-
-            query.Append(string.Format(" select '{0}'", DateTime.UtcNow.ToUniversalTime()));
-
-            foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
+            // Handle common IDocument properties
+            switch (propertyName.ToLower())
             {
-                if (mapInfo.Value.TypeName != "image"
-                    && mapInfo.Value.TypeName != "varbinary")
-                {
-                    query.Append(string.Format(", {0}", mapInfo.Value.Name));
-                }
+                case "id":
+                    if (long.TryParse(value.ToString(), out long id))
+                        return filterBuilder.Eq(d => d.Id, id);
+                    break;
+
+                case "tenantid":
+                    if (int.TryParse(value.ToString(), out int tenantId))
+                        return filterBuilder.Eq(d => d.TenantId, tenantId);
+                    break;
+
+                case "title":
+                    return filterBuilder.Eq(d => d.Title, value.ToString());
+
+                case "description":
+                    return filterBuilder.Eq(d => d.Description, value.ToString());
+
+                case "filename":
+                    return filterBuilder.Eq(d => d.FileName, value.ToString());
+
+                case "extension":
+                    return filterBuilder.Eq(d => d.Extension, value.ToString());
+
+                case "fileguid":
+                    return filterBuilder.Eq(d => d.FileGuid, value.ToString());
+
+                case "meta":
+                    return filterBuilder.Eq(d => d.Meta, value.ToString());
             }
 
-            query.Append(" from ");
-            query.Append(dbInfo.ObjectName);
-
-            query.Append(" where 1=1 ");
-
-            dynamicFilter = new ExpandoObject();
-
-            int i = 0;
-
-            if (filter != null)
-            {
-                //query.Append(" AND ( 1=1 ");
-                query.Append(" AND ( ");
-
-                foreach (IDictionary<string, object> row in filter)
-                {
-
-                    query.Append(" ( 1=1 "); //AND
-
-                    foreach (KeyValuePair<string, object> field in row)
-                    {
-
-                        if (field.Value != null && field.Value.GetType().IsArray)
-                        {
-                            query.Append(string.Format(" AND {0} IN @{1}", PropertyToDb(dbInfo, field.Key), i));// string.Format("{0}{1}",field.Key,i)));
-                        }
-                        else
-                        {
-                            if (field.Value == null)
-                            {
-                                query.Append(string.Format(" AND {0} IS NULL", PropertyToDb(dbInfo, field.Key)));
-                            }
-                            else
-                            {
-                                query.Append(string.Format(" AND {0}=@{1}", PropertyToDb(dbInfo, field.Key), i));
-                            }
-
-                        }
-
-                        dynamicFilter[i.ToString()] = field.Value;
-                        i++;
-                    }
-
-                    query.Append(") OR ");
-
-                }
-
-                query.Append(" ( 1=0 ))");
-            }
-
-            return query.ToString();
-        }
-
-        protected static string FormatCreateQuery<T>(T entity, out IDictionary<string, object> dynamicOptions, out bool returnIdentity, out string identityKey) where T : IDocument
-        {
-            StringBuilder query = new();
-            StringBuilder fields = new();
-            StringBuilder values = new();
-            identityKey = "ID";
-
-            DatabaseInformations dbInfo = GetDocumentDatabaseInformations();
-
-            KeyValuePair<string, ColumnDetail> identityCol = dbInfo.EntityDbMappings.FirstOrDefault(col => col.Value.IsIdentity);
-
-            returnIdentity = identityCol.Key != null;
-
-            if (returnIdentity)
-            {
-                identityKey = identityCol.Key;
-            }
-
-            dynamicOptions = new ExpandoObject();
-
-            foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-            {
-                object val = ReflectionHelper.GetPropertyValue(entity, mapInfo.Key);
-                if (val != null)
-                {
-                    if (returnIdentity && !mapInfo.Value.IsIdentity || !returnIdentity)
-                    {
-                        if (!mapInfo.Value.TypeName.Equals("datetime") || mapInfo.Value.TypeName.Equals("datetime") && !DateTime.MinValue.Equals(val))
-                        {
-                            fields.Append(string.Format(" {0},", mapInfo.Value.Name));
-                            values.Append(string.Format(" @{0},", mapInfo.Key));
-                            dynamicOptions[mapInfo.Key] = val;
-                        }
-                    }
-                }
-            }
-
-            string fieldsStr = fields.ToString();
-            string valuesStr = values.ToString();
-
-            if (fieldsStr.EndsWith(','))
-            {
-                fieldsStr = fieldsStr[..^1];
-            }
-
-            if (valuesStr.EndsWith(','))
-            {
-                valuesStr = valuesStr[..^1];
-            }
-
-            query.Append(string.Format("INSERT INTO {0} ({1}) VALUES ({2}){3}", dbInfo.ObjectName, fieldsStr, valuesStr, returnIdentity ? "; SELECT CAST(SCOPE_IDENTITY() AS INT)" : ""));
-
-            return query.ToString();
-        }
-
-        protected static string FormatReadQuery(long id, out IDictionary<string, object> dynamicFilter, out DatabaseInformations dbInfo)
-        {
-            StringBuilder query = new();
-
-            dbInfo = GetDocumentDatabaseInformations();
-
-            query.Append(string.Format(" select '{0}'", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff z")));
-
-            foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-            {
-                query.Append(string.Format(", {0}", mapInfo.Value.Name));
-            }
-
-            query.Append(" from ");
-            query.Append(dbInfo.ObjectName);
-
-            query.Append(" where ID=@ID ");
-
-            dynamicFilter = new ExpandoObject();
-            dynamicFilter["ID"] = id;
-
-            return query.ToString();
-        }
-
-        protected static string FormatUpdateQuery<T>(T entity, out IDictionary<string, object> dynamicOptions)
-        {
-            StringBuilder query = new();
-            StringBuilder fields = new();
-            StringBuilder keys = new();
-
-            //Type tp = typeof(T);
-            DatabaseInformations dbInfo = GetDocumentDatabaseInformations();
-
-            dynamicOptions = new ExpandoObject();
-
-            foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-            {
-                object val = ReflectionHelper.GetPropertyValue(entity, mapInfo.Key);
-                if (val != null)
-                {
-                    if (mapInfo.Value.IsKey)
-                    {
-                        keys.Append(string.Format(" AND {0}=@{1}", mapInfo.Value.Name, mapInfo.Key));
-                    }
-                    else if (!mapInfo.Value.IsIdentity)
-                    {
-                        fields.Append(string.Format(" {0}=@{1},", mapInfo.Value.Name, mapInfo.Key));
-                    }
-
-                    dynamicOptions[mapInfo.Key] = val;
-                }
-            }
-
-            string fieldsStr = fields.ToString();
-
-            if (fieldsStr.EndsWith(','))
-            {
-                fieldsStr = fieldsStr[..^1];
-            }
-
-            string keysStr = keys.ToString();
-
-            query.Append(string.Format("UPDATE {0} SET {1} WHERE 1=1 {2}", dbInfo.ObjectName, fieldsStr, keysStr));
-
-            return query.ToString();
-        }
-
-        protected static string FormatDeleteQuery<T>(T entity, out IDictionary<string, object> dynamicOptions)
-        {
-            StringBuilder query = new();
-            StringBuilder keys = new();
-
-            DatabaseInformations dbInfo = GetDocumentDatabaseInformations();
-
-            dynamicOptions = new ExpandoObject();
-
-            foreach (KeyValuePair<string, ColumnDetail> mapInfo in dbInfo.EntityDbMappings)
-            {
-                object val = ReflectionHelper.GetPropertyValue(entity, mapInfo.Key);
-                if (val != null)
-                {
-                    if (mapInfo.Value.IsKey)
-                    {
-                        keys.Append(string.Format(" AND {0}=@{1}", mapInfo.Value.Name, mapInfo.Key));
-                    }
-
-                    dynamicOptions[mapInfo.Key] = val;
-                }
-            }
-
-            string keysStr = keys.ToString();
-
-            query.Append(string.Format("DELETE {0} WHERE 1=1 {1}", dbInfo.ObjectName, keysStr));
-
-
-            return query.ToString();
+            // If property not recognized, return null
+            return null;
         }
 
         #endregion
-
-        #region Private
-
-        private static string PropertyToDb(DatabaseInformations dbInfo, string propertyName)
-        {
-            KeyValuePair<string, ColumnDetail> colInfo = dbInfo.EntityDbMappings.FirstOrDefault(col => col.Key == propertyName);
-
-            if (colInfo.Key != null)
-            {
-                return colInfo.Value.Name; // nome colonna da nome proprietà
-            }
-
-            colInfo = dbInfo.EntityDbMappings.FirstOrDefault(col => col.Value.Name == propertyName);
-
-            if (colInfo.Key != null)
-            {
-                return propertyName; // già nome colonna
-            }
-
-            return string.Empty;
-        }
-
-        private static string ValueToDb(DatabaseInformations dbInfo, string propertyName, object propertyValue)
-        {
-            KeyValuePair<string, ColumnDetail> colInfo = dbInfo.EntityDbMappings.FirstOrDefault(col => col.Key == propertyName);
-
-            if (colInfo.Key == null)
-            {
-                colInfo = dbInfo.EntityDbMappings.FirstOrDefault(col => col.Value.Name == propertyName);
-            }
-
-            if (colInfo.Key != null)
-            {
-                // verifico il tipo dato e applico formattazione
-                switch (colInfo.Value.TypeName)
-                {
-                    case "varchar":
-                    case "varchar2":
-                    case "nvarchar":
-                        return string.Format("'{0}'", propertyValue);
-
-                    case "datetime":
-                        return string.Format("'{0}'", DateTime.Parse(propertyValue.ToString()).ToString("yyyy-MM-dd hh:mm:ss"));
-
-                }
-
-            }
-
-            return propertyValue.ToString();
-        }
-
-        #endregion
-
     }
 }
