@@ -375,6 +375,7 @@ namespace MIT.Fwk.WebApi.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("Load/{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]  // Escludi da Swagger - HttpResponseMessage non è compatibile con OpenAPI
         public async Task<HttpResponseMessage> Load(string id)
         {
             UploadFile entity = await _context.UploadFiles

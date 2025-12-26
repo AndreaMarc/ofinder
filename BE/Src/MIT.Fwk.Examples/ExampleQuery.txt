@@ -1,0 +1,92 @@
+ using Dapper;
+  using Microsoft.Data.SqlClient; // o MySql.Data.MySqlClient
+  using MIT.Fwk.Core.Services;
+
+  public class MyController : ApiController
+  {
+      private readonly IConnectionStringProvider _connStringProvider;
+
+      public MyController(IConnectionStringProvider connStringProvider,
+                         INotificationHandler<DomainNotification> notifications)
+          : base(notifications)
+      {
+          _connStringProvider = connStringProvider;
+      }
+
+      [HttpGet("custom-query")]
+      public async Task<IActionResult> ExecuteCustomQuery()
+      {
+          // 1. Connessione al database
+          using var connection = new SqlConnection(
+              _connStringProvider.GetConnectionString("DefaultConnection")
+          );
+
+          // 2. Query SELECT con parametri
+          string query = "SELECT * FROM MediaFiles WHERE category = @Category AND tenantId = @TenantId";
+          var result = await connection.QueryAsync<MediaFile>(query, new
+          {
+              Category = "photos",
+              TenantId = 1
+          });
+
+          // 3. Query scalare (singolo valore)
+          string countQuery = "SELECT COUNT(*) FROM MediaFiles WHERE tenantId = @TenantId";
+          int count = await connection.ExecuteScalarAsync<int>(countQuery, new { TenantId = 1 });
+
+          // 4. INSERT/UPDATE/DELETE
+          string insertQuery = "INSERT INTO MediaFiles (name, category) VALUES (@Name, @Category)";
+          int rowsAffected = await connection.ExecuteAsync(insertQuery, new
+          {
+              Name = "test.jpg",
+              Category = "photos"
+          });
+
+          // 5. Query senza mapping (dynamic)
+          string dynamicQuery = "SELECT DISTINCT category FROM MediaFiles";
+          var categories = await connection.QueryAsync<string>(dynamicQuery);
+
+          return Response(new { result, count, categories });
+      }
+  }
+
+  Opzione 2: EF Core DbContext con SQL Raw
+
+  using Microsoft.EntityFrameworkCore;
+
+  public class MyController : ApiController
+  {
+      private readonly JsonApiDbContext _context;
+
+      public MyController(JsonApiDbContext context,
+                         INotificationHandler<DomainNotification> notifications)
+          : base(notifications)
+      {
+          _context = context;
+      }
+
+      [HttpGet("custom-query-ef")]
+      public async Task<IActionResult> ExecuteWithEfCore()
+      {
+          // 1. Query SELECT con FromSqlRaw (ritorna entità mappate)
+          var mediaFiles = await _context.MediaFiles
+              .FromSqlRaw("SELECT * FROM MediaFiles WHERE category = {0}", "photos")
+              .ToListAsync();
+
+          // 2. Query con interpolazione (sicura - previene SQL injection)
+          var category = "photos";
+          var mediaFiles2 = await _context.MediaFiles
+              .FromSqlInterpolated($"SELECT * FROM MediaFiles WHERE category = {category}")
+              .ToListAsync();
+
+          // 3. Esecuzione di comandi (INSERT/UPDATE/DELETE)
+          int rowsAffected = await _context.Database
+              .ExecuteSqlRawAsync("UPDATE MediaFiles SET processed = 1 WHERE id = {0}", 123);
+
+          // 4. Query con stored procedure
+          var results = await _context.MediaFiles
+              .FromSqlRaw("EXEC GetMediaFilesByCategory @p0", "photos")
+              .ToListAsync();
+
+          return Response(new { mediaFiles, rowsAffected });
+      }
+  }

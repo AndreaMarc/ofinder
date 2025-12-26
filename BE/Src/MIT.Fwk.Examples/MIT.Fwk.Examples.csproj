@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <!-- Core Framework Dependencies -->
+    <ProjectReference Include="..\MIT.Fwk.Core\MIT.Fwk.Core.csproj" />
     <ProjectReference Include="..\MIT.Fwk.Infrastructure\MIT.Fwk.Infrastructure.csproj" />
   </ItemGroup>
 

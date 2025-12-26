@@ -64,6 +64,8 @@ namespace MIT.Fwk.WebApi.Configurations
                     // Add custom converters
                     options.SerializerOptions.Converters.Add(new JsonDateTimeOffsetConverter());
                     options.SerializerOptions.Converters.Add(new JsonDateTimeConverter());
+                    // Add enum string converter - allows enums as strings instead of numbers
+                    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 }),
                 new Action<ServiceDiscoveryFacade>(discovery =>
                 {
@@ -100,11 +102,15 @@ namespace MIT.Fwk.WebApi.Configurations
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    // Add enum string converter for Newtonsoft.Json
+                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonDateTimeOffsetConverter());
                     options.JsonSerializerOptions.Converters.Add(new JsonDateTimeConverter());
+                    // Add enum string converter - allows enums as strings instead of numbers
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                 });
 

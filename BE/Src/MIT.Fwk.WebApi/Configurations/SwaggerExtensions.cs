@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using JsonApiDotNetCore.OpenApi.Swashbuckle;
 using System;
 
 namespace MIT.Fwk.WebApi.Configurations
@@ -21,10 +22,14 @@ namespace MIT.Fwk.WebApi.Configurations
         {
             services.AddEndpointsApiExplorer();
 
+            // Add JsonAPI OpenAPI support
+            services.AddOpenApiForJsonApi();
+
             services.AddSwaggerGen(options =>
             {
-                // Add custom operation filter
+                // Add custom operation filters
                 options.OperationFilter<SwaggerDefaultValues>();
+                options.OperationFilter<AddRequiredHeadersOperationFilter>();
 
                 // Configure API documentation - OpenAPI 3.0
                 options.SwaggerDoc("v2", new OpenApiInfo
@@ -112,6 +117,20 @@ namespace MIT.Fwk.WebApi.Configurations
                 s.DisplayRequestDuration(); // Show request duration in UI
                 s.EnableDeepLinking(); // Enable deep linking for operations
                 s.EnableFilter(); // Enable filter box
+
+                // Collapse all controllers by default (docExpansion: 'none')
+                s.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+
+                // Default models expansion - collapsed
+                s.DefaultModelsExpandDepth(-1); // Non mostrare i modelli di default
+
+                // Configurazione custom per UI collassata
+                s.ConfigObject.AdditionalItems["defaultModelsExpandDepth"] = -1;
+                s.ConfigObject.AdditionalItems["docExpansion"] = "none";
+                s.ConfigObject.AdditionalItems["filter"] = true;
+
+                // Inietta JavaScript personalizzato per headers globali, auto-login, ecc.
+                s.InjectJavascript("/swagger-custom-headers.js");
             });
 
             Console.WriteLine("-------------------------------------------------");

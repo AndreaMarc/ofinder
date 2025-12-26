@@ -90,6 +90,9 @@ namespace MIT.Fwk.WebApi.Configurations
             app.UseMiddleware<JwtClaimsValidationMiddleware>(); // Entity-level claims validation
             app.UseMiddleware<JwtLoggingMiddleware>(); // Request logging (fire-and-forget, non-blocking)
 
+            // Static files (wwwroot) - for Swagger custom JavaScript
+            app.UseStaticFiles();
+
             // Swagger/OpenAPI 3.0 - MUST be before UseMvc()
             app.UseFrameworkSwagger(configuration);
 

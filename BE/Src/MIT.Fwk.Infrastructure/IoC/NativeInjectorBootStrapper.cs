@@ -184,10 +184,12 @@ namespace MIT.Fwk.Infrastructure.IoC
                     }
                 }
 
-                // Get all loaded MIT assemblies (including custom modules like MIT.Fwk.Examples)
+                // Get all loaded MIT assemblies (including custom modules and Infrastructure)
                 var mitAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(ass => ass.FullName.StartsWith("MIT") && !ass.FullName.StartsWith("MIT.Fwk.Core") && !ass.FullName.StartsWith("MIT.Fwk.Infrastructure") && 
-                                    !ass.FullName.StartsWith("MIT.Fwk.WebApi") && !ass.FullName.StartsWith("MIT.Fwk.Tests"))
+                    .Where(ass => ass.FullName.StartsWith("MIT") &&
+                                    !ass.FullName.StartsWith("MIT.Fwk.Core") &&
+                                    !ass.FullName.StartsWith("MIT.Fwk.WebApi") &&
+                                    !ass.FullName.StartsWith("MIT.Fwk.Tests"))
                     .ToList();
 
                 int registeredCount = 0;

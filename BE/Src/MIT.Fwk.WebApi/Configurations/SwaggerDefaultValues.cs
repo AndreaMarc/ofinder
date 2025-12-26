@@ -1,6 +1,6 @@
 ﻿namespace MIT.Fwk.WebApi.Configurations
 {
-    using Microsoft.OpenApi.Models;
+    using Microsoft.OpenApi;
     using Swashbuckle.AspNetCore.SwaggerGen;
     using System.Linq;
 
@@ -18,6 +18,10 @@
         /// <param name="context">The current operation filter context.</param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
+            // Defensive null checks for Swashbuckle 10.x + OpenAPI 2.x compatibility
+            if (operation == null || context?.ApiDescription == null)
+                return;
+
             Microsoft.AspNetCore.Mvc.ApiExplorer.ApiDescription apiDescription = context.ApiDescription;
 
             //operation.Deprecated |= apiDescription.IsDeprecated();
@@ -31,7 +35,11 @@
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/pull/413
             foreach (OpenApiParameter parameter in operation.Parameters)
             {
-                Microsoft.AspNetCore.Mvc.ApiExplorer.ApiParameterDescription description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
+                Microsoft.AspNetCore.Mvc.ApiExplorer.ApiParameterDescription description = apiDescription.ParameterDescriptions.FirstOrDefault(p => p.Name == parameter.Name);
+
+                // Skip if no matching parameter description found (e.g., JsonAPI auto-generated parameters)
+                if (description == null)
+                    continue;
 
                 if (parameter.Description == null)
                 {
@@ -50,8 +58,16 @@
 
             string customMediaType = "application/vnd.api+json";
 
-            foreach (System.Collections.Generic.KeyValuePair<string, OpenApiResponse> response in operation.Responses)
+            // Skip if operation has no responses defined
+            if (operation.Responses == null)
+                return;
+
+            foreach (System.Collections.Generic.KeyValuePair<string, IOpenApiResponse> response in operation.Responses)
             {
+                // Skip if response has no content (e.g., 204 No Content, 304 Not Modified)
+                if (response.Value.Content == null)
+                    continue;
+
                 foreach (System.Collections.Generic.KeyValuePair<string, OpenApiMediaType> schema in response.Value.Content.Where(x => x.Key == "application/json").ToList())
                 {
                     response.Value.Content[customMediaType] = schema.Value;
@@ -59,8 +75,8 @@
             }
 
             // Aggiungi il MediaType personalizzato ai parametri del corpo della richiesta
-            OpenApiRequestBody requestBody = operation.RequestBody;
-            if (requestBody != null)
+            IOpenApiRequestBody requestBody = operation.RequestBody;
+            if (requestBody != null && requestBody.Content != null)
             {
                 foreach (System.Collections.Generic.KeyValuePair<string, OpenApiMediaType> schema in requestBody.Content.Where(x => x.Key == "application/json").ToList())
                 {
