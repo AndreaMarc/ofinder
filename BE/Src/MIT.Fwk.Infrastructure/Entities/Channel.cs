@@ -41,6 +41,9 @@ namespace MIT.Fwk.Infrastructure.Entities
         [Attr]
         public bool IsActive { get; set; } = true;
 
+        [Attr]
+        public bool IsSocial { get; set; } = false;
+
         // Timestamps
         [Attr]
         public DateTime CreatedAt { get; set; }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,6 +34,16 @@ namespace MIT.Fwk.WebApi.Configurations
             this WebApplication app,
             IConfiguration configuration)
         {
+            // CRITICAL: Forwarded Headers MUST be first to properly detect HTTPS behind reverse proxy
+            // This reads X-Forwarded-Proto, X-Forwarded-Host, X-Forwarded-For headers from nginx
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedFor,
+                // For production with nginx, we need to accept any proxy (or configure specific IPs)
+                KnownNetworks = { },
+                KnownProxies = { }
+            });
+
             // Enable request buffering and synchronous IO
             app.Use(async (context, next) =>
             {

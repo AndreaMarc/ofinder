@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MIT.Fwk.Core.Helpers;
 using MIT.Fwk.Core.Models;
@@ -40,6 +41,25 @@ namespace MIT.Fwk.WebApi.Controllers
         private readonly IJsonApiManualService _jsonService = jsonService;
         private readonly IConnectionStringProvider _connStringProvider = connStringProvider;
         private readonly string _uploadsPath = fileUploadOptions.Value.UploadsPath;
+
+        /// <summary>
+        /// Resolves a MediaCategory reference: if it's a GUID, use it; otherwise lookup by name
+        /// </summary>
+        private async Task<string> ResolveMediaCategoryId(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            // If it's a valid GUID, use it directly
+            if (Guid.TryParse(value, out _))
+                return value;
+
+            // Otherwise, lookup by name
+            var category = await _jsonService.GetAllQueryable<MediaCategory, string>()
+                .FirstOrDefaultAsync(mc => mc.Name == value);
+
+            return category?.Id;
+        }
 
         [HttpGet]
         [Route("roots")]
@@ -154,12 +174,22 @@ namespace MIT.Fwk.WebApi.Controllers
 
                         fileNameNoExt = fileNameNoExt[..^1];
 
+                        // Resolve category IDs (GUID or name lookup)
+                        string albumId = await ResolveMediaCategoryId(fa.album.ToString());
+                        string categoryId = await ResolveMediaCategoryId(fa.category.ToString());
+                        string typologyAreaId = await ResolveMediaCategoryId(fa.typologyArea.ToString());
+
+                        if (string.IsNullOrEmpty(typologyAreaId) || string.IsNullOrEmpty(categoryId))
+                        {
+                            return BadRequest($"TypologyArea '{fa.typologyArea}' or Category '{fa.category}' not found");
+                        }
+
                         MediaFile mediafile = new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            album = fa.album.ToString(),
+                            album = albumId,
                             alt = fa.alt.ToString(),
-                            category = fa.category.ToString(),
+                            category = categoryId,
                             extension = fileNameArray.Last().ToLower(),
                             base64 = "",
                             fileUrl = "",
@@ -167,7 +197,7 @@ namespace MIT.Fwk.WebApi.Controllers
                             originalFileName = fileNameNoExt,
                             tag = fa.tag.ToString(),
                             tenantId = Int32.Parse(fa.tenantId.ToString()),
-                            typologyArea = fa.typologyArea.ToString(),
+                            typologyArea = typologyAreaId,
                             uploadDate = DateTime.Parse(fa.uploadDate.ToString()),
                             userGuid = fa.userGuid.ToString(),
                             primaryContentType = contentTypeConvertedFile != "" ? contentTypeConvertedFile.Split('/')[0] : file.ContentType.Split('/')[0],
@@ -233,9 +263,9 @@ namespace MIT.Fwk.WebApi.Controllers
 
                         MemoryStream stream = new();
                         file.CopyTo(stream);
+                        byte[] imageBytes = stream.ToArray();
 
-                        stream.Position = 0;
-                        SKBitmap bigFormat = SKBitmap.Decode(stream);
+                        SKBitmap bigFormat = SKBitmap.Decode(imageBytes);
 
                         SKBitmap mediumFormat = bigFormat, smallFormat = bigFormat;
 
@@ -395,12 +425,22 @@ namespace MIT.Fwk.WebApi.Controllers
 
                         fileNameNoExt = fileNameNoExt[..^1];
 
+                        // Resolve category IDs (GUID or name lookup)
+                        string albumId = await ResolveMediaCategoryId(fa.album.ToString());
+                        string categoryId = await ResolveMediaCategoryId(fa.category.ToString());
+                        string typologyAreaId = await ResolveMediaCategoryId(fa.typologyArea.ToString());
+
+                        if (string.IsNullOrEmpty(typologyAreaId) || string.IsNullOrEmpty(categoryId))
+                        {
+                            return BadRequest($"TypologyArea '{fa.typologyArea}' or Category '{fa.category}' not found");
+                        }
+
                         MediaFile mediafile = new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            album = fa.album.ToString(),
+                            album = albumId,
                             alt = fa.alt.ToString(),
-                            category = fa.category.ToString(),
+                            category = categoryId,
                             extension = fileNameArray.Last().ToLower(),
                             base64 = "",
                             fileUrl = "",
@@ -408,7 +448,7 @@ namespace MIT.Fwk.WebApi.Controllers
                             originalFileName = fileNameNoExt,
                             tag = fa.tag.ToString(),
                             tenantId = Int32.Parse(fa.tenantId.ToString()),
-                            typologyArea = fa.typologyArea.ToString(),
+                            typologyArea = typologyAreaId,
                             uploadDate = DateTime.Parse(fa.uploadDate.ToString()),
                             userGuid = fa.userGuid.ToString(),
                             primaryContentType = contentTypeConvertedFile != "" ? contentTypeConvertedFile.Split('/')[0] : file.ContentType.Split('/')[0]
@@ -561,12 +601,22 @@ namespace MIT.Fwk.WebApi.Controllers
 
                         fileNameNoExt = fileNameNoExt[..^1];
 
+                        // Resolve category IDs (GUID or name lookup)
+                        string albumId = await ResolveMediaCategoryId(fa["album"].ToString());
+                        string categoryId = await ResolveMediaCategoryId(fa["category"].ToString());
+                        string typologyAreaId = await ResolveMediaCategoryId(fa["typologyArea"].ToString());
+
+                        if (string.IsNullOrEmpty(typologyAreaId) || string.IsNullOrEmpty(categoryId))
+                        {
+                            return BadRequest($"TypologyArea '{fa["typologyArea"]}' or Category '{fa["category"]}' not found");
+                        }
+
                         MediaFile mediafile = new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            album = fa["album"].ToString(),
+                            album = albumId,
                             alt = fa["alt"].ToString(),
-                            category = fa["category"].ToString(),
+                            category = categoryId,
                             extension = fileNameArray.Last().ToLower(),
                             base64 = "",
                             fileUrl = "",
@@ -574,7 +624,7 @@ namespace MIT.Fwk.WebApi.Controllers
                             originalFileName = fileNameNoExt,
                             tag = fa["tag"].ToString(),
                             tenantId = Int32.Parse(fa["tenantId"].ToString()),
-                            typologyArea = fa["typologyArea"].ToString(),
+                            typologyArea = typologyAreaId,
                             uploadDate = DateTime.Parse(fa["uploadDate"].ToString()),
                             userGuid = fa["userGuid"].ToString(),
                             primaryContentType = contentTypeConvertedFile != "" ? contentTypeConvertedFile.Split('/')[0] : file.ContentType.Split('/')[0],
@@ -640,9 +690,9 @@ namespace MIT.Fwk.WebApi.Controllers
 
                         MemoryStream stream = new();
                         file.CopyTo(stream);
+                        byte[] imageBytes = stream.ToArray();
 
-                        stream.Position = 0;
-                        SKBitmap bigFormat = SKBitmap.Decode(stream);
+                        SKBitmap bigFormat = SKBitmap.Decode(imageBytes);
 
                         SKBitmap mediumFormat = bigFormat, smallFormat = bigFormat;
 
@@ -802,12 +852,22 @@ namespace MIT.Fwk.WebApi.Controllers
 
                         fileNameNoExt = fileNameNoExt[..^1];
 
+                        // Resolve category IDs (GUID or name lookup)
+                        string albumId = await ResolveMediaCategoryId(fa["album"].ToString());
+                        string categoryId = await ResolveMediaCategoryId(fa["category"].ToString());
+                        string typologyAreaId = await ResolveMediaCategoryId(fa["typologyArea"].ToString());
+
+                        if (string.IsNullOrEmpty(typologyAreaId) || string.IsNullOrEmpty(categoryId))
+                        {
+                            return BadRequest($"TypologyArea '{fa["typologyArea"]}' or Category '{fa["category"]}' not found");
+                        }
+
                         MediaFile mediafile = new()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            album = fa["album"].ToString(),
+                            album = albumId,
                             alt = fa["alt"].ToString(),
-                            category = fa["category"].ToString(),
+                            category = categoryId,
                             extension = fileNameArray.Last().ToLower(),
                             base64 = "",
                             fileUrl = "",
@@ -815,7 +875,7 @@ namespace MIT.Fwk.WebApi.Controllers
                             originalFileName = fileNameNoExt,
                             tag = fa["tag"].ToString(),
                             tenantId = Int32.Parse(fa["tenantId"].ToString()),
-                            typologyArea = fa["typologyArea"].ToString(),
+                            typologyArea = typologyAreaId,
                             uploadDate = DateTime.Parse(fa["uploadDate"].ToString()),
                             userGuid = fa["userGuid"].ToString(),
                             primaryContentType = contentTypeConvertedFile != "" ? contentTypeConvertedFile.Split('/')[0] : file.ContentType.Split('/')[0]
