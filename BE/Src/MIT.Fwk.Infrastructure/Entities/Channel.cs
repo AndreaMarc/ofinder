@@ -46,9 +46,11 @@ namespace MIT.Fwk.Infrastructure.Entities
 
         // Timestamps
         [Attr]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; }
 
         [Attr]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
 
         // Navigation Properties

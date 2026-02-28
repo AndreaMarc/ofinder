@@ -20,18 +20,58 @@ namespace MIT.Fwk.Infrastructure.Entities
         [Required]
         public string UserId { get; set; }
 
-     
+        // Personal Information
+        [Attr]
+        public string Email { get; set; }
+
+        [Attr]
+        public string LastName { get; set; }
+
+        [Attr]
+        public string FirstName { get; set; }
+
+        [Attr]
+        public string NickName { get; set; }
+
+        [Attr]
+        public string MobilePhone { get; set; }
+
+        [Attr]
+        public string Sex { get; set; }
+
+        [Attr]
+        public DateTime? BirthDate { get; set; }
+
+        [Attr]
+        public string BirthState { get; set; }
+
+        [Attr]
+        public string ResidenceState { get; set; }
+
+        [Attr]
+        public string ResidenceRegion { get; set; }
+
+        [Attr]
+        public string ResidenceProvince { get; set; }
+
+        [Attr]
+        public string Occupation { get; set; }
 
         // Performer-specific fields
         [Attr]
-        [MaxLength(500)]
         public string Description { get; set; }
 
         [Attr]
         public bool IsActive { get; set; } = true;
 
         [Attr]
+        public bool Active { get; set; } = false;
+
+        [Attr]
         public bool IsVerified { get; set; } = false;
+
+        [Attr]
+        public DateTime? Verified { get; set; }
 
         // Timestamps
         [Attr]
@@ -60,5 +100,8 @@ namespace MIT.Fwk.Infrastructure.Entities
 
         [HasMany]
         public virtual ICollection<UserFavorite> UserFavorites { get; set; }
+
+        [HasMany]
+        public virtual ICollection<AvailabilityVerification> AvailabilityVerifications { get; set; }
     }
 }

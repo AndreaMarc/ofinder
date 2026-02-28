@@ -4,6 +4,7 @@ using MIT.Fwk.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MIT.Fwk.Infrastructure.Migrations
 {
     [DbContext(typeof(JsonApiDbContext))]
-    partial class JsonApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251231091531_AddActiveVerifiedAndAvailabilityVerification")]
+    partial class AddActiveVerifiedAndAvailabilityVerification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

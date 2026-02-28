@@ -4,6 +4,7 @@ using MIT.Fwk.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MIT.Fwk.Infrastructure.Migrations
 {
     [DbContext(typeof(JsonApiDbContext))]
-    partial class JsonApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251230110922_AddPersonalInfoToPerformer")]
+    partial class AddPersonalInfoToPerformer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,37 +41,6 @@ namespace MIT.Fwk.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AspNetUserClaims");
-                });
-
-            modelBuilder.Entity("MIT.Fwk.Infrastructure.Entities.AvailabilityVerification", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<bool>("Canceled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Chosen")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("From")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("Missing")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("PerformerId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime?>("To")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PerformerId");
-
-                    b.ToTable("AvailabilityVerifications");
                 });
 
             modelBuilder.Entity("MIT.Fwk.Infrastructure.Entities.BannedUser", b =>
@@ -1315,9 +1287,6 @@ namespace MIT.Fwk.Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime(6)");
 
@@ -1374,9 +1343,6 @@ namespace MIT.Fwk.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime?>("Verified")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -2706,17 +2672,6 @@ namespace MIT.Fwk.Infrastructure.Migrations
                     b.ToTable("UserTenants");
                 });
 
-            modelBuilder.Entity("MIT.Fwk.Infrastructure.Entities.AvailabilityVerification", b =>
-                {
-                    b.HasOne("MIT.Fwk.Infrastructure.Entities.Performer", "Performer")
-                        .WithMany("AvailabilityVerifications")
-                        .HasForeignKey("PerformerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Performer");
-                });
-
             modelBuilder.Entity("MIT.Fwk.Infrastructure.Entities.BannedUser", b =>
                 {
                     b.HasOne("MIT.Fwk.Infrastructure.Entities.Tenant", "Tenant")
@@ -3574,8 +3529,6 @@ namespace MIT.Fwk.Infrastructure.Migrations
 
             modelBuilder.Entity("MIT.Fwk.Infrastructure.Entities.Performer", b =>
                 {
-                    b.Navigation("AvailabilityVerifications");
-
                     b.Navigation("Channels");
 
                     b.Navigation("PerformerReviews");

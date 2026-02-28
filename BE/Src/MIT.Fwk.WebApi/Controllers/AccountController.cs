@@ -962,7 +962,7 @@ namespace MIT.Fwk.WebApi.Controllers
 
             User existingUser = await _jsonApiManualService.GetUserByEmail(model.Email);
 
-            List<String> allowedRoles = new List<String>() { "Cliente", "Modella" };
+            List<String> allowedRoles = new List<String>() { "Cliente", "Modella", "Agency" };
 
 
             if (existingUser != null)
@@ -1262,7 +1262,7 @@ namespace MIT.Fwk.WebApi.Controllers
             HttpContext.Request.Headers.TryGetValue("baseEndpoint", out baseEndpoint);
 
             User existingUser = await _jsonApiManualService.GetUserByEmail(otp.OtpValue);
-            List<String> allowedRoles = new List<String>() { "Modella", "Cliente" };
+            List<String> allowedRoles = new List<String>() { "Cliente", "Modella", "Agency" };
             if (existingUser != null)
             {
                 UserTenant existingAssociation = _jsonApiManualService.GetUserTenant(existingUser.Id, tenant);

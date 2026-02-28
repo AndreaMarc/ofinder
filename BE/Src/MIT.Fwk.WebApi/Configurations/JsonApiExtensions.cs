@@ -161,7 +161,19 @@ namespace MIT.Fwk.WebApi.Configurations
     {
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTime.Parse(reader.GetString()!);
+            // Handle null values - return default(DateTime) so EF Core uses database default
+            if (reader.TokenType == JsonTokenType.Null)
+            {
+                return default(DateTime);
+            }
+
+            string? dateString = reader.GetString();
+            if (string.IsNullOrWhiteSpace(dateString))
+            {
+                return default(DateTime);
+            }
+
+            return DateTime.Parse(dateString);
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

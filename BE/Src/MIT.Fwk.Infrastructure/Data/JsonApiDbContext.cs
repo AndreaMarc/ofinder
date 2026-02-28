@@ -137,9 +137,25 @@ namespace MIT.Fwk.Infrastructure.Data
             {
                 entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.UpdatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                    .ValueGeneratedOnAddOrUpdate();
+                // Timestamp fields with database defaults
+                var createdAtProperty = entity.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP(6)")
+                    .ValueGeneratedOnAdd();
+                createdAtProperty.Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+
+                // UpdatedAt: MySQL handles ON UPDATE automatically via migration
+                // Tell EF Core to never send or retrieve this value
+                var updatedAtProperty = entity.Property(e => e.UpdatedAt)
+                    .ValueGeneratedNever();
+                updatedAtProperty.Metadata.SetBeforeSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+                updatedAtProperty.Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
+
+                // Boolean fields with database defaults
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.IsSocial)
+                    .HasDefaultValue(false);
 
                 // Convert enum to string
                 entity.Property(e => e.Platform)
@@ -373,6 +389,7 @@ namespace MIT.Fwk.Infrastructure.Data
         public DbSet<PerformerReview> PerformerReviews => Set<PerformerReview>();
         public DbSet<PerformerService> PerformerServices => Set<PerformerService>();
         public DbSet<PerformerView> PerformerViews => Set<PerformerView>();
+        public DbSet<AvailabilityVerification> AvailabilityVerifications => Set<AvailabilityVerification>();
         public DbSet<UserFavorite> UserFavorites => Set<UserFavorite>();
 
     }
